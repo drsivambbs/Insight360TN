@@ -96,27 +96,27 @@ function showLegend(min, max, tertile1, tertile2) {
     legend.innerHTML = `
         <div class="legend-header">
             <span class="material-icons">palette</span>
-            Performance Scale
+            Legend
         </div>
         <div class="legend-items">
             <div class="legend-item">
                 <div class="legend-color" style="background: #4caf50;"></div>
                 <div class="legend-text">
-                    <div class="legend-label">Top Tertile</div>
+                    <div class="legend-label">High</div>
                     <div class="legend-range">${tertile2.toFixed(1)} - ${max.toFixed(1)}%</div>
                 </div>
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background: #ffeb3b;"></div>
                 <div class="legend-text">
-                    <div class="legend-label">Middle Tertile</div>
+                    <div class="legend-label">Medium</div>
                     <div class="legend-range">${tertile1.toFixed(1)} - ${tertile2.toFixed(1)}%</div>
                 </div>
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background: #f44336;"></div>
                 <div class="legend-text">
-                    <div class="legend-label">Bottom Tertile</div>
+                    <div class="legend-label">Low</div>
                     <div class="legend-range">${min.toFixed(1)} - ${tertile1.toFixed(1)}%</div>
                 </div>
             </div>
