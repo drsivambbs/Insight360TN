@@ -92,3 +92,9 @@ function changeLabelType() {
         loadDefaultDistricts();
     }
 }
+
+function toggleMapControls() {
+    const controls = document.getElementById('mapControls');
+    controls.classList.toggle('minimized');
+    controls.classList.toggle('expanded');
+}

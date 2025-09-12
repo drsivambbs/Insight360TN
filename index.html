@@ -41,19 +41,24 @@
                 <div class="disclaimer-icon" onclick="showDisclaimer()" title="Data Information">
                     <span class="material-icons">info</span>
                 </div>
-                <div class="map-controls">
-                    <div class="controls-header">
-                        <span class="material-icons">tune</span>
-                        Map Options
+                <div class="map-controls minimized" id="mapControls">
+                    <div class="controls-toggle" onclick="toggleMapControls()">
+                        <div class="controls-header">
+                            <span class="material-icons">tune</span>
+                            <span>Map Options</span>
+                            <span class="material-icons toggle">expand_less</span>
+                        </div>
                     </div>
-                    <div class="control-group">
-                        <div class="control-group-title">Display</div>
-                        <label><input type="checkbox" id="showLabels" checked onchange="toggleLabels()"> Show Labels</label>
-                    </div>
-                    <div class="control-group">
-                        <div class="control-group-title">Label Type</div>
-                        <label><input type="radio" name="labelType" value="district" checked onchange="changeLabelType()"> District Names</label>
-                        <label><input type="radio" name="labelType" value="values" onchange="changeLabelType()"> Values</label>
+                    <div class="controls-content">
+                        <div class="control-group">
+                            <div class="control-group-title">Display</div>
+                            <label><input type="checkbox" id="showLabels" checked onchange="toggleLabels()"> Show Labels</label>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-group-title">Label Type</div>
+                            <label><input type="radio" name="labelType" value="district" checked onchange="changeLabelType()"> District Names</label>
+                            <label><input type="radio" name="labelType" value="values" onchange="changeLabelType()"> Values</label>
+                        </div>
                     </div>
                 </div>
             </div>

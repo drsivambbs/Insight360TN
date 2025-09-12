@@ -5,6 +5,18 @@ function initMap() {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
     
+    // Add home button
+    const homeButton = L.control({ position: 'topleft' });
+    homeButton.onAdd = function() {
+        const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+        div.innerHTML = '<span class="material-icons" style="font-size: 18px; padding: 5px; cursor: pointer; background: white; border-radius: 2px;">home</span>';
+        div.onclick = function() {
+            map.setView([10.8, 78.6569], 7);
+        };
+        return div;
+    };
+    homeButton.addTo(map);
+    
     if (geoJsonData && geoJsonData.features) {
         loadDefaultDistricts();
     }
