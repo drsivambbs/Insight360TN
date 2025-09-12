@@ -25,12 +25,16 @@ body { font-family: 'Roboto', sans-serif; background-color: #121212; color: #e0e
 .disclaimer-icon { position: absolute; top: 16px; right: 16px; background: rgba(30,30,30,0.95); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; transition: background-color 0.2s; }
 .disclaimer-icon:hover { background: rgba(33,150,243,0.9); }
 .disclaimer-icon .material-icons { color: #64b5f6; font-size: 18px; }
-.map-controls { position: absolute; top: 16px; left: 16px; background: rgba(30,30,30,0.95); padding: 12px; border-radius: 8px; z-index: 1000; font-size: 12px; color: #e0e0e0; }
-.control-group { margin-bottom: 8px; }
+.map-controls { position: absolute; bottom: 16px; left: 16px; background: rgba(30,30,30,0.95); padding: 16px; border-radius: 12px; z-index: 1000; font-size: 12px; color: #e0e0e0; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 16px rgba(0,0,0,0.5); min-width: 180px; }
+.controls-header { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; margin-bottom: 12px; color: #64b5f6; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+.controls-header .material-icons { font-size: 16px; }
+.control-group { margin-bottom: 12px; }
 .control-group:last-child { margin-bottom: 0; }
-.control-group label { display: block; margin-bottom: 4px; cursor: pointer; }
-.control-group input { margin-right: 6px; }
-.district-label { background: rgba(30,30,30,0.8) !important; color: #e0e0e0 !important; border: none !important; font-size: 10px !important; padding: 2px 4px !important; border-radius: 3px !important; }
+.control-group-title { font-size: 11px; font-weight: 500; color: #b0b0b0; margin-bottom: 6px; }
+.control-group label { display: flex; align-items: center; margin-bottom: 6px; cursor: pointer; font-size: 11px; transition: color 0.2s; }
+.control-group label:hover { color: #64b5f6; }
+.control-group input { margin-right: 8px; accent-color: #2196f3; }
+.district-label { background: transparent !important; color: #ffffff !important; border: none !important; font-size: 10px !important; font-weight: 600 !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.8) !important; }
 
 .right-sidebar { width: 380px; background: #1e1e1e; box-shadow: -2px 0 4px rgba(0,0,0,0.3); display: flex; flex-direction: column; }
 .right-sidebar-header { padding: 16px; background: #2a2a2a; border-bottom: 1px solid #404040; }
