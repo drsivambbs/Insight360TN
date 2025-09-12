@@ -37,7 +37,48 @@ function selectIndicator(categoryKey, indicator) {
     document.querySelectorAll('.indicator.selected').forEach(el => el.classList.remove('selected'));
     event.currentTarget.classList.add('selected');
     selectedIndicator = { category: categoryKey, indicator: indicator };
+    updateDashboardHeader(indicator);
     updateContentArea(categoryKey, indicator);
+    
+    // Auto-collapse all categories after selection
+    document.querySelectorAll('.category.expanded').forEach(category => {
+        category.classList.remove('expanded');
+    });
+}
+
+function updateDashboardHeader(indicator) {
+    const dashboardHeader = document.querySelector('.dashboard-header');
+    const surveyName = activeSurvey === 'nfhs4' ? 'NFHS-4 (2015-16)' : 'NFHS-5 (2019-21)';
+    
+    dashboardHeader.innerHTML = `
+        <div class="header-main">
+            <div class="header-left">
+                <h1 class="dashboard-title">Insight360TN</h1>
+                <p class="dashboard-subtitle">National Family Health Survey - Dashboard for Tamil Nadu</p>
+            </div>
+            <div class="header-right">
+                <div class="indicator-info">
+                    <div class="indicator-badge">
+                        <span class="material-icons">analytics</span>
+                        <span class="badge-text">${surveyName}</span>
+                    </div>
+                    <div class="indicator-name">${indicator}</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function resetDashboardHeader() {
+    const dashboardHeader = document.querySelector('.dashboard-header');
+    dashboardHeader.innerHTML = `
+        <div class="header-main">
+            <div class="header-left">
+                <h1 class="dashboard-title">Insight360TN</h1>
+                <p class="dashboard-subtitle">National Family Health Survey - Dashboard for Tamil Nadu</p>
+            </div>
+        </div>
+    `;
 }
 
 function toggleSurvey(survey) {
@@ -46,6 +87,7 @@ function toggleSurvey(survey) {
     document.getElementById(survey + 'Btn').classList.add('active');
     renderCategoryTree();
     selectedIndicator = null;
+    resetDashboardHeader();
     document.getElementById('mapLegend').style.display = 'none';
     if (geoJsonLayer) {
         map.removeLayer(geoJsonLayer);
