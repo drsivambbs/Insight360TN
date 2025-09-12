@@ -36,9 +36,9 @@ function loadMapData(indicator) {
     const chartData = getChartData(indicator);
     if (!chartData || chartData.length === 0) return;
     
-    const values = chartData.map(d => d[1]);
-    const min = Math.min(...values);
-    const max = Math.max(...values);
+    const values = chartData.map(d => d[1]).sort((a, b) => a - b);
+    const tertile1 = values[Math.floor(values.length / 3)];
+    const tertile2 = values[Math.floor((values.length * 2) / 3)];
     
     if (geoJsonLayer) {
         map.removeLayer(geoJsonLayer);
@@ -50,10 +50,9 @@ function loadMapData(indicator) {
             const mappedDistrict = districtMapping[districtName] || districtName;
             const districtData = chartData.find(d => d[0] === mappedDistrict);
             const value = districtData ? districtData[1] : 0;
-            const intensity = (value - min) / (max - min);
             
             return {
-                fillColor: getColor(intensity),
+                fillColor: getColor(value, tertile1, tertile2),
                 weight: 0.9,
                 opacity: 1,
                 color: 'black',
@@ -69,35 +68,32 @@ function loadMapData(indicator) {
         }
     }).addTo(map);
     
-    showLegend(min, max);
+    showLegend(Math.min(...values), Math.max(...values), tertile1, tertile2);
 }
 
-function getColor(intensity) {
-    if (intensity <= 0.33) return '#4caf50';  // Green - Top quartile
-    if (intensity <= 0.66) return '#ffeb3b';  // Yellow - Middle quartile
-    return '#f44336';  // Red - Low quartile
+function getColor(value, tertile1, tertile2) {
+    if (value >= tertile2) return '#4caf50';  // Green - Top tertile
+    if (value >= tertile1) return '#ffeb3b';  // Yellow - Middle tertile
+    return '#f44336';  // Red - Bottom tertile
 }
 
-function showLegend(min, max) {
+function showLegend(min, max, tertile1, tertile2) {
     const legend = document.getElementById('mapLegend');
-    const range = max - min;
-    const topThreshold = min + (range * 0.66);
-    const midThreshold = min + (range * 0.33);
     
     legend.style.display = 'block';
     legend.innerHTML = `
-        <div style="font-weight: 500; margin-bottom: 8px; color: #e0e0e0;">Performance Scale (%)</div>
+        <div style="font-weight: 500; margin-bottom: 8px; color: #e0e0e0;">Performance Tertiles (%)</div>
         <div class="legend-item">
             <div class="legend-color" style="background: #4caf50;"></div>
-            <span>Top (${topThreshold.toFixed(1)} - ${max.toFixed(1)})</span>
+            <span>Top (${tertile2.toFixed(1)} - ${max.toFixed(1)})</span>
         </div>
         <div class="legend-item">
             <div class="legend-color" style="background: #ffeb3b;"></div>
-            <span>Middle (${midThreshold.toFixed(1)} - ${topThreshold.toFixed(1)})</span>
+            <span>Middle (${tertile1.toFixed(1)} - ${tertile2.toFixed(1)})</span>
         </div>
         <div class="legend-item">
             <div class="legend-color" style="background: #f44336;"></div>
-            <span>Low (${min.toFixed(1)} - ${midThreshold.toFixed(1)})</span>
+            <span>Bottom (${min.toFixed(1)} - ${tertile1.toFixed(1)})</span>
         </div>
     `;
 }
