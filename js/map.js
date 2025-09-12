@@ -83,6 +83,7 @@ function loadMapData(indicator) {
 }
 
 function getColor(value, tertile1, tertile2) {
+    if (value === 0 || value === null || value === undefined) return '#757575';  // Grey - No data
     if (value >= tertile2) return '#4caf50';  // Green - Top tertile
     if (value >= tertile1) return '#ffeb3b';  // Yellow - Middle tertile
     return '#f44336';  // Red - Bottom tertile
@@ -93,18 +94,39 @@ function showLegend(min, max, tertile1, tertile2) {
     
     legend.style.display = 'block';
     legend.innerHTML = `
-        <div style="font-weight: 500; margin-bottom: 8px; color: #e0e0e0;">Performance Tertiles (%)</div>
-        <div class="legend-item">
-            <div class="legend-color" style="background: #4caf50;"></div>
-            <span>Top (${tertile2.toFixed(1)} - ${max.toFixed(1)})</span>
+        <div class="legend-header">
+            <span class="material-icons">palette</span>
+            Performance Scale
         </div>
-        <div class="legend-item">
-            <div class="legend-color" style="background: #ffeb3b;"></div>
-            <span>Middle (${tertile1.toFixed(1)} - ${tertile2.toFixed(1)})</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color" style="background: #f44336;"></div>
-            <span>Bottom (${min.toFixed(1)} - ${tertile1.toFixed(1)})</span>
+        <div class="legend-items">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4caf50;"></div>
+                <div class="legend-text">
+                    <div class="legend-label">Top Tertile</div>
+                    <div class="legend-range">${tertile2.toFixed(1)} - ${max.toFixed(1)}%</div>
+                </div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ffeb3b;"></div>
+                <div class="legend-text">
+                    <div class="legend-label">Middle Tertile</div>
+                    <div class="legend-range">${tertile1.toFixed(1)} - ${tertile2.toFixed(1)}%</div>
+                </div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #f44336;"></div>
+                <div class="legend-text">
+                    <div class="legend-label">Bottom Tertile</div>
+                    <div class="legend-range">${min.toFixed(1)} - ${tertile1.toFixed(1)}%</div>
+                </div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #757575;"></div>
+                <div class="legend-text">
+                    <div class="legend-label">No Data</div>
+                    <div class="legend-range">Data unavailable</div>
+                </div>
+            </div>
         </div>
     `;
 }
