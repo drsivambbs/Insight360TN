@@ -26,6 +26,10 @@ function loadDefaultDistricts() {
         onEachFeature: function(feature, layer) {
             const districtName = feature.properties.District;
             layer.bindPopup(`<b>${districtName}</b><br/>Select an indicator to view data`);
+            
+            if (showLabels && labelType === 'district') {
+                layer.bindTooltip(districtName, { permanent: true, direction: 'center', className: 'district-label' });
+            }
         }
     }).addTo(map);
 }
@@ -33,6 +37,7 @@ function loadDefaultDistricts() {
 function loadMapData(indicator) {
     if (!map || !geoJsonData) return;
     
+    currentIndicator = indicator;
     const chartData = getChartData(indicator);
     if (!chartData || chartData.length === 0) return;
     
@@ -64,7 +69,13 @@ function loadMapData(indicator) {
             const mappedDistrict = districtMapping[districtName] || districtName;
             const districtData = chartData.find(d => d[0] === mappedDistrict);
             const value = districtData ? districtData[1] : 'No data';
+            
             layer.bindPopup(`<b>${districtName}</b><br/>${indicator}<br/>Value: ${value}%`);
+            
+            if (showLabels) {
+                const labelText = labelType === 'district' ? districtName : (value !== 'No data' ? `${value}%` : 'N/A');
+                layer.bindTooltip(labelText, { permanent: true, direction: 'center', className: 'district-label' });
+            }
         }
     }).addTo(map);
     

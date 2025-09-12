@@ -41,6 +41,15 @@
                 <div class="disclaimer-icon" onclick="showDisclaimer()" title="Data Information">
                     <span class="material-icons">info</span>
                 </div>
+                <div class="map-controls">
+                    <div class="control-group">
+                        <label><input type="checkbox" id="showLabels" checked onchange="toggleLabels()"> Show Labels</label>
+                    </div>
+                    <div class="control-group">
+                        <label><input type="radio" name="labelType" value="district" checked onchange="changeLabelType()"> District Names</label>
+                        <label><input type="radio" name="labelType" value="values" onchange="changeLabelType()"> Values</label>
+                    </div>
+                </div>
             </div>
         </div>
         

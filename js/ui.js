@@ -74,3 +74,21 @@ function updateContentArea(categoryKey, indicator) {
 function showDisclaimer() {
     alert('Data Information:\\n\\n• NFHS-4 data: 2015-16 survey\\n• NFHS-5 data: 2019-21 survey\\n• Newly formed districts (Chengalpattu, Kallakurichi, Mayiladuthurai, Ranipet, Tenkasi, Tirupathur) use data from their parent districts\\n• Source: National Family Health Survey, Government of India');
 }
+
+function toggleLabels() {
+    showLabels = document.getElementById('showLabels').checked;
+    if (currentIndicator) {
+        loadMapData(currentIndicator);
+    } else {
+        loadDefaultDistricts();
+    }
+}
+
+function changeLabelType() {
+    labelType = document.querySelector('input[name="labelType"]:checked').value;
+    if (currentIndicator && showLabels) {
+        loadMapData(currentIndicator);
+    } else if (showLabels) {
+        loadDefaultDistricts();
+    }
+}
