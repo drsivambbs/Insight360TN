@@ -12,6 +12,6 @@ const districtMapping = {
 };
 
 let geoJsonLayer = null;
-let showLabels = true;
+let showLabels = false;
 let labelType = 'district';
 let currentIndicator = null;
