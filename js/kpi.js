@@ -2,8 +2,10 @@
 function generateKPIDashboard(indicator) {
     const chartData = getChartData(indicator);
     const kpiContainer = document.getElementById('kpiContainer');
+    const rightSidebar = document.querySelector('.right-sidebar');
     
     if (!chartData || chartData.length === 0) {
+        rightSidebar.classList.remove('expanded');
         kpiContainer.innerHTML = `
             <h5 style="margin: 0 0 12px 0; color: #666; font-weight: 500;">No Data Available</h5>
             <div style="background: #ffeaea; padding: 12px; border-radius: 8px; font-size: 12px; color: #666;">
@@ -13,58 +15,39 @@ function generateKPIDashboard(indicator) {
         return;
     }
     
-    const top5 = chartData.slice(0, 5);
-    const bottom5 = chartData.slice(-5).reverse();
+    rightSidebar.classList.add('expanded');
     const values = chartData.map(d => d[1]);
     const average = (values.reduce((a, b) => a + b, 0) / values.length).toFixed(1);
     
     kpiContainer.innerHTML = `
-        <h5 style="margin: 0 0 12px 0; color: #1976d2; font-weight: 500; display: flex; align-items: center; gap: 6px;">
-            <span class="material-icons" style="font-size: 16px;">assessment</span>
-            Performance Analysis
-        </h5>
+        <div class="data-header">
+            <span class="material-icons">table_chart</span>
+            <span>District Performance</span>
+        </div>
         
-        <div class="kpi-section">
-            <div class="kpi-title" style="color: #4caf50;">
-                <span class="material-icons" style="font-size: 14px;">trending_up</span>
-                Top 5 Districts
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-label">Average:</span>
+                <span class="stat-value">${average}%</span>
             </div>
-            <div class="kpi-cards">
-                ${top5.map((district, index) => `
-                    <div class="kpi-card top">
-                        <div class="kpi-district">${district[0]}</div>
-                        <div class="kpi-value">${district[1]}%</div>
-                        <div class="kpi-rank">#${index + 1}</div>
-                    </div>
-                `).join('')}
+            <div class="stat-item">
+                <span class="stat-label">Districts:</span>
+                <span class="stat-value">${chartData.length}</span>
             </div>
         </div>
         
-        <div class="kpi-section">
-            <div class="kpi-title" style="color: #ff9800;">
-                <span class="material-icons" style="font-size: 14px;">analytics</span>
-                State Average
+        <div class="data-table">
+            <div class="table-header">
+                <div class="col-rank">Rank</div>
+                <div class="col-district">District</div>
+                <div class="col-value">Value</div>
             </div>
-            <div class="kpi-cards">
-                <div class="kpi-card average">
-                    <div class="kpi-district">Tamil Nadu</div>
-                    <div class="kpi-value">${average}%</div>
-                    <div class="kpi-rank">${chartData.length} districts</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="kpi-section">
-            <div class="kpi-title" style="color: #f44336;">
-                <span class="material-icons" style="font-size: 14px;">trending_down</span>
-                Bottom 5 Districts
-            </div>
-            <div class="kpi-cards">
-                ${bottom5.map((district, index) => `
-                    <div class="kpi-card bottom">
-                        <div class="kpi-district">${district[0]}</div>
-                        <div class="kpi-value">${district[1]}%</div>
-                        <div class="kpi-rank">#${chartData.length - index}</div>
+            <div class="table-body">
+                ${chartData.map((district, index) => `
+                    <div class="table-row ${index < 5 ? 'top' : index >= chartData.length - 5 ? 'bottom' : 'middle'}">
+                        <div class="col-rank">${index + 1}</div>
+                        <div class="col-district">${district[0]}</div>
+                        <div class="col-value">${district[1]}%</div>
                     </div>
                 `).join('')}
             </div>
