@@ -4,7 +4,7 @@ let categoriesData = {}, nfhsData = {}, geoJsonData = {}, selectedIndicator = nu
 // District mapping for newly formed districts
 const districtMapping = {
     'Chengalpattu': 'Kanchipuram',
-    'Kallakurichi': 'Viluppuram',
+    'Kallakurichi': 'Villupuram',
     'Mayiladuthurai': 'Nagapattinam',
     'Ranipet': 'Vellore',
     'Tenkasi': 'Tirunelveli',
