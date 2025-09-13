@@ -46,10 +46,11 @@ function loadDefaultDistricts() {
     }).addTo(map);
 }
 
-function loadMapData(indicator) {
+async function loadMapData(indicator) {
     if (!map || !geoJsonData) return;
     
     currentIndicator = indicator;
+    await loadIndicatorCategories();
     const chartData = getChartData(indicator);
     if (!chartData || chartData.length === 0) return;
     
@@ -69,7 +70,7 @@ function loadMapData(indicator) {
             const value = districtData ? districtData[1] : 0;
             
             return {
-                fillColor: getColor(value, tertile1, tertile2),
+                fillColor: getColor(value, tertile1, tertile2, indicator),
                 weight: 0.9,
                 opacity: 1,
                 color: 'black',
@@ -91,18 +92,34 @@ function loadMapData(indicator) {
         }
     }).addTo(map);
     
-    showLegend(Math.min(...values), Math.max(...values), tertile1, tertile2);
+    showLegend(Math.min(...values), Math.max(...values), tertile1, tertile2, indicator);
 }
 
-function getColor(value, tertile1, tertile2) {
-    if (value === 0 || value === null || value === undefined) return '#757575';  // Grey - No data
-    if (value >= tertile2) return '#4caf50';  // Green - Top tertile
-    if (value >= tertile1) return '#ffeb3b';  // Yellow - Middle tertile
-    return '#f44336';  // Red - Bottom tertile
+function getColor(value, tertile1, tertile2, indicatorName) {
+    const indicatorType = getIndicatorType(indicatorName);
+    return getMapColor(value, tertile1, tertile2, indicatorType);
 }
 
-function showLegend(min, max, tertile1, tertile2) {
+function showLegend(min, max, tertile1, tertile2, indicator) {
     const legend = document.getElementById('mapLegend');
+    const indicatorType = getIndicatorType(indicator);
+    
+    let labels, ranges;
+    if (indicatorType === 'Negative') {
+        labels = ['Best', 'Medium', 'Worst'];
+        ranges = [
+            `${min.toFixed(1)} - ${tertile1.toFixed(1)}%`,
+            `${tertile1.toFixed(1)} - ${tertile2.toFixed(1)}%`,
+            `${tertile2.toFixed(1)} - ${max.toFixed(1)}%`
+        ];
+    } else {
+        labels = ['Best', 'Medium', 'Worst'];
+        ranges = [
+            `${tertile2.toFixed(1)} - ${max.toFixed(1)}%`,
+            `${tertile1.toFixed(1)} - ${tertile2.toFixed(1)}%`,
+            `${min.toFixed(1)} - ${tertile1.toFixed(1)}%`
+        ];
+    }
     
     legend.style.display = 'block';
     legend.innerHTML = `
@@ -114,22 +131,22 @@ function showLegend(min, max, tertile1, tertile2) {
             <div class="legend-item">
                 <div class="legend-color" style="background: #4caf50;"></div>
                 <div class="legend-text">
-                    <div class="legend-label">High</div>
-                    <div class="legend-range">${tertile2.toFixed(1)} - ${max.toFixed(1)}%</div>
+                    <div class="legend-label">${labels[0]}</div>
+                    <div class="legend-range">${ranges[0]}</div>
                 </div>
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background: #ffeb3b;"></div>
                 <div class="legend-text">
-                    <div class="legend-label">Medium</div>
-                    <div class="legend-range">${tertile1.toFixed(1)} - ${tertile2.toFixed(1)}%</div>
+                    <div class="legend-label">${labels[1]}</div>
+                    <div class="legend-range">${ranges[1]}</div>
                 </div>
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background: #f44336;"></div>
                 <div class="legend-text">
-                    <div class="legend-label">Low</div>
-                    <div class="legend-range">${min.toFixed(1)} - ${tertile1.toFixed(1)}%</div>
+                    <div class="legend-label">${labels[2]}</div>
+                    <div class="legend-range">${ranges[2]}</div>
                 </div>
             </div>
             <div class="legend-item">

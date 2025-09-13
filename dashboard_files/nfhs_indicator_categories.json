@@ -10,179 +10,564 @@
     "Population_and_Household_Profile": {
       "description": "Demographics, household characteristics, and basic infrastructure",
       "indicators": [
-        "Population Below Age 15 Years (%)",
-        "Population And Household Profile-Sex Ratio Of The Total Population (Females Per 1,000 Males",
-        "Population And Household Profile-Sex Ratio At Birth For Children Born In The Last Five Years (Females Per 1,000 Males",
-        "Female Population Age 6 Years And Above Ever Attended School (%)",
-        "Women Age Group 15 To 49 Years Who Are Literate (%)",
-        "Men Age Group 15 To 49 Years Who Are Literate (%)",
-        "Women With 10 Or More Years Of Schooling In The Age Group Of 15 To 49 Years (%)",
-        "Women With 10 Or More Years Of Schooling (%)",
-        "Population And Household Profile-Households With Any Usual Member Covered Under A Health Insurance Or Financing Scheme (%)",
-        "Households Using Iodized Salt (%)",
-        "Households Using Clean Fuel For Cooking (%)",
-        "Population Living In Households With Electricity (%)",
-        "Population Living In Households With An Improved Drinking-Water Source (%)",
-        "Population Living In Households With An Improved Drinking Water Source (%)",
-        "Population Living In Households That Use An Improved Sanitation Facility (%)"
+        {
+          "name": "Population Below Age 15 Years (%)",
+          "indicator_type": "Neutral"
+        },
+        {
+          "name": "Population And Household Profile-Sex Ratio Of The Total Population (Females Per 1,000 Males",
+          "indicator_type": "Neutral"
+        },
+        {
+          "name": "Population And Household Profile-Sex Ratio At Birth For Children Born In The Last Five Years (Females Per 1,000 Males",
+          "indicator_type": "Neutral"
+        },
+        {
+          "name": "Female Population Age 6 Years And Above Who Ever Attended School (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Female Population Age 6 Years And Above Ever Attended School (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Women Age Group 15 To 49 Years Who Are Literate (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Men Age Group 15 To 49 Years Who Are Literate (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Women With 10 Or More Years Of Schooling In The Age Group Of 15 To 49 Years (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Women With 10 Or More Years Of Schooling (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Population And Household Profile-Households With Any Usual Member Covered Under A Health Insurance Or Financing Scheme (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Households Using Iodized Salt (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Households Using Clean Fuel For Cooking (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Population Living In Households With Electricity (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Population Living In Households With An Improved Drinking-Water Source (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Population Living In Households With An Improved Drinking Water Source (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Population Living In Households That Use An Improved Sanitation Facility (%)",
+          "indicator_type": "Positive"
+        }
       ]
     },
     "Fertility": {
       "description": "Fertility patterns and teenage pregnancy",
       "indicators": [
-        "Women Age Group 15 To 19 Years Who Were Already Mothers Or Pregnant At The Time Of The Survey (%)",
-        "Women In The Age Group Of 20 To 24 Years Married Before Age 18 Years (%)",
-        "Women Age Group 20 To 24 Years Married Before Age 18 Years (%)",
-        "Men In The Age Group Of  25 To 29 Years Married Before Age 21 Years (%)",
-        "Births In The 5 Years Preceding The Survey That Are Third Or Higher Order (%)"
+        {
+          "name": "Women Age Group 15 To 19 Years Who Were Already Mothers Or Pregnant At The Time Of The Survey (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women In The Age Group Of 20 To 24 Years Married Before Age 18 Years (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women Age Group 20 To 24 Years Married Before Age 18 Years (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Men In The Age Group Of  25 To 29 Years Married Before Age 21 Years (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Births In The 5 Years Preceding The Survey That Are Third Or Higher Order (%)",
+          "indicator_type": "Negative"
+        }
       ]
     },
     "Family_Planning": {
       "description": "Contraceptive use, family planning methods, and counseling",
       "indicators": [
-        "Married Women Age Group 15 To 49 Years Use Any Family Planning Methods (%)",
-        "Married Women Age Group 15 To 49 Years Any Modern Family Planning Method (%)",
-        "Female Sterilization Married Women-15 To 49 Years (%)",
-        "Married Women Of Age 15 To 49 Years Using Male Sterlization As One Of The Family Planning Methods (%)",
-        "Married Women Age Group 15 To 49 Years Using Intrauterine Device (Iud) Or Postpartum Intrauterine Contraceptive Device (Ppiud) As Family Planning Methods (%)",
-        "Currently Married Women Age Group 15 To 49 Years Consuming Pill (%)",
-        "Married Women Using Condom In The Age Group Of 15 To 49 Years (%)",
-        "Married Women Age Group 15 To 49 Years Using Injectables As One Of The Family Planning Methods (%)",
-        "Married Women Age Group 15 To 49 Years Unmet Need For Family Planning (%)",
-        "Women Unmet Need For Family Planning (%)",
-        "Women Unmet Need For Spacing (%)",
-        "Health Worker Ever Talked To Female Non-Users About Family Planning (%)",
-        "Current Users Ever Told About Side Effects Of Current Method (%)"
+        {
+          "name": "Married Women Age Group 15 To 49 Years Use Any Family Planning Methods (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Married Women Age Group 15 To 49 Years Any Modern Family Planning Method (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Female Sterilization Married Women-15 To 49 Years (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Married Women Of Age 15 To 49 Years Using Male Sterlization As One Of The Family Planning Methods (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Married Women Age Group 15 To 49 Years Using Intrauterine Device (Iud) Or Postpartum Intrauterine Contraceptive Device (Ppiud) As Family Planning Methods (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Currently Married Women Age Group 15 To 49 Years Consuming Pill (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Married Women Using Condom In The Age Group Of 15 To 49 Years (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Married Women Age Group 15 To 49 Years Using Injectables As One Of The Family Planning Methods (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Married Women Age Group 15 To 49 Years Unmet Need For Family Planning (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women Unmet Need For Family Planning (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women Unmet Need For Spacing (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Health Worker Ever Talked To Female Non-Users About Family Planning (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Current Users Ever Told About Side Effects Of Current Method (%)",
+          "indicator_type": "Positive"
+        }
       ]
     },
     "Infant_and_Child_Mortality": {
       "description": "Birth registration and mortality-related indicators",
       "indicators": [
-        "Children Under Age 5 Years Whose Birth Was Registered With The Civil Authority (%)",
-        "Deaths In The Last 3 Years Registered With The Civil Authority (%)"
+        {
+          "name": "Children Under Age 5 Years Whose Birth Was Registered With The Civil Authority (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Deaths In The Last 3 Years Registered With The Civil Authority (%)",
+          "indicator_type": "Positive"
+        }
       ]
     },
     "Maternal_and_Child_Health": {
       "description": "Antenatal, delivery, and postnatal care",
       "indicators": [
-        "Mothers Who Had An Antenatal Check-Up In The First Trimester (%)",
-        "Mothers Who Had At Least 4 Antenatal Care Visits (%)",
-        "Mothers Whose Last Birth Was Protected Against Neonatal Tetanus (%)",
-        "Mothers Who Consumed Iron Folic Acid For 100 Days Or More When They Were Pregnant (%)",
-        "Mothers Who Consumed Iron Folic Acid For 180 Days Or More When They Were Pregnant (%)",
-        "Mothers Who Had Full Antenatal Care Visits (%)",
-        "Registered Pregnancies For Which The Mother Received A Mother And Child Protection Card (Mcp)(%)",
-        "Mothers Who Received Postnatal Care From A Doctor Or Nurse Or Lady Health Visitor (Lhv) Or Auxiliary Nurse Midwifery (Anm) Or Midwife Or Other Health Personnel Within 2 Days Of Delivery (%)",
-        "Mothers Who Received Financial Assistance Under Janani Suraksha Yojana (Jsy) (%)",
-        "Average Out Of Pocket Expenditure For Each Delivery In Public Health Facility",
-        "Children Born At Home Who Were Taken To A Health Facility For A Check-Up Within 24 Hours Of Birth (%)",
-        "Children Who Received Postnatal Care From A Doctor Or Nurse Or Lady Health Visitor (Lhv) Or Auxiliary Nurse Midwifery (Anm) Or Midwife Or Other Health Personnel Within 2 Days Of Delivery (%)",
-        "Institutional Births (%)",
-        "Institutional Births In Public Facility (%)",
-        "Home Births That Were Conducted By Skilled Health Personnel (%)",
-        "Births Delivered By A Doctor/Nurse/Lhv/Anm/Other Health Personnel (%)",
-        "Births Attended By Skilled Health Personnel (%)",
-        "Births Delivered By Caesarean Section (%)",
-        "Births In Private Health Facility Delivered By Caesarean Section (%)",
-        "Births In Public Health Facility Delivered By Caesarean Section (%)"
+        {
+          "name": "Mothers Who Had An Antenatal Check-Up In The First Trimester (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Mothers Who Had At Least 4 Antenatal Care Visits (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Mothers Whose Last Birth Was Protected Against Neonatal Tetanus (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Mothers Who Consumed Iron Folic Acid For 100 Days Or More When They Were Pregnant (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Mothers Who Consumed Iron Folic Acid For 180 Days Or More When They Were Pregnant (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Mothers Who Had Full Antenatal Care Visits (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Registered Pregnancies For Which The Mother Received A Mother And Child Protection Card (Mcp)(%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Mothers Who Received Postnatal Care From A Doctor Or Nurse Or Lady Health Visitor (Lhv) Or Auxiliary Nurse Midwifery (Anm) Or Midwife Or Other Health Personnel Within 2 Days Of Delivery (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Mothers Who Received Financial Assistance Under Janani Suraksha Yojana (Jsy) (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Average Out Of Pocket Expenditure For Each Delivery In Public Health Facility",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Children Born At Home Who Were Taken To A Health Facility For A Check-Up Within 24 Hours Of Birth (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Who Received Postnatal Care From A Doctor Or Nurse Or Lady Health Visitor (Lhv) Or Auxiliary Nurse Midwifery (Anm) Or Midwife Or Other Health Personnel Within 2 Days Of Delivery (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Institutional Births (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Institutional Births In Public Facility (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Home Births That Were Conducted By Skilled Health Personnel (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Births Delivered By A Doctor/Nurse/Lhv/Anm/Other Health Personnel (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Births Attended By Skilled Health Personnel (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Births Delivered By Caesarean Section (%)",
+          "indicator_type": "Neutral"
+        },
+        {
+          "name": "Births In Private Health Facility Delivered By Caesarean Section (%)",
+          "indicator_type": "Neutral"
+        },
+        {
+          "name": "Births In Public Health Facility Delivered By Caesarean Section (%)",
+          "indicator_type": "Neutral"
+        }
       ]
     },
     "Child_Immunization_and_Health": {
       "description": "Vaccination coverage and childhood illness treatment",
       "indicators": [
-        "Children In The Age Group Of 12 To 23 Months Who Are Fully Immunized (Bacille Calmette-Guerin (Bcg), Measles, And 3 Doses Each Of Polio And Dpt) (%)",
-        "Children Age Group 12 To 23 Months Fully Vaccinated Based On Information From Either Vaccination Card Or Mothers Recall (%)",
-        "Children Age Group 12 To 23 Months Fully Vaccinated Based On Information From Vaccination Card Only (%)",
-        "Children Age Group 12 To 23 Months Who Have Received Bacillus Calmette Guerin (Bcg) (%)",
-        "Children Age Group 12 To 23 Months Who Have Received 3 Doses Of Polio Vaccine (%)",
-        "Children Age Group 12 To 23 Months Who Have Received 3 Doses Of Dpt Vaccine (%)",
-        "Children Age Group 12 To 23 Months Who Have Received 3 Doses Of Penta Or Diphtheria Tetanus Toxoids And Pertussis (Dtp) Vaccine (%)",
-        "Children Age Group 12 To 23 Months Who Have Received 3 Doses Of Measles Vaccine (%)",
-        "Children Age Group 12 To 23 Months Who Have Received The First Dose Of Measles Containing Vaccine (Mcv) (%)",
-        "Children Age Group 24 To 35 Months Who Have Received A Second Dose Of Measles Containing Vaccine (Mcv) (%)",
-        "Children Age Group 12 To 23 Months Who Have Received 3 Doses Of Hepatitis B Vaccine (%)",
-        "Children Age Group 12 To 23 Months Who Have Received 3 Doses Of Penta Or Hepatitis B Vaccine (%)",
-        "Children Age Group 12 To 23 Months Who Have Received 3 Doses Of Rotavirus Vaccine (%)",
-        "Children Age 9 To 35 Months Who Received Vitamin A Dose In The Last 6 Months (%)",
-        "Children Age Group 9 To 35 Months Who Received Vitamin A Dose In The Last 6 Months (%)",
-        "Children Age Group 12 To 23 Months Who Received Most Of Their Vaccinations In A Public Health Facility (%)",
-        "Children Age Group 12 To 23 Months Who Received Most Of Their Vaccinations In A Private Health Facility (%)",
-        "Children Age 5 Years Who Attended Pre-Primary School During The Year 2019-20 (%)",
-        "Prevalence Of Diarrhoea In The 2 Weeks Preceding The Survey (%)",
-        "Children With Diarrhoea In The 2 Weeks Preceding The Survey Who Received Oral Rehydration Salts (%)",
-        "Children With Diarrhoea In The 2 Weeks Preceding The Survey Who Received Zinc (%)",
-        "Children With Diarrhoea In The 2 Weeks Preceding The Survey Taken To A Health Facility Or Health Provider (%)",
-        "Prevalence Of Symptoms Of Acute Respiratory Infection (Ari) In The 2 Weeks Preceding The Survey (%)",
-        "Children With Fever Or Symptoms Of Acute Respiratory Infection In The 2 Weeks Preceding The Survey Taken To A Health Facility Or Health Provider (%)"
+        {
+          "name": "Children In The Age Group Of 12 To 23 Months Who Are Fully Immunized (Bacille Calmette-Guerin (Bcg), Measles, And 3 Doses Each Of Polio And Dpt) (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 12 To 23 Months Fully Vaccinated Based On Information From Either Vaccination Card Or Mothers Recall (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 12 To 23 Months Fully Vaccinated Based On Information From Vaccination Card Only (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 12 To 23 Months Who Have Received Bacillus Calmette Guerin (Bcg) (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 12 To 23 Months Who Have Received 3 Doses Of Polio Vaccine (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 12 To 23 Months Who Have Received 3 Doses Of Dpt Vaccine (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 12 To 23 Months Who Have Received 3 Doses Of Penta Or Diphtheria Tetanus Toxoids And Pertussis (Dtp) Vaccine (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 12 To 23 Months Who Have Received 3 Doses Of Measles Vaccine (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 12 To 23 Months Who Have Received The First Dose Of Measles Containing Vaccine (Mcv) (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 24 To 35 Months Who Have Received A Second Dose Of Measles Containing Vaccine (Mcv) (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 12 To 23 Months Who Have Received 3 Doses Of Hepatitis B Vaccine (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 12 To 23 Months Who Have Received 3 Doses Of Penta Or Hepatitis B Vaccine (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 12 To 23 Months Who Have Received 3 Doses Of Rotavirus Vaccine (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age 9 To 35 Months Who Received Vitamin A Dose In The Last 6 Months (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 9 To 35 Months Who Received Vitamin A Dose In The Last 6 Months (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 12 To 23 Months Who Received Most Of Their Vaccinations In A Public Health Facility (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 12 To 23 Months Who Received Most Of Their Vaccinations In A Private Health Facility (%)",
+          "indicator_type": "Neutral"
+        },
+        {
+          "name": "Children Age 5 Years Who Attended Pre-Primary School During The Year 2019-20 (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Prevalence Of Diarrhoea In The 2 Weeks Preceding The Survey (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Children With Diarrhoea In The 2 Weeks Preceding The Survey Who Received Oral Rehydration Salts (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children With Diarrhoea In The 2 Weeks Preceding The Survey Who Received Zinc (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children With Diarrhoea In The 2 Weeks Preceding The Survey Taken To A Health Facility Or Health Provider (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Prevalence Of Symptoms Of Acute Respiratory Infection (Ari) In The 2 Weeks Preceding The Survey (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Children With Fever Or Symptoms Of Acute Respiratory Infection In The 2 Weeks Preceding The Survey Taken To A Health Facility Or Health Provider (%)",
+          "indicator_type": "Positive"
+        }
       ]
     },
     "Nutrition_and_Anaemia": {
       "description": "Breastfeeding, complementary feeding, and nutritional status",
       "indicators": [
-        "Children Under Age 3 Years Breastfed Within One Hour Of Birth (%)",
-        "Children Under Age 6 Months Exclusively Breastfed (%)",
-        "Children Age Group 6 To 8 Months Receiving Solid Or Semisolid Food And Breastmilk (%)",
-        "Breastfeeding Children Age Group 6 To 23 Months Receiving An Adequate Diet (%)",
-        "Non-Breastfeeding Children Age Group 6 To 23 Months Receiving An Adequate Diet (%)",
-        "Children Age Group 6 To 23 Months Receiving An Adequate Diet (%)",
-        "Children Under 5 Years Who Are Stunted (Height-For-Age) (%)",
-        "Children Under 5 Years Who Are Wasted (Weight-For-Height) (%)",
-        "Children Under 5 Years Who Are Severely Wasted (Weight-For-Height) (%)",
-        "Children Under 5 Years Who Are Underweight (Weight-For-Age) (%)",
-        "Children Under 5 Years Who Are Overweight (Weight-For-Height) (%)",
-        "Women With Body Mass Index (Bmi) Below Normal (%)",
-        "Men With Body Mass Index (Bmi) Below Normal (%)",
-        "Women Who Are Overweight Or Obese (%)",
-        "Men Who Are Overweight Or Obese (%)",
-        "Women Who Have High Risk Waist-To-Hip Ratio (%)",
-        "Children Age Group 6 To 59 Months Who Are Anaemic (%)",
-        "Non-Pregnant Women Age Group 15 To 49 Years Who Are Anaemic (%)",
-        "Pregnant Women Age Group 15 To 49 Years Who Are Anaemic (%)",
-        "Women Age Group 15 To 49 Years Who Are Anaemic (%)",
-        "Women Age Group 15 To 19 Years Who Are Anaemic (%)",
-        "Men Age Group 15 To 49 Years Who Are Anaemic (%)"
+        {
+          "name": "Children Under Age 3 Years Breastfed Within One Hour Of Birth (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Under Age 6 Months Exclusively Breastfed (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 6 To 8 Months Receiving Solid Or Semisolid Food And Breastmilk (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Breastfeeding Children Age Group 6 To 23 Months Receiving An Adequate Diet (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Non-Breastfeeding Children Age Group 6 To 23 Months Receiving An Adequate Diet (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Age Group 6 To 23 Months Receiving An Adequate Diet (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Children Under 5 Years Who Are Stunted (Height-For-Age) (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Children Under 5 Years Who Are Wasted (Weight-For-Height) (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Children Under 5 Years Who Are Severely Wasted (Weight-For-Height) (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Children Under 5 Years Who Are Underweight (Weight-For-Age) (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Children Under 5 Years Who Are Overweight (Weight-For-Height) (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women With Body Mass Index (Bmi) Below Normal (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Men With Body Mass Index (Bmi) Below Normal (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women Who Are Overweight Or Obese (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Men Who Are Overweight Or Obese (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women Who Have High Risk Waist-To-Hip Ratio (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Children Age Group 6 To 59 Months Who Are Anaemic (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Non-Pregnant Women Age Group 15 To 49 Years Who Are Anaemic (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Pregnant Women Age Group 15 To 49 Years Who Are Anaemic (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women Age Group 15 To 49 Years Who Are Anaemic (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women Age Group 15 To 19 Years Who Are Anaemic (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Men Age Group 15 To 49 Years Who Are Anaemic (%)",
+          "indicator_type": "Negative"
+        }
       ]
     },
     "Morbidity_and_Health_Care": {
       "description": "Health care utilization and treatment seeking behavior",
       "indicators": [
-        "Women Who Have Ever Undergone A Cervix Examination(%)",
-        "Women Who Have Ever Undergone A Breast Examination For Breast Cancer (%)",
-        "Women Who Have Ever Undergone A Oral Cavity Examniation (%)",
-        "Women-Ever Undergone A Screening Test For Cervical Cancer (%)",
-        "Women-Ever Undergone An Oral Cavity Examination For Oral Cancer (%)"
+        {
+          "name": "Women Who Have Ever Undergone A Cervix Examination(%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Women Who Have Ever Undergone A Breast Examination For Breast Cancer (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Women Who Have Ever Undergone A Oral Cavity Examniation (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Women-Ever Undergone A Screening Test For Cervical Cancer (%)",
+          "indicator_type": "Positive"
+        },
+        {
+          "name": "Women-Ever Undergone An Oral Cavity Examination For Oral Cancer (%)",
+          "indicator_type": "Positive"
+        }
       ]
     },
     "Women_Empowerment": {
       "description": "Women's autonomy, decision-making, and menstrual hygiene",
       "indicators": [
-        "Women Age Group 15 To 24 Years Who Use Hygienic Methods Of Protection During Their Menstrual Period (%)"
+        {
+          "name": "Women Age Group 15 To 24 Years Who Use Hygienic Methods Of Protection During Their Menstrual Period (%)",
+          "indicator_type": "Positive"
+        }
       ]
     },
 
     "Adult_Health": {
       "description": "Non-communicable diseases, lifestyle factors, and adult health conditions",
       "indicators": [
-        "Women Suffering From High Blood Sugar Level (%)",
-        "Women Suffering From Very High Blood Sugar Level (%)",
-        "Women Suffering From High Or Very High Blood Sugar Level (%)",
-        "Men Suffering From High Blood Sugar Level (%)",
-        "Men Suffering From Very High Blood Sugar Level (%)",
-        "Men Suffering From High Or Very High Blood Sugar Level (%)",
-        "Women-Mildly Elevated Blood Pressure (%)",
-        "Women With Moderately High Hypertension (%)",
-        "Women With Very High Hypertension (%)",
-        "Women Suffering From Elevated Blood Pressure (%)",
-        "Women-Moderately Or Severely Elevated Blood Pressure (%)",
-        "Men-Mildly Elevated Blood Pressure (%)",
-        "Men With Moderately High Hypertension (%)",
-        "Men With Very High Hypertension (%)",
-        "Elevated Blood Pressure Or Taking Medicine To Control Blood Pressure (%)",
-        "Moderately Or Severely Elevated Blood Pressure (%)",
-        "Men Age Group 15 Years And Above Who Consume Alcohol (%)",
-        "Men Age Group 15 Years And Above Who Use Any Kind Of Tobacco (%)",
-        "Women Age 15 Years And Above Who Consume Alcohol (%)",
-        "Women Age 15 Years And Above Who Use Any Kind Of Tobacco (%)"
+        {
+          "name": "Women Suffering From High Blood Sugar Level (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women Suffering From Very High Blood Sugar Level (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women Suffering From High Or Very High Blood Sugar Level (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Men Suffering From High Blood Sugar Level (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Men Suffering From Very High Blood Sugar Level (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Men Suffering From High Or Very High Blood Sugar Level (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women-Mildly Elevated Blood Pressure (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women With Moderately High Hypertension (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women With Very High Hypertension (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women Suffering From Elevated Blood Pressure (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women-Moderately Or Severely Elevated Blood Pressure (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Men-Mildly Elevated Blood Pressure (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Men With Moderately High Hypertension (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Men With Very High Hypertension (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Elevated Blood Pressure Or Taking Medicine To Control Blood Pressure (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Moderately Or Severely Elevated Blood Pressure (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Men Age Group 15 Years And Above Who Consume Alcohol (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Men Age Group 15 Years And Above Who Use Any Kind Of Tobacco (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women Age 15 Years And Above Who Consume Alcohol (%)",
+          "indicator_type": "Negative"
+        },
+        {
+          "name": "Women Age 15 Years And Above Who Use Any Kind Of Tobacco (%)",
+          "indicator_type": "Negative"
+        }
       ]
     }
   }
