@@ -109,7 +109,13 @@ function toggleSurvey(survey) {
     activeSurvey = survey;
     document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById(survey + 'Btn').classList.add('active');
-    renderCategoryTree();
+    
+    // Don't call renderCategoryTree if emergency fix is active
+    const treeContainer = document.getElementById('categoryTree');
+    if (!treeContainer.dataset.emergencyLoaded) {
+        renderCategoryTree();
+    }
+    
     selectedIndicator = null;
     resetDashboardHeader();
     document.getElementById('mapLegend').style.display = 'none';
@@ -125,11 +131,6 @@ function toggleSurvey(survey) {
             <div>🏥 Districts Covered: <strong>32</strong></div>
         </div>
     `;
-    if (geoJsonLayer) {
-        map.removeLayer(geoJsonLayer);
-        geoJsonLayer = null;
-    }
-    document.getElementById('mapLegend').style.display = 'none';
 }
 
 function updateContentArea(categoryKey, indicator) {
