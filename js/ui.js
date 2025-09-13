@@ -2,15 +2,19 @@
 function renderCategoryTree() {
     const treeContainer = document.getElementById('categoryTree');
     
+    // Don't clear if emergency fix already loaded categories
+    if (treeContainer.children.length > 0 && treeContainer.dataset.emergencyLoaded) {
+        console.log('Categories already loaded by emergency fix, skipping');
+        return;
+    }
+    
     if (!categoriesData || !categoriesData.categories) {
         console.error('Categories data not loaded');
-        treeContainer.innerHTML = '<div style="padding: 20px; color: #666;">Loading categories...</div>';
         return;
     }
     
     if (!nfhsData || !nfhsData.districts) {
         console.error('NFHS data not loaded');
-        treeContainer.innerHTML = '<div style="padding: 20px; color: #666;">Loading data...</div>';
         return;
     }
     

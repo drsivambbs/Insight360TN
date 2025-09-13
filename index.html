@@ -101,35 +101,45 @@
     <script>
         // Emergency fix - direct category loading
         setTimeout(() => {
-            if (!document.getElementById('categoryTree').innerHTML.trim()) {
+            const tree = document.getElementById('categoryTree');
+            if (!tree.innerHTML.trim()) {
                 console.log('Emergency fix: Loading categories directly');
                 fetch('./dashboard_files/nfhs_indicator_categories.json')
                     .then(r => r.json())
                     .then(data => {
-                        const tree = document.getElementById('categoryTree');
                         tree.innerHTML = '';
+                        tree.dataset.emergencyLoaded = 'true';
+                        
                         Object.entries(data.categories).forEach(([key, cat]) => {
                             const div = document.createElement('div');
                             div.className = 'category';
                             div.innerHTML = `
-                                <div class="category-header" onclick="this.parentElement.classList.toggle('expanded')">
+                                <div class="category-header">
                                     <span class="material-icons category-icon">chevron_right</span>
                                     <span class="category-title">${key.replace(/_/g, ' ')}</span>
                                     <span class="indicator-count">${cat.indicators.length}</span>
                                 </div>
                                 <div class="indicators">
                                     ${cat.indicators.map(ind => `
-                                        <div class="indicator">${ind.name || ind}</div>
+                                        <div class="indicator" onclick="selectIndicator('${key}', '${ind.name || ind}')">
+                                            ${ind.name || ind}
+                                        </div>
                                     `).join('')}
                                 </div>
                             `;
+                            
+                            // Add click handler for category header
+                            div.querySelector('.category-header').onclick = function() {
+                                div.classList.toggle('expanded');
+                            };
+                            
                             tree.appendChild(div);
                         });
-                        console.log('Emergency fix: Categories loaded');
+                        console.log('Emergency fix: Categories loaded with', tree.children.length, 'categories');
                     })
                     .catch(e => console.error('Emergency fix failed:', e));
             }
-        }, 2000);
+        }, 1000);
     </script>
 </body>
 </html>
