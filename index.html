@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insight360TN - NFHS Dashboard</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -17,154 +16,109 @@
                 <h3>NFHS Indicators</h3>
             </div>
             <div class="survey-toggle">
-                <button class="toggle-btn active" onclick="toggleSurvey('nfhs4')" id="nfhs4Btn">
-                    NFHS-4 (2015-16)
-                </button>
-                <button class="toggle-btn" onclick="toggleSurvey('nfhs5')" id="nfhs5Btn">
-                    NFHS-5 (2019-21)
-                </button>
+                <button class="toggle-btn active" onclick="toggleSurvey('nfhs4')" id="nfhs4Btn">NFHS-4</button>
+                <button class="toggle-btn" onclick="toggleSurvey('nfhs5')" id="nfhs5Btn">NFHS-5</button>
             </div>
             <div id="categoryTree"></div>
         </div>
         
         <div class="main-content">
             <div class="dashboard-header">
-                <div class="header-main">
-                    <div class="header-left">
-                        <h1 class="dashboard-title">Insight360TN</h1>
-                        <p class="dashboard-subtitle">National Family Health Survey - Dashboard for Tamil Nadu</p>
-                    </div>
-                </div>
+                <h1>Insight360TN</h1>
+                <p>Tamil Nadu Health Survey Dashboard</p>
             </div>
-            
-            <div class="content-area">
-                <div id="map"></div>
-                <div class="legend" id="mapLegend" style="display: none;">
-                    <div style="font-weight: 500; margin-bottom: 8px; color: #333;">Performance Scale</div>
-                </div>
-                <div class="disclaimer-icon" onclick="showDisclaimer()" title="Data Information">
-                    <span class="material-icons">info</span>
-                </div>
-                <div class="map-controls minimized" id="mapControls">
-                    <div class="controls-toggle" onclick="toggleMapControls()">
-                        <div class="controls-header">
-                            <span class="material-icons">tune</span>
-                            <span>Map Options</span>
-                            <span class="material-icons toggle">expand_less</span>
-                        </div>
-                    </div>
-                    <div class="controls-content">
-                        <div class="control-group">
-                            <div class="control-group-title">Display</div>
-                            <label><input type="checkbox" id="showLabels" onchange="toggleLabels()"> Show Labels</label>
-                        </div>
-                        <div class="control-group">
-                            <div class="control-group-title">Label Type</div>
-                            <label><input type="radio" name="labelType" value="district" checked onchange="changeLabelType()"> District Names</label>
-                            <label><input type="radio" name="labelType" value="values" onchange="changeLabelType()"> Values</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div id="map"></div>
         </div>
         
         <div class="right-sidebar">
-            <div class="right-sidebar-header">
-                <h4 style="margin: 0; color: #64b5f6; display: flex; align-items: center; gap: 8px;">
-                    <span class="material-icons" style="font-size: 20px;">assessment</span>
-                    Performance Analysis
-                </h4>
-            </div>
-            <div class="right-sidebar-content">
-                <div id="kpiContainer">
-                    <div class="analytics-header">
-                        <div class="header-content">
-                            <span class="material-icons">dashboard</span>
-                            <div class="header-text">
-                                <div class="title">Dashboard Overview</div>
-                                <div class="subtitle">Tamil Nadu Health Indicators</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon"><span class="material-icons">category</span></div>
-                            <div class="stat-content">
-                                <div class="stat-number">10</div>
-                                <div class="stat-label">Health Categories</div>
-                            </div>
-                        </div>
-                        
-                        <div class="stat-card">
-                            <div class="stat-icon"><span class="material-icons">location_on</span></div>
-                            <div class="stat-content">
-                                <div class="stat-number">32</div>
-                                <div class="stat-label">Districts Covered</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="survey-breakdown">
-                        <div class="breakdown-header">
-                            <span class="material-icons">poll</span>
-                            <span>Survey Data Coverage</span>
-                        </div>
-                        <div class="survey-stats">
-                            <div class="survey-item">
-                                <div class="survey-name">NFHS-4 (2015-16)</div>
-                                <div class="survey-count">93 Indicators</div>
-                            </div>
-                            <div class="survey-item">
-                                <div class="survey-name">NFHS-5 (2019-21)</div>
-                                <div class="survey-count">104 Indicators</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="indicator-breakdown">
-                        <div class="breakdown-header">
-                            <span class="material-icons">analytics</span>
-                            <span>Indicator Classification</span>
-                        </div>
-                        <div class="indicator-stats">
-                            <div class="indicator-item positive">
-                                <div class="indicator-dot"></div>
-                                <div class="indicator-info">
-                                    <div class="indicator-type">Positive Indicators</div>
-                                    <div class="indicator-desc">74 indicators (Higher is better)</div>
-                                </div>
-                            </div>
-                            <div class="indicator-item negative">
-                                <div class="indicator-dot"></div>
-                                <div class="indicator-info">
-                                    <div class="indicator-type">Negative Indicators</div>
-                                    <div class="indicator-desc">47 indicators (Lower is better)</div>
-                                </div>
-                            </div>
-                            <div class="indicator-item neutral">
-                                <div class="indicator-dot"></div>
-                                <div class="indicator-info">
-                                    <div class="indicator-type">Neutral Indicators</div>
-                                    <div class="indicator-desc">7 indicators (Demographic data)</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div id="kpiContainer">
+                <h3>Performance Analysis</h3>
+                <p>Select an indicator to view analysis</p>
             </div>
         </div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="js/config.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/data-loader.js"></script>
-    <script src="js/indicator-ranking.js"></script>
-    <script src="js/map.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/kpi.js"></script>
-    <script src="js/app.js"></script>
-    <script src="working_fix.js"></script>
+    <script>
+        let categoriesData, nfhsData, geoJsonData, map, activeSurvey = 'nfhs4';
+        
+        // Load data
+        Promise.all([
+            fetch('./dashboard_files/nfhs_indicator_categories.json').then(r => r.json()),
+            fetch('./dashboard_files/master_nfhs_data.json').then(r => r.json()),
+            fetch('./dashboard_files/tn_district.geojson').then(r => r.json())
+        ]).then(([categories, nfhs, geojson]) => {
+            categoriesData = categories;
+            nfhsData = nfhs;
+            geoJsonData = geojson;
+            initMap();
+            renderCategories();
+        });
+        
+        // Initialize map
+        function initMap() {
+            map = L.map('map').setView([10.8, 78.6569], 7);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        }
+        
+        // Render categories
+        function renderCategories() {
+            const tree = document.getElementById('categoryTree');
+            const surveyKey = activeSurvey === 'nfhs4' ? 'nfhs_4' : 'nfhs_5';
+            const firstDistrict = Object.values(nfhsData.districts)[0];
+            const availableKeys = new Set(Object.keys(firstDistrict[surveyKey]));
+            
+            tree.innerHTML = '';
+            
+            Object.entries(categoriesData.categories).forEach(([catKey, catData]) => {
+                const indicators = catData.indicators.map(ind => ind.name || ind);
+                const available = indicators.filter(name => availableKeys.has(name));
+                
+                if (available.length > 0) {
+                    const div = document.createElement('div');
+                    div.className = 'category';
+                    div.innerHTML = `
+                        <div class="category-header" onclick="this.parentElement.classList.toggle('expanded')">
+                            <span class="material-icons">chevron_right</span>
+                            <span>${catKey.replace(/_/g, ' ')} (${available.length})</span>
+                        </div>
+                        <div class="indicators">
+                            ${available.map(ind => `<div class="indicator" onclick="selectIndicator('${ind}')">${ind}</div>`).join('')}
+                        </div>
+                    `;
+                    tree.appendChild(div);
+                }
+            });
+        }
+        
+        // Toggle survey
+        function toggleSurvey(survey) {
+            activeSurvey = survey;
+            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(survey + 'Btn').classList.add('active');
+            renderCategories();
+        }
+        
+        // Select indicator
+        function selectIndicator(indicator) {
+            const surveyKey = activeSurvey === 'nfhs4' ? 'nfhs_4' : 'nfhs_5';
+            const districtData = [];
+            
+            Object.entries(nfhsData.districts).forEach(([district, data]) => {
+                if (data[surveyKey] && data[surveyKey][indicator] !== undefined) {
+                    districtData.push([district, data[surveyKey][indicator]]);
+                }
+            });
+            
+            // Update KPI
+            document.getElementById('kpiContainer').innerHTML = `
+                <h3>${indicator}</h3>
+                <p>Survey: ${activeSurvey.toUpperCase()}</p>
+                <p>Districts with data: ${districtData.length}</p>
+            `;
+            
+            console.log('Selected:', indicator, 'Data points:', districtData.length);
+        }
+    </script>
 </body>
 </html>
