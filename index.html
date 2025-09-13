@@ -26,23 +26,26 @@
       font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
     }
 
-    html,body,#app{height:100%;margin:0;background:var(--bg)}
-    .app{display:grid;grid-template-columns:320px 1fr 360px;gap:18px;padding:18px;height:100%;align-items:start}
+    html,body,#app{height:100vh;margin:0;background:var(--bg);overflow:hidden}
+    .app{display:grid;grid-template-columns:320px 1fr 360px;gap:18px;padding:18px;height:100vh;align-items:start;box-sizing:border-box}
+    .left-column{display:flex;flex-direction:column;gap:12px}
 
     /* Sidebar */
-    .sidebar{background:linear-gradient(180deg,#ffffff, #fbfdff);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(22,38,99,0.06)}
+    .sidebar{background:linear-gradient(180deg,#ffffff, #fbfdff);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(22,38,99,0.06);height:calc(88vh - 36px)}
     .sidebar-header{display:flex;align-items:center;gap:12px}
-    .sidebar-header h3{margin:0;font-size:16px}
+    .sidebar-header h3{margin:0;font-size:15px}
     .survey-toggle{display:flex;gap:8px;margin-top:12px}
-    .toggle-btn{flex:1;padding:8px;border-radius:10px;border:1px solid #e6eefb;background:#fff;cursor:pointer}
+    .toggle-btn{flex:1;padding:6px;border-radius:8px;border:1px solid #e6eefb;background:#fff;cursor:pointer;font-size:13px}
     .toggle-btn.active{background:var(--accent);color:#fff;border-color:transparent}
 
-    #categoryTree{margin-top:14px;max-height:calc(100vh - 220px);overflow:auto;padding-right:6px}
-    .category{border-radius:8px;padding:8px;margin-bottom:8px}
-    .category-header{display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;color:#0f172a}
+    #categoryTree{margin-top:14px;max-height:calc(100vh - 160px);overflow:auto;padding-right:6px;font-size:14px}
+    .category{border-radius:8px;padding:6px;margin-bottom:6px;transition:all 0.2s ease}
+    .category-header{display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:600;color:#0f172a;font-size:13px}
     .category.expanded .material-icons{transform:rotate(90deg)}
-    .indicators{margin-top:8px;display:grid;grid-template-columns:1fr;gap:6px}
-    .indicator{padding:8px;border-radius:8px;background:rgba(15,23,42,0.03);cursor:pointer}
+    .category .material-icons{transition:transform 0.2s ease;font-size:17px}
+    .indicators{margin-top:6px;display:grid;grid-template-columns:1fr;gap:4px;max-height:0;overflow:hidden;transition:max-height 0.3s ease}
+    .category.expanded .indicators{max-height:500px}
+    .indicator{padding:6px 8px;border-radius:6px;background:rgba(15,23,42,0.03);cursor:pointer;font-size:12px;line-height:1.3}
     .indicator:hover{background:rgba(37,99,235,0.06)}
 
     /* Main */
@@ -95,8 +98,6 @@
       </div>
 
       <div id="categoryTree"></div>
-
-      <div style="margin-top:12px;font-size:12px;color:var(--muted)">Tip: click an indicator to render the map and KPI cards. Use the chart for a quick district comparison.</div>
     </aside>
 
     <!-- MAIN: map + header -->
@@ -115,6 +116,9 @@
       <div class="map-card">
         <div id="map"></div>
       </div>
+
+      <!-- Stats cards below map -->
+      <div id="statsGrid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px"></div>
     </main>
 
     <!-- RIGHT: KPIs & charts -->
@@ -129,8 +133,8 @@
       </div>
 
       <div class="card">
-        <h4>District Comparison</h4>
-        <canvas id="barChart" height="160"></canvas>
+        <h4>District Rankings</h4>
+        <div id="districtRankings"></div>
       </div>
 
       <div class="card legend" id="legendContainer">
@@ -147,7 +151,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     // --- state ---
-    let categoriesData, nfhsData, geoJsonData, map, activeSurvey = 'nfhs4', currentLayer, currentIndicator;
+    let categoriesData, nfhsData, geoJsonData, map, activeSurvey = 'nfhs4', currentLayer, currentIndicator, districtValues = {};
     const colorScale = [ '#f7fbff','#deebf7','#c6dbef','#9ecae1','#6baed6','#3182bd','#08519c' ];
 
     // Load all data (user's local files assumed) and initialize
@@ -161,27 +165,29 @@
       geoJsonData = geojson;
       initMap();
       renderCategories();
+      renderStats();
     }).catch(err=>{
       console.error('Failed to load data', err);
       alert('Failed to load dashboard files. Check paths in console.');
     });
 
     function initMap(){
-      map = L.map('map', {zoomControl:false}).setView([10.8,78.6569],7);
+      map = L.map('map', {zoomControl:false});
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:''}).addTo(map);
       L.control.zoom({position:'topright'}).addTo(map);
 
-      // Add empty geoJSON layer placeholder
-      currentLayer = L.geoJSON(null, {style: defaultStyle}).addTo(map);
-
-      // Fit bounds after geojson loads
-      if(geoJsonData){ currentLayer.addData(geoJsonData); map.fitBounds(currentLayer.getBounds(), {padding:[20,20]}); }
+      // Add GeoJSON layer with default styling
+      if(geoJsonData){
+        currentLayer = L.geoJSON(geoJsonData, {style: defaultStyle}).addTo(map);
+        map.fitBounds(currentLayer.getBounds(), {padding:[5,5]});
+        setTimeout(() => map.setZoom(map.getZoom() + 1), 100);
+      }
 
       // Info control
       map.on('mousemove', function(e){ let info = document.getElementById('info'); info.style.left = (e.originalEvent.clientX+12)+'px'; info.style.top = (e.originalEvent.clientY+12)+'px'; });
     }
 
-    function defaultStyle(){ return {color:'#ffffff',weight:1,fillColor:'#efefef',fillOpacity:0.9} }
+    function defaultStyle(){ return {color:'#000000',weight:0.8,fillColor:'#efefef',fillOpacity:0} }
 
     // --- categories UI ---
     function renderCategories(){
@@ -229,67 +235,159 @@
       document.getElementById('indicatorSurvey').textContent = activeSurvey.toUpperCase();
 
       // Collapse all categories after selection
-      document.querySelectorAll('.category.expanded').forEach(cat => cat.classList.remove('expanded'));
+      const expandedCategories = document.querySelectorAll('.category.expanded');
+      console.log('Auto-collapsing', expandedCategories.length, 'categories');
+      expandedCategories.forEach(cat => cat.classList.remove('expanded'));
+
+      // Get indicator type
+      const indicatorType = getIndicatorType(indicator);
+
+      // District mapping for newly formed districts
+      const districtMapping = {
+        'chengalpattu': 'kanchipuram',
+        'kallakurichi': 'villupuram', 
+        'mayiladuthurai': 'nagapattinam',
+        'ranipet': 'vellore',
+        'tenkasi': 'tirunelveli',
+        'tirupathur': 'vellore'
+      };
 
       // gather district values
       const surveyKey = activeSurvey === 'nfhs4' ? 'nfhs_4' : 'nfhs_5';
-      const districtValues = {};
+      districtValues = {};
       Object.entries(nfhsData.districts).forEach(([district, data])=>{
         const v = data[surveyKey] && data[surveyKey][indicator];
-        if(v!==undefined && v!==null && v!=="" ) districtValues[district.toLowerCase()] = +v;
+        if(v!==undefined && v!==null && v!=="" ) {
+          districtValues[district.toLowerCase()] = +v;
+          // Map to newly formed districts
+          Object.entries(districtMapping).forEach(([newDist, parentDist]) => {
+            if(district.toLowerCase() === parentDist) {
+              districtValues[newDist] = +v;
+            }
+          });
+        }
       });
 
-      // compute breaks
+      // compute tertiles for 3 colors
       const vals = Object.values(districtValues).filter(v=>!isNaN(v)).sort((a,b)=>a-b);
-      const breaks = computeQuantiles(vals, 6);
+      const tertiles = computeTertiles(vals);
 
       // update legend
-      renderLegend(breaks);
+      renderLegend(tertiles, indicatorType);
 
       // style geojson
       if(currentLayer) map.removeLayer(currentLayer);
       currentLayer = L.geoJSON(geoJsonData, {style: feat=>{
-        const name = (feat.properties && (feat.properties.DISTRICT || feat.properties.district || feat.properties.NAME)) || '';
+        const name = (feat.properties && (feat.properties.District || feat.properties.DISTRICT || feat.properties.district || feat.properties.NAME)) || '';
         const val = districtValues[name.toLowerCase()];
-        return {fillColor: getColorForValue(val, breaks), weight:1, color:'#fff', fillOpacity: val===undefined?0.35:0.9}
+        return {fillColor: getColorForValue(val, tertiles, indicatorType), weight:0.8, color:'#000', fillOpacity: val===undefined?0.6:0.8}
       }, onEachFeature}).addTo(map);
 
       // update KPIs + chart
       updateKPIsAndChart(districtValues, indicator);
     }
 
-    function getColorForValue(v, breaks){ if(v===undefined || isNaN(v)) return '#efefef'; for(let i=breaks.length-1;i>=0;i--){ if(v>=breaks[i]) return colorScale[i+1] || colorScale[colorScale.length-1]; } return colorScale[0]; }
+    function getIndicatorType(indicator){
+      for(const [catKey, catData] of Object.entries(categoriesData.categories)){
+        for(const ind of catData.indicators){
+          const indName = typeof ind === 'string' ? ind : ind.name;
+          if(indName === indicator){
+            return typeof ind === 'object' ? ind.indicator_type : 'Positive';
+          }
+        }
+      }
+      return 'Positive';
+    }
+
+    function computeTertiles(vals){
+      if(vals.length < 3) return vals;
+      const third = Math.floor(vals.length / 3);
+      return [vals[third], vals[third * 2]];
+    }
+
+    function getColorForValue(v, tertiles, indicatorType){
+      if(v===undefined || isNaN(v)) return '#cccccc';
+      if(tertiles.length < 2) return '#ffeb3b';
+      
+      if(indicatorType === 'Positive' || indicatorType === 'Neutral'){
+        if(v <= tertiles[0]) return '#f44336';
+        if(v <= tertiles[1]) return '#ffeb3b';
+        return '#4caf50';
+      } else if(indicatorType === 'Negative'){
+        if(v <= tertiles[0]) return '#4caf50';
+        if(v <= tertiles[1]) return '#ffeb3b';
+        return '#f44336';
+      }
+      return '#ffeb3b';
+    }
 
     function onEachFeature(feature, layer){
       layer.on({ mouseover: (e)=>{
         const el = e.target; el.setStyle({weight:2,fillOpacity:1});
-        const props = feature.properties||{}; const name = props.DISTRICT || props.district || props.NAME || '—';
-        const surveyKey = activeSurvey === 'nfhs4' ? 'nfhs_4' : 'nfhs_5';
-        const value = (nfhsData.districts[name] && nfhsData.districts[name][surveyKey] && nfhsData.districts[name][surveyKey][currentIndicator]) || 'No data';
-        const info = document.getElementById('info'); info.style.display='block'; info.innerHTML = `<strong>${name}</strong><div style="color:var(--muted);font-size:12px">${currentIndicator}: ${value}</div>`;
+        const props = feature.properties||{}; const name = props.District || props.DISTRICT || props.district || props.NAME || '—';
+        const value = districtValues[name.toLowerCase()] || 'No data';
+        const info = document.getElementById('info'); info.style.display='block'; info.innerHTML = `<strong>${name}</strong><div style="color:var(--muted);font-size:12px">${value}</div>`;
       }, mouseout: (e)=>{ const el=e.target; try{ currentLayer.resetStyle(el); }catch(e){} document.getElementById('info').style.display='none'; }, click: (e)=>{ map.fitBounds(e.target.getBounds()); } });
     }
 
     // compute quantile breaks (k groups)
     function computeQuantiles(arr, k){ if(!arr.length) return []; const breaks=[]; for(let i=1;i<=k;i++){ const p = i/(k+1); const idx = p*(arr.length-1); const lo = Math.floor(idx); const hi = Math.ceil(idx); const val = lo===hi ? arr[lo] : arr[lo] + (arr[hi]-arr[lo])*(idx-lo); breaks.push(Number(val.toFixed(3))); } return breaks; }
 
-    function renderLegend(breaks){ const container = document.getElementById('legend'); container.innerHTML=''; if(!breaks.length){ container.innerHTML = '<div style="color:var(--muted)">No data available</div>'; return; }
-      const list = document.createElement('div'); list.style.display='grid'; list.style.gridTemplateColumns='1fr'; list.style.gap='6px';
-      for(let i=0;i<=breaks.length;i++){
-        const label = document.createElement('div'); label.style.display='flex'; label.style.alignItems='center'; label.style.gap='8px';
-        const sw = document.createElement('div'); sw.style.width='28px'; sw.style.height='12px'; sw.style.borderRadius='4px'; sw.style.background = colorScale[i] || colorScale[colorScale.length-1]; sw.style.boxShadow='inset 0 -2px rgba(0,0,0,0.05)';
-        const text = document.createElement('div'); text.style.fontSize='13px'; text.style.color='var(--muted)';
-        if(i===0) text.textContent = `< ${breaks[0]}`; else if(i<breaks.length) text.textContent = `${breaks[i-1]} – ${breaks[i]}`; else text.textContent = `≥ ${breaks[breaks.length-1]}`;
-        label.appendChild(sw); label.appendChild(text); list.appendChild(label);
+    function renderLegend(tertiles, indicatorType){
+      const container = document.getElementById('legend');
+      container.innerHTML='';
+      
+      if(!tertiles.length){
+        container.innerHTML = '<div style="color:var(--muted)">No data available</div>';
+        return;
       }
+      
+      const list = document.createElement('div');
+      list.style.display='grid';
+      list.style.gridTemplateColumns='1fr';
+      list.style.gap='6px';
+      
+      const colors = ['#4caf50', '#ffeb3b', '#f44336', '#cccccc'];
+      const labels = indicatorType === 'Positive' ? ['Best', 'Medium', 'Worst', 'No Data'] : ['Best', 'Medium', 'Worst', 'No Data'];
+      
+      for(let i=0; i<4; i++){
+        const label = document.createElement('div');
+        label.style.display='flex';
+        label.style.alignItems='center';
+        label.style.gap='8px';
+        
+        const sw = document.createElement('div');
+        sw.style.width='28px';
+        sw.style.height='12px';
+        sw.style.borderRadius='4px';
+        sw.style.background = colors[i];
+        sw.style.boxShadow='inset 0 -2px rgba(0,0,0,0.05)';
+        
+        const text = document.createElement('div');
+        text.style.fontSize='13px';
+        text.style.color='var(--muted)';
+        text.textContent = labels[i];
+        
+        label.appendChild(sw);
+        label.appendChild(text);
+        list.appendChild(label);
+      }
+      
       container.appendChild(list);
     }
 
-    // KPI & Chart
-    let barChartInstance=null;
+    // KPI & Rankings
     function updateKPIsAndChart(districtValues, indicator){
       const entries = Object.entries(districtValues).map(([d,v])=>[d,v]).filter(([d,v])=>!isNaN(v));
-      entries.sort((a,b)=>b[1]-a[1]);
+      const indicatorType = getIndicatorType(indicator);
+      
+      // Sort based on indicator type
+      if(indicatorType === 'Negative'){
+        entries.sort((a,b)=>a[1]-b[1]); // Lower is better for negative indicators
+      } else {
+        entries.sort((a,b)=>b[1]-a[1]); // Higher is better for positive/neutral indicators
+      }
+      
       const top = entries.slice(0,3);
       const total = entries.length;
       const avg = (entries.reduce((s,[_d,v])=>s+v,0)/Math.max(1,entries.length)).toFixed(2);
@@ -302,20 +400,76 @@
       kpiRow.appendChild(makeCard('Top district', top[0]? capitalizeWords(top[0][0]) : 'N/A'));
       kpiRow.appendChild(makeCard('Top value', top[0]? top[0][1] : 'N/A'));
 
-      // bar chart (top 10)
-      const ctx = document.getElementById('barChart').getContext('2d');
-      const top10 = entries.slice(0,10).reverse();
-      const labels = top10.map(t=>capitalizeWords(t[0]));
-      const data = top10.map(t=>t[1]);
+      // District rankings
+      renderDistrictRankings(entries, indicatorType);
+    }
 
-      if(barChartInstance){ barChartInstance.data.labels = labels; barChartInstance.data.datasets[0].data = data; barChartInstance.update(); }
-      else{
-        barChartInstance = new Chart(ctx, {type:'bar',data:{labels:labels,datasets:[{label:indicator,data:data,backgroundColor: undefined}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}});
+    function renderDistrictRankings(entries, indicatorType){
+      const container = document.getElementById('districtRankings');
+      if(!entries.length){
+        container.innerHTML = '<div style="color:var(--muted);text-align:center;padding:12px">No data available</div>';
+        return;
       }
+
+      const top3 = entries.slice(0,3);
+      const bottom3 = entries.slice(-3).reverse();
+      
+      container.innerHTML = `
+        <table style="width:100%;font-size:12px;border-collapse:collapse">
+          <thead>
+            <tr style="background:#f8f9fa;border-bottom:1px solid #e9ecef">
+              <th style="text-align:left;padding:6px 8px;font-weight:600;color:var(--muted)">Rank</th>
+              <th style="text-align:left;padding:6px 8px;font-weight:600;color:var(--muted)">District</th>
+              <th style="text-align:right;padding:6px 8px;font-weight:600;color:var(--muted)">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${top3.map((entry, i) => `
+              <tr style="border-bottom:1px solid #f1f3f4">
+                <td style="padding:6px 8px">
+                  <span style="background:#4caf50;color:white;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:600">${i+1}</span>
+                </td>
+                <td style="padding:6px 8px;font-weight:500">${capitalizeWords(entry[0])}</td>
+                <td style="padding:6px 8px;text-align:right;font-weight:600;color:#4caf50">${entry[1]}</td>
+              </tr>
+            `).join('')}
+            <tr><td colspan="3" style="padding:4px;background:#f8f9fa"></td></tr>
+            ${bottom3.map((entry, i) => `
+              <tr style="border-bottom:1px solid #f1f3f4">
+                <td style="padding:6px 8px">
+                  <span style="background:#f44336;color:white;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:600">${entries.length - 2 + i}</span>
+                </td>
+                <td style="padding:6px 8px;font-weight:500">${capitalizeWords(entry[0])}</td>
+                <td style="padding:6px 8px;text-align:right;font-weight:600;color:#f44336">${entry[1]}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
     }
 
     function capitalizeWords(s){ return s.split(/[_\s]+/).map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' '); }
 
+    function renderStats(){
+      const statsGrid = document.getElementById('statsGrid');
+      const totalIndicators = Object.values(categoriesData.categories).reduce((sum, cat) => sum + cat.indicators.length, 0);
+      const nfhs4Count = Object.keys(Object.values(nfhsData.districts)[0].nfhs_4 || {}).length;
+      const nfhs5Count = Object.keys(Object.values(nfhsData.districts)[0].nfhs_5 || {}).length;
+      const positiveCount = Object.values(categoriesData.categories).reduce((sum, cat) => sum + cat.indicators.filter(i => (typeof i === 'object' ? i.indicator_type : categoriesData.indicator_types?.[i]) === 'Positive').length, 0);
+      const negativeCount = Object.values(categoriesData.categories).reduce((sum, cat) => sum + cat.indicators.filter(i => (typeof i === 'object' ? i.indicator_type : categoriesData.indicator_types?.[i]) === 'Negative').length, 0);
+      const categoryCount = Object.keys(categoriesData.categories).length;
+
+      const makeStatItem = (label, value, color = 'var(--accent)') => `<div class="card" style="padding:8px;text-align:center;min-height:50px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:18px;font-weight:700;color:${color}">${value}</div><div style="font-size:10px;color:var(--muted);margin-top:2px">${label}</div></div>`;
+      
+      statsGrid.innerHTML = [
+        makeStatItem('Total', totalIndicators, 'var(--accent)'),
+        makeStatItem('Categories', categoryCount, 'var(--accent)'),
+        makeStatItem('Positive', positiveCount, '#10b981'),
+        makeStatItem('NFHS-4', nfhs4Count, '#6366f1'),
+        makeStatItem('NFHS-5', nfhs5Count, '#8b5cf6'),
+        makeStatItem('Negative', negativeCount, '#ef4444')
+      ].join('');
+    }
+
   </script>
 </body>
-</html>
