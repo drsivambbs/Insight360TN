@@ -1,4 +1,4 @@
-/* Reset and Base */
+/* Bright Professional Dashboard Theme */
 * {
     margin: 0;
     padding: 0;
@@ -13,7 +13,6 @@ body {
     line-height: 1.5;
 }
 
-/* Container Layout */
 .container {
     display: flex;
     height: 100vh;
@@ -45,6 +44,7 @@ body {
 .sidebar-header h3 {
     font-size: 20px;
     font-weight: 600;
+    color: white;
 }
 
 /* Survey Toggle */
@@ -213,16 +213,4 @@ body {
     padding: 15px;
     border-radius: 8px;
     border-left: 4px solid #2196F3;
-}
-
-/* Responsive Design */
-@media (max-width: 1200px) {
-    .sidebar { width: 300px; }
-    .right-sidebar { width: 320px; }
-}
-
-@media (max-width: 768px) {
-    .container { flex-direction: column; height: auto; }
-    .sidebar, .right-sidebar { width: 100%; }
-    #map { margin: 15px; height: 400px; }
 }
