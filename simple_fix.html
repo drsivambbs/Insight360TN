@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .category { border: 1px solid #ccc; margin: 10px 0; padding: 10px; }
+        .category-header { font-weight: bold; cursor: pointer; background: #f5f5f5; padding: 10px; }
+        .indicators { margin-top: 10px; }
+        .indicator { padding: 5px; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <h1>Working Categories Test</h1>
+    <button onclick="loadCategories('nfhs4')">NFHS-4</button>
+    <button onclick="loadCategories('nfhs5')">NFHS-5</button>
+    <div id="result"></div>
+    
+    <script>
+        let categoriesData, nfhsData;
+        
+        // Load data
+        Promise.all([
+            fetch('./dashboard_files/nfhs_indicator_categories.json').then(r => r.json()),
+            fetch('./dashboard_files/master_nfhs_data.json').then(r => r.json())
+        ]).then(([categories, nfhs]) => {
+            categoriesData = categories;
+            nfhsData = nfhs;
+            console.log('Data loaded');
+            loadCategories('nfhs4');
+        });
+        
+        function loadCategories(survey) {
+            const surveyKey = survey === 'nfhs4' ? 'nfhs_4' : 'nfhs_5';
+            const result = document.getElementById('result');
+            
+            if (!categoriesData || !nfhsData) {
+                result.innerHTML = 'Loading...';
+                return;
+            }
+            
+            // Get available indicators from first district
+            const firstDistrict = Object.values(nfhsData.districts)[0];
+            const availableInSurvey = new Set(Object.keys(firstDistrict[surveyKey] || {}));
+            
+            result.innerHTML = `<h2>${survey.toUpperCase()} Results</h2>`;
+            
+            Object.entries(categoriesData.categories).forEach(([catKey, catData]) => {
+                // Get indicator names
+                const indicatorNames = catData.indicators.map(ind => ind.name || ind);
+                
+                // Filter only available indicators
+                const available = indicatorNames.filter(name => availableInSurvey.has(name));
+                
+                if (available.length > 0) {
+                    const div = document.createElement('div');
+                    div.className = 'category';
+                    div.innerHTML = `
+                        <div class="category-header">${catKey.replace(/_/g, ' ')} (${available.length})</div>
+                        <div class="indicators">
+                            ${available.map(ind => `<div class="indicator">${ind}</div>`).join('')}
+                        </div>
+                    `;
+                    result.appendChild(div);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

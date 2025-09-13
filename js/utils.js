@@ -1,10 +1,21 @@
 // Utility functions
 function getAvailableIndicators(indicators, surveyKey) {
-    if (!nfhsData.districts) return [];
+    if (!nfhsData || !nfhsData.districts) {
+        console.log('No NFHS data available');
+        return [];
+    }
+    
     const firstDistrict = Object.values(nfhsData.districts)[0];
-    return firstDistrict && firstDistrict[surveyKey] 
-        ? indicators.filter(indicator => firstDistrict[surveyKey][indicator] !== undefined)
-        : [];
+    if (!firstDistrict || !firstDistrict[surveyKey]) {
+        console.log('No survey data for', surveyKey);
+        return [];
+    }
+    
+    const availableInSurvey = new Set(Object.keys(firstDistrict[surveyKey]));
+    const available = indicators.filter(indicator => availableInSurvey.has(indicator));
+    
+    console.log(`getAvailableIndicators: ${available.length}/${indicators.length} available for ${surveyKey}`);
+    return available;
 }
 
 function formatCategoryName(categoryKey) {
