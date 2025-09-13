@@ -228,6 +228,9 @@
       document.getElementById('indicatorTitle').textContent = indicator;
       document.getElementById('indicatorSurvey').textContent = activeSurvey.toUpperCase();
 
+      // Collapse all categories after selection
+      document.querySelectorAll('.category.expanded').forEach(cat => cat.classList.remove('expanded'));
+
       // gather district values
       const surveyKey = activeSurvey === 'nfhs4' ? 'nfhs_4' : 'nfhs_5';
       const districtValues = {};
