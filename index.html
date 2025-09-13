@@ -1,124 +1,318 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insight360TN - NFHS Dashboard</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="css/styles.css?v=2">
-</head>
-<body>
-    <div class="container">
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <span class="material-icons">dashboard</span>
-                <h3>NFHS Indicators</h3>
-            </div>
-            <div class="survey-toggle">
-                <button class="toggle-btn active" onclick="toggleSurvey('nfhs4')" id="nfhs4Btn">NFHS-4</button>
-                <button class="toggle-btn" onclick="toggleSurvey('nfhs5')" id="nfhs5Btn">NFHS-5</button>
-            </div>
-            <div id="categoryTree"></div>
-        </div>
-        
-        <div class="main-content">
-            <div class="dashboard-header">
-                <h1>Insight360TN</h1>
-                <p>Tamil Nadu Health Survey Dashboard</p>
-            </div>
-            <div id="map"></div>
-        </div>
-        
-        <div class="right-sidebar">
-            <div id="kpiContainer">
-                <h3>Performance Analysis</h3>
-                <p>Select an indicator to view analysis</p>
-            </div>
-        </div>
-    </div>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Insight360TN — Professional NFHS Dashboard</title>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        let categoriesData, nfhsData, geoJsonData, map, activeSurvey = 'nfhs4';
-        
-        // Load data
-        Promise.all([
-            fetch('./dashboard_files/nfhs_indicator_categories.json').then(r => r.json()),
-            fetch('./dashboard_files/master_nfhs_data.json').then(r => r.json()),
-            fetch('./dashboard_files/tn_district.geojson').then(r => r.json())
-        ]).then(([categories, nfhs, geojson]) => {
-            categoriesData = categories;
-            nfhsData = nfhs;
-            geoJsonData = geojson;
-            initMap();
-            renderCategories();
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Material icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --accent:#2563eb;
+      --success:#10b981;
+      --danger:#ef4444;
+      --glass: rgba(255,255,255,0.6);
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+
+    html,body,#app{height:100%;margin:0;background:var(--bg)}
+    .app{display:grid;grid-template-columns:320px 1fr 360px;gap:18px;padding:18px;height:100%;align-items:start}
+
+    /* Sidebar */
+    .sidebar{background:linear-gradient(180deg,#ffffff, #fbfdff);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(22,38,99,0.06)}
+    .sidebar-header{display:flex;align-items:center;gap:12px}
+    .sidebar-header h3{margin:0;font-size:16px}
+    .survey-toggle{display:flex;gap:8px;margin-top:12px}
+    .toggle-btn{flex:1;padding:8px;border-radius:10px;border:1px solid #e6eefb;background:#fff;cursor:pointer}
+    .toggle-btn.active{background:var(--accent);color:#fff;border-color:transparent}
+
+    #categoryTree{margin-top:14px;max-height:calc(100vh - 220px);overflow:auto;padding-right:6px}
+    .category{border-radius:8px;padding:8px;margin-bottom:8px}
+    .category-header{display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;color:#0f172a}
+    .category.expanded .material-icons{transform:rotate(90deg)}
+    .indicators{margin-top:8px;display:grid;grid-template-columns:1fr;gap:6px}
+    .indicator{padding:8px;border-radius:8px;background:rgba(15,23,42,0.03);cursor:pointer}
+    .indicator:hover{background:rgba(37,99,235,0.06)}
+
+    /* Main */
+    .main{display:flex;flex-direction:column;gap:12px}
+    .header{display:flex;justify-content:space-between;align-items:center}
+    .title{display:flex;flex-direction:column}
+    .title h1{margin:0;font-size:20px}
+    .title p{margin:0;color:var(--muted);font-size:13px}
+
+    .map-card{height:68vh;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(22,38,99,0.06);background:var(--card)}
+    #map{height:100%;width:100%}
+
+    /* Right sidebar */
+    .right{display:flex;flex-direction:column;gap:12px}
+    .kpi-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 4px 14px rgba(2,6,23,0.03)}
+    .card h4{margin:0;font-size:13px}
+    .card .value{font-size:20px;font-weight:700;margin-top:6px}
+
+    .legend{padding:10px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,0.9), rgba(255,255,255,0.75));box-shadow:0 6px 24px rgba(15,23,42,0.04)}
+
+    /* small responsive */
+    @media (max-width:1100px){.app{grid-template-columns:1fr;grid-template-rows:auto 1fr auto;padding:10px}.sidebar{order:3}.right{order:2}.main{order:1}}
+
+    /* tooltip */
+    .info-box{position:absolute;z-index:9999;pointer-events:none;background:rgba(255,255,255,0.95);padding:8px;border-radius:8px;box-shadow:0 6px 18px rgba(2,6,23,0.08);font-size:13px}
+  </style>
+</head>
+
+<body>
+  <div id="app" class="app">
+
+    <!-- LEFT: controls -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <span class="material-icons" style="color:var(--accent)">dashboard</span>
+        <div>
+          <h3>NFHS Indicators</h3>
+          <div style="font-size:12px;color:var(--muted)">Tamil Nadu — Insight360TN</div>
+        </div>
+      </div>
+
+      <div class="survey-toggle" style="margin-top:12px">
+        <button id="nfhs4Btn" class="toggle-btn active" onclick="toggleSurvey('nfhs4')">NFHS-4</button>
+        <button id="nfhs5Btn" class="toggle-btn" onclick="toggleSurvey('nfhs5')">NFHS-5</button>
+      </div>
+
+      <div style="margin-top:12px">
+        <input id="searchIndicator" placeholder="Search indicators..." style="width:100%;padding:8px;border-radius:8px;border:1px solid #e6eefb" />
+      </div>
+
+      <div id="categoryTree"></div>
+
+      <div style="margin-top:12px;font-size:12px;color:var(--muted)">Tip: click an indicator to render the map and KPI cards. Use the chart for a quick district comparison.</div>
+    </aside>
+
+    <!-- MAIN: map + header -->
+    <main class="main">
+      <div class="header">
+        <div class="title">
+          <h1>Insight360TN</h1>
+          <p>Tamil Nadu Health Survey Dashboard</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <div style="font-size:13px;color:var(--muted)">Active survey:</div>
+          <strong id="activeSurveyLabel">NFHS-4</strong>
+        </div>
+      </div>
+
+      <div class="map-card">
+        <div id="map"></div>
+      </div>
+    </main>
+
+    <!-- RIGHT: KPIs & charts -->
+    <aside class="right">
+      <div class="card">
+        <h4 id="indicatorTitle">Select an indicator</h4>
+        <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+          <div style="font-size:12px;color:var(--muted)">Survey:</div>
+          <div id="indicatorSurvey" style="font-weight:600">-</div>
+        </div>
+        <div id="kpiRow" style="margin-top:12px" class="kpi-cards"></div>
+      </div>
+
+      <div class="card">
+        <h4>District Comparison</h4>
+        <canvas id="barChart" height="160"></canvas>
+      </div>
+
+      <div class="card legend" id="legendContainer">
+        <h4 style="margin-top:0">Map legend</h4>
+        <div id="legend"></div>
+      </div>
+
+    </aside>
+  </div>
+
+  <div id="info" class="info-box" style="display:none"></div>
+
+  <!-- Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // --- state ---
+    let categoriesData, nfhsData, geoJsonData, map, activeSurvey = 'nfhs4', currentLayer, currentIndicator;
+    const colorScale = [ '#f7fbff','#deebf7','#c6dbef','#9ecae1','#6baed6','#3182bd','#08519c' ];
+
+    // Load all data (user's local files assumed) and initialize
+    Promise.all([
+      fetch('./dashboard_files/nfhs_indicator_categories.json').then(r=>r.json()),
+      fetch('./dashboard_files/master_nfhs_data.json').then(r=>r.json()),
+      fetch('./dashboard_files/tn_district.geojson').then(r=>r.json())
+    ]).then(([categories, nfhs, geojson]) => {
+      categoriesData = categories;
+      nfhsData = nfhs;
+      geoJsonData = geojson;
+      initMap();
+      renderCategories();
+    }).catch(err=>{
+      console.error('Failed to load data', err);
+      alert('Failed to load dashboard files. Check paths in console.');
+    });
+
+    function initMap(){
+      map = L.map('map', {zoomControl:false}).setView([10.8,78.6569],7);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:''}).addTo(map);
+      L.control.zoom({position:'topright'}).addTo(map);
+
+      // Add empty geoJSON layer placeholder
+      currentLayer = L.geoJSON(null, {style: defaultStyle}).addTo(map);
+
+      // Fit bounds after geojson loads
+      if(geoJsonData){ currentLayer.addData(geoJsonData); map.fitBounds(currentLayer.getBounds(), {padding:[20,20]}); }
+
+      // Info control
+      map.on('mousemove', function(e){ let info = document.getElementById('info'); info.style.left = (e.originalEvent.clientX+12)+'px'; info.style.top = (e.originalEvent.clientY+12)+'px'; });
+    }
+
+    function defaultStyle(){ return {color:'#ffffff',weight:1,fillColor:'#efefef',fillOpacity:0.9} }
+
+    // --- categories UI ---
+    function renderCategories(){
+      const tree = document.getElementById('categoryTree');
+      const surveyKey = activeSurvey === 'nfhs4' ? 'nfhs_4' : 'nfhs_5';
+      const firstDistrict = Object.values(nfhsData.districts)[0];
+      const availableKeys = new Set(Object.keys(firstDistrict[surveyKey] || {}));
+
+      tree.innerHTML = '';
+      Object.entries(categoriesData.categories).forEach(([catKey, catData])=>{
+        const indicators = catData.indicators.map(i => (typeof i === 'string'? i: (i.name||i))).filter(Boolean);
+        const available = indicators.filter(name => availableKeys.has(name));
+        if(!available.length) return;
+
+        const div = document.createElement('div'); div.className = 'category';
+        const header = document.createElement('div'); header.className='category-header'; header.innerHTML = `<span class="material-icons">chevron_right</span><span>${catKey.replace(/_/g,' ')} (${available.length})</span>`;
+        header.onclick = ()=> div.classList.toggle('expanded');
+        div.appendChild(header);
+
+        const inner = document.createElement('div'); inner.className='indicators';
+        available.forEach(ind=>{
+          const el = document.createElement('div'); el.className='indicator'; el.textContent = ind; el.onclick = ()=> selectIndicator(ind);
+          inner.appendChild(el);
         });
-        
-        // Initialize map
-        function initMap() {
-            map = L.map('map').setView([10.8, 78.6569], 7);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        }
-        
-        // Render categories
-        function renderCategories() {
-            const tree = document.getElementById('categoryTree');
-            const surveyKey = activeSurvey === 'nfhs4' ? 'nfhs_4' : 'nfhs_5';
-            const firstDistrict = Object.values(nfhsData.districts)[0];
-            const availableKeys = new Set(Object.keys(firstDistrict[surveyKey]));
-            
-            tree.innerHTML = '';
-            
-            Object.entries(categoriesData.categories).forEach(([catKey, catData]) => {
-                const indicators = catData.indicators.map(ind => ind.name || ind);
-                const available = indicators.filter(name => availableKeys.has(name));
-                
-                if (available.length > 0) {
-                    const div = document.createElement('div');
-                    div.className = 'category';
-                    div.innerHTML = `
-                        <div class="category-header" onclick="this.parentElement.classList.toggle('expanded')">
-                            <span class="material-icons">chevron_right</span>
-                            <span>${catKey.replace(/_/g, ' ')} (${available.length})</span>
-                        </div>
-                        <div class="indicators">
-                            ${available.map(ind => `<div class="indicator" onclick="selectIndicator('${ind}')">${ind}</div>`).join('')}
-                        </div>
-                    `;
-                    tree.appendChild(div);
-                }
-            });
-        }
-        
-        // Toggle survey
-        function toggleSurvey(survey) {
-            activeSurvey = survey;
-            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(survey + 'Btn').classList.add('active');
-            renderCategories();
-        }
-        
-        // Select indicator
-        function selectIndicator(indicator) {
-            const surveyKey = activeSurvey === 'nfhs4' ? 'nfhs_4' : 'nfhs_5';
-            const districtData = [];
-            
-            Object.entries(nfhsData.districts).forEach(([district, data]) => {
-                if (data[surveyKey] && data[surveyKey][indicator] !== undefined) {
-                    districtData.push([district, data[surveyKey][indicator]]);
-                }
-            });
-            
-            // Update KPI
-            document.getElementById('kpiContainer').innerHTML = `
-                <h3>${indicator}</h3>
-                <p>Survey: ${activeSurvey.toUpperCase()}</p>
-                <p>Districts with data: ${districtData.length}</p>
-            `;
-            
-            console.log('Selected:', indicator, 'Data points:', districtData.length);
-        }
-    </script>
+        div.appendChild(inner);
+        tree.appendChild(div);
+      });
+
+      // wire search
+      const search = document.getElementById('searchIndicator');
+      search.oninput = ()=>{
+        const q = search.value.trim().toLowerCase();
+        document.querySelectorAll('.indicator').forEach(el=>{
+          el.style.display = el.textContent.toLowerCase().includes(q)?'block':'none';
+        });
+      }
+    }
+
+    function toggleSurvey(survey){ activeSurvey = survey; document.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active')); document.getElementById(survey+'Btn').classList.add('active'); document.getElementById('activeSurveyLabel').textContent = survey.toUpperCase(); renderCategories(); if(currentIndicator) selectIndicator(currentIndicator); }
+
+    // --- indicator selection and map coloring ---
+    function selectIndicator(indicator){
+      currentIndicator = indicator;
+      document.getElementById('indicatorTitle').textContent = indicator;
+      document.getElementById('indicatorSurvey').textContent = activeSurvey.toUpperCase();
+
+      // gather district values
+      const surveyKey = activeSurvey === 'nfhs4' ? 'nfhs_4' : 'nfhs_5';
+      const districtValues = {};
+      Object.entries(nfhsData.districts).forEach(([district, data])=>{
+        const v = data[surveyKey] && data[surveyKey][indicator];
+        if(v!==undefined && v!==null && v!=="" ) districtValues[district.toLowerCase()] = +v;
+      });
+
+      // compute breaks
+      const vals = Object.values(districtValues).filter(v=>!isNaN(v)).sort((a,b)=>a-b);
+      const breaks = computeQuantiles(vals, 6);
+
+      // update legend
+      renderLegend(breaks);
+
+      // style geojson
+      if(currentLayer) map.removeLayer(currentLayer);
+      currentLayer = L.geoJSON(geoJsonData, {style: feat=>{
+        const name = (feat.properties && (feat.properties.DISTRICT || feat.properties.district || feat.properties.NAME)) || '';
+        const val = districtValues[name.toLowerCase()];
+        return {fillColor: getColorForValue(val, breaks), weight:1, color:'#fff', fillOpacity: val===undefined?0.35:0.9}
+      }, onEachFeature}).addTo(map);
+
+      // update KPIs + chart
+      updateKPIsAndChart(districtValues, indicator);
+    }
+
+    function getColorForValue(v, breaks){ if(v===undefined || isNaN(v)) return '#efefef'; for(let i=breaks.length-1;i>=0;i--){ if(v>=breaks[i]) return colorScale[i+1] || colorScale[colorScale.length-1]; } return colorScale[0]; }
+
+    function onEachFeature(feature, layer){
+      layer.on({ mouseover: (e)=>{
+        const el = e.target; el.setStyle({weight:2,fillOpacity:1});
+        const props = feature.properties||{}; const name = props.DISTRICT || props.district || props.NAME || '—';
+        const surveyKey = activeSurvey === 'nfhs4' ? 'nfhs_4' : 'nfhs_5';
+        const value = (nfhsData.districts[name] && nfhsData.districts[name][surveyKey] && nfhsData.districts[name][surveyKey][currentIndicator]) || 'No data';
+        const info = document.getElementById('info'); info.style.display='block'; info.innerHTML = `<strong>${name}</strong><div style="color:var(--muted);font-size:12px">${currentIndicator}: ${value}</div>`;
+      }, mouseout: (e)=>{ const el=e.target; try{ currentLayer.resetStyle(el); }catch(e){} document.getElementById('info').style.display='none'; }, click: (e)=>{ map.fitBounds(e.target.getBounds()); } });
+    }
+
+    // compute quantile breaks (k groups)
+    function computeQuantiles(arr, k){ if(!arr.length) return []; const breaks=[]; for(let i=1;i<=k;i++){ const p = i/(k+1); const idx = p*(arr.length-1); const lo = Math.floor(idx); const hi = Math.ceil(idx); const val = lo===hi ? arr[lo] : arr[lo] + (arr[hi]-arr[lo])*(idx-lo); breaks.push(Number(val.toFixed(3))); } return breaks; }
+
+    function renderLegend(breaks){ const container = document.getElementById('legend'); container.innerHTML=''; if(!breaks.length){ container.innerHTML = '<div style="color:var(--muted)">No data available</div>'; return; }
+      const list = document.createElement('div'); list.style.display='grid'; list.style.gridTemplateColumns='1fr'; list.style.gap='6px';
+      for(let i=0;i<=breaks.length;i++){
+        const label = document.createElement('div'); label.style.display='flex'; label.style.alignItems='center'; label.style.gap='8px';
+        const sw = document.createElement('div'); sw.style.width='28px'; sw.style.height='12px'; sw.style.borderRadius='4px'; sw.style.background = colorScale[i] || colorScale[colorScale.length-1]; sw.style.boxShadow='inset 0 -2px rgba(0,0,0,0.05)';
+        const text = document.createElement('div'); text.style.fontSize='13px'; text.style.color='var(--muted)';
+        if(i===0) text.textContent = `< ${breaks[0]}`; else if(i<breaks.length) text.textContent = `${breaks[i-1]} – ${breaks[i]}`; else text.textContent = `≥ ${breaks[breaks.length-1]}`;
+        label.appendChild(sw); label.appendChild(text); list.appendChild(label);
+      }
+      container.appendChild(list);
+    }
+
+    // KPI & Chart
+    let barChartInstance=null;
+    function updateKPIsAndChart(districtValues, indicator){
+      const entries = Object.entries(districtValues).map(([d,v])=>[d,v]).filter(([d,v])=>!isNaN(v));
+      entries.sort((a,b)=>b[1]-a[1]);
+      const top = entries.slice(0,3);
+      const total = entries.length;
+      const avg = (entries.reduce((s,[_d,v])=>s+v,0)/Math.max(1,entries.length)).toFixed(2);
+
+      // KPI cards
+      const kpiRow = document.getElementById('kpiRow'); kpiRow.innerHTML='';
+      const makeCard = (title, value) => { const c = document.createElement('div'); c.className='card'; c.style.padding='10px'; c.innerHTML = `<div style="font-size:12px;color:var(--muted)">${title}</div><div class="value">${value}</div>`; return c; };
+      kpiRow.appendChild(makeCard('Districts with data', total));
+      kpiRow.appendChild(makeCard('Avg value', avg));
+      kpiRow.appendChild(makeCard('Top district', top[0]? capitalizeWords(top[0][0]) : 'N/A'));
+      kpiRow.appendChild(makeCard('Top value', top[0]? top[0][1] : 'N/A'));
+
+      // bar chart (top 10)
+      const ctx = document.getElementById('barChart').getContext('2d');
+      const top10 = entries.slice(0,10).reverse();
+      const labels = top10.map(t=>capitalizeWords(t[0]));
+      const data = top10.map(t=>t[1]);
+
+      if(barChartInstance){ barChartInstance.data.labels = labels; barChartInstance.data.datasets[0].data = data; barChartInstance.update(); }
+      else{
+        barChartInstance = new Chart(ctx, {type:'bar',data:{labels:labels,datasets:[{label:indicator,data:data,backgroundColor: undefined}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}});
+      }
+    }
+
+    function capitalizeWords(s){ return s.split(/[_\s]+/).map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' '); }
+
+  </script>
 </body>
 </html>
