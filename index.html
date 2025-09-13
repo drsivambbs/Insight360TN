@@ -77,11 +77,79 @@
             </div>
             <div class="right-sidebar-content">
                 <div id="kpiContainer">
-                    <h5 style="margin: 0 0 12px 0; color: #b0b0b0; font-weight: 500;">Quick Stats</h5>
-                    <div style="background: #2a2a2a; padding: 12px; border-radius: 8px; font-size: 14px; color: #e0e0e0;">
-                        <div style="margin-bottom: 8px;">📊 Total Categories: <strong>10</strong></div>
-                        <div style="margin-bottom: 8px;">📈 Total Indicators: <strong>127</strong></div>
-                        <div>🏥 Districts Covered: <strong>32</strong></div>
+                    <div class="analytics-header">
+                        <div class="header-content">
+                            <span class="material-icons">dashboard</span>
+                            <div class="header-text">
+                                <div class="title">Dashboard Overview</div>
+                                <div class="subtitle">Tamil Nadu Health Indicators</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon"><span class="material-icons">category</span></div>
+                            <div class="stat-content">
+                                <div class="stat-number">10</div>
+                                <div class="stat-label">Health Categories</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon"><span class="material-icons">location_on</span></div>
+                            <div class="stat-content">
+                                <div class="stat-number">32</div>
+                                <div class="stat-label">Districts Covered</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="survey-breakdown">
+                        <div class="breakdown-header">
+                            <span class="material-icons">poll</span>
+                            <span>Survey Data Coverage</span>
+                        </div>
+                        <div class="survey-stats">
+                            <div class="survey-item">
+                                <div class="survey-name">NFHS-4 (2015-16)</div>
+                                <div class="survey-count">93 Indicators</div>
+                            </div>
+                            <div class="survey-item">
+                                <div class="survey-name">NFHS-5 (2019-21)</div>
+                                <div class="survey-count">104 Indicators</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-breakdown">
+                        <div class="breakdown-header">
+                            <span class="material-icons">analytics</span>
+                            <span>Indicator Classification</span>
+                        </div>
+                        <div class="indicator-stats">
+                            <div class="indicator-item positive">
+                                <div class="indicator-dot"></div>
+                                <div class="indicator-info">
+                                    <div class="indicator-type">Positive Indicators</div>
+                                    <div class="indicator-desc">74 indicators (Higher is better)</div>
+                                </div>
+                            </div>
+                            <div class="indicator-item negative">
+                                <div class="indicator-dot"></div>
+                                <div class="indicator-info">
+                                    <div class="indicator-type">Negative Indicators</div>
+                                    <div class="indicator-desc">47 indicators (Lower is better)</div>
+                                </div>
+                            </div>
+                            <div class="indicator-item neutral">
+                                <div class="indicator-dot"></div>
+                                <div class="indicator-info">
+                                    <div class="indicator-type">Neutral Indicators</div>
+                                    <div class="indicator-desc">7 indicators (Demographic data)</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -98,48 +166,6 @@
     <script src="js/kpi.js"></script>
     <script src="js/app.js"></script>
     
-    <script>
-        // Emergency fix - direct category loading
-        setTimeout(() => {
-            const tree = document.getElementById('categoryTree');
-            if (!tree.innerHTML.trim()) {
-                console.log('Emergency fix: Loading categories directly');
-                fetch('./dashboard_files/nfhs_indicator_categories.json')
-                    .then(r => r.json())
-                    .then(data => {
-                        tree.innerHTML = '';
-                        tree.dataset.emergencyLoaded = 'true';
-                        
-                        Object.entries(data.categories).forEach(([key, cat]) => {
-                            const div = document.createElement('div');
-                            div.className = 'category';
-                            div.innerHTML = `
-                                <div class="category-header">
-                                    <span class="material-icons category-icon">chevron_right</span>
-                                    <span class="category-title">${key.replace(/_/g, ' ')}</span>
-                                    <span class="indicator-count">${cat.indicators.length}</span>
-                                </div>
-                                <div class="indicators">
-                                    ${cat.indicators.map(ind => `
-                                        <div class="indicator" onclick="selectIndicator('${key}', '${ind.name || ind}')">
-                                            ${ind.name || ind}
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            `;
-                            
-                            // Add click handler for category header
-                            div.querySelector('.category-header').onclick = function() {
-                                div.classList.toggle('expanded');
-                            };
-                            
-                            tree.appendChild(div);
-                        });
-                        console.log('Emergency fix: Categories loaded with', tree.children.length, 'categories');
-                    })
-                    .catch(e => console.error('Emergency fix failed:', e));
-            }
-        }, 1000);
-    </script>
+
 </body>
 </html>

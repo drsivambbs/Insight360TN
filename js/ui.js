@@ -2,12 +2,6 @@
 function renderCategoryTree() {
     const treeContainer = document.getElementById('categoryTree');
     
-    // Don't clear if emergency fix already loaded categories
-    if (treeContainer.children.length > 0 && treeContainer.dataset.emergencyLoaded) {
-        console.log('Categories already loaded by emergency fix, skipping');
-        return;
-    }
-    
     if (!categoriesData || !categoriesData.categories) {
         console.error('Categories data not loaded');
         return;
@@ -110,11 +104,8 @@ function toggleSurvey(survey) {
     document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById(survey + 'Btn').classList.add('active');
     
-    // Don't call renderCategoryTree if emergency fix is active
-    const treeContainer = document.getElementById('categoryTree');
-    if (!treeContainer.dataset.emergencyLoaded) {
-        renderCategoryTree();
-    }
+    // Always re-render categories for new survey
+    renderCategoryTree();
     
     selectedIndicator = null;
     resetDashboardHeader();
@@ -232,4 +223,63 @@ function toggleMapControls() {
     const controls = document.getElementById('mapControls');
     controls.classList.toggle('minimized');
     controls.classList.toggle('expanded');
+}
+
+// Load categories for specific survey (emergency fix)
+function loadCategoriesForSurvey(survey) {
+    const surveyKey = survey === 'nfhs4' ? 'nfhs_4' : 'nfhs_5';
+    
+    fetch('./dashboard_files/nfhs_indicator_categories.json')
+        .then(r => r.json())
+        .then(categoriesData => {
+            return fetch('./dashboard_files/master_nfhs_data.json')
+                .then(r => r.json())
+                .then(nfhsData => ({ categoriesData, nfhsData }));
+        })
+        .then(({ categoriesData, nfhsData }) => {
+            const tree = document.getElementById('categoryTree');
+            tree.innerHTML = '';
+            tree.dataset.emergencyLoaded = 'true';
+            
+            // Get first district to check available indicators
+            const firstDistrict = Object.values(nfhsData.districts)[0];
+            
+            Object.entries(categoriesData.categories).forEach(([key, cat]) => {
+                // Filter indicators available in this survey
+                const availableIndicators = cat.indicators.filter(ind => {
+                    const indicatorName = ind.name || ind;
+                    return firstDistrict && firstDistrict[surveyKey] && 
+                           firstDistrict[surveyKey][indicatorName] !== undefined;
+                });
+                
+                if (availableIndicators.length > 0) {
+                    const div = document.createElement('div');
+                    div.className = 'category';
+                    div.innerHTML = `
+                        <div class="category-header">
+                            <span class="material-icons category-icon">chevron_right</span>
+                            <span class="category-title">${key.replace(/_/g, ' ')}</span>
+                            <span class="indicator-count">${availableIndicators.length}</span>
+                        </div>
+                        <div class="indicators">
+                            ${availableIndicators.map(ind => `
+                                <div class="indicator" onclick="selectIndicator('${key}', '${ind.name || ind}')">
+                                    ${ind.name || ind}
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    
+                    // Add click handler for category header
+                    div.querySelector('.category-header').onclick = function() {
+                        div.classList.toggle('expanded');
+                    };
+                    
+                    tree.appendChild(div);
+                }
+            });
+            
+            console.log(`Categories loaded for ${survey} with`, tree.children.length, 'categories');
+        })
+        .catch(e => console.error('Failed to load categories for survey:', e));
 }
