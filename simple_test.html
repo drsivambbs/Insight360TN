@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Test</title>
+</head>
+<body>
+    <h1>Testing Data Load</h1>
+    <div id="test-output"></div>
+    
+    <script>
+        console.log('Starting test...');
+        
+        fetch('./dashboard_files/nfhs_indicator_categories.json')
+            .then(response => {
+                console.log('Categories response:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Categories loaded:', Object.keys(data.categories).length);
+                document.getElementById('test-output').innerHTML = 
+                    `<p>Categories loaded: ${Object.keys(data.categories).length}</p>`;
+                
+                // Test first category
+                const firstCat = Object.keys(data.categories)[0];
+                const firstCatData = data.categories[firstCat];
+                console.log('First category:', firstCat);
+                console.log('First indicator type:', typeof firstCatData.indicators[0]);
+                console.log('First indicator:', firstCatData.indicators[0]);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('test-output').innerHTML = 
+                    `<p style="color: red;">Error: ${error.message}</p>`;
+            });
+    </script>
+</body>
+</html>
