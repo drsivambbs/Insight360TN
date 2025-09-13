@@ -5,7 +5,8 @@ function renderCategoryTree() {
     treeContainer.innerHTML = '';
 
     Object.entries(categoriesData.categories).forEach(([categoryKey, categoryData]) => {
-        const availableIndicators = getAvailableIndicators(categoryData.indicators, surveyKey);
+        const indicatorNames = categoryData.indicators.map(ind => ind.name || ind);
+        const availableIndicators = getAvailableIndicators(indicatorNames, surveyKey);
         
         if (availableIndicators.length > 0) {
             const categoryDiv = document.createElement('div');
