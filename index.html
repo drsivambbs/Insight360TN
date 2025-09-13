@@ -31,7 +31,7 @@
     .left-column{display:flex;flex-direction:column;gap:12px}
 
     /* Sidebar */
-    .sidebar{background:linear-gradient(180deg,#ffffff, #fbfdff);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(22,38,99,0.06);height:calc(88vh - 36px)}
+    .sidebar{background:linear-gradient(180deg,#ffffff, #fbfdff);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(22,38,99,0.06);height:calc(90vh - 36px)}
     .sidebar-header{display:flex;align-items:center;gap:12px}
     .sidebar-header h3{margin:0;font-size:15px}
     .survey-toggle{display:flex;gap:8px;margin-top:12px}
@@ -55,7 +55,8 @@
     .title h1{margin:0;font-size:20px}
     .title p{margin:0;color:var(--muted);font-size:13px}
 
-    .map-card{height:68vh;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(22,38,99,0.06);background:var(--card)}
+    .map-card{height:75vh;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(22,38,99,0.06);background:var(--card);padding:0;margin:0}
+    .map-legend{margin-top:1px;padding:12px 16px;background:var(--card);border-radius:8px;box-shadow:0 2px 8px rgba(2,6,23,0.04);border-left:4px solid var(--accent)}
     #map{height:100%;width:100%}
 
     /* Right sidebar */
@@ -116,9 +117,10 @@
       <div class="map-card">
         <div id="map"></div>
       </div>
-
-      <!-- Stats cards below map -->
-      <div id="statsGrid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px"></div>
+      
+      <div class="map-legend">
+        <div id="legend"></div>
+      </div>
     </main>
 
     <!-- RIGHT: KPIs & charts -->
@@ -137,10 +139,7 @@
         <div id="districtRankings"></div>
       </div>
 
-      <div class="card legend" id="legendContainer">
-        <h4 style="margin-top:0">Map legend</h4>
-        <div id="legend"></div>
-      </div>
+
 
     </aside>
   </div>
@@ -180,7 +179,7 @@
       if(geoJsonData){
         currentLayer = L.geoJSON(geoJsonData, {style: defaultStyle}).addTo(map);
         map.fitBounds(currentLayer.getBounds(), {padding:[5,5]});
-        setTimeout(() => map.setZoom(map.getZoom() + 1), 100);
+        setTimeout(() => map.setZoom(map.getZoom()), 100);
       }
 
       // Info control
@@ -343,9 +342,17 @@
       }
       
       const list = document.createElement('div');
-      list.style.display='grid';
-      list.style.gridTemplateColumns='1fr';
-      list.style.gap='6px';
+      list.style.display='flex';
+      list.style.gap='16px';
+      list.style.alignItems='center';
+      
+      // Add title first
+      const title = document.createElement('div');
+      title.style.display='flex';
+      title.style.alignItems='center';
+      title.style.gap='6px';
+      title.innerHTML = `<span class="material-icons" style="font-size:16px;color:var(--accent)">palette</span><span style="font-size:13px;font-weight:600;color:var(--text)">Map Legend:</span>`;
+      list.appendChild(title);
       
       const colors = ['#4caf50', '#ffeb3b', '#f44336', '#cccccc'];
       const labels = indicatorType === 'Positive' ? ['Best', 'Medium', 'Worst', 'No Data'] : ['Best', 'Medium', 'Worst', 'No Data'];
@@ -354,17 +361,17 @@
         const label = document.createElement('div');
         label.style.display='flex';
         label.style.alignItems='center';
-        label.style.gap='8px';
+        label.style.gap='6px';
         
         const sw = document.createElement('div');
-        sw.style.width='28px';
+        sw.style.width='20px';
         sw.style.height='12px';
-        sw.style.borderRadius='4px';
+        sw.style.borderRadius='3px';
         sw.style.background = colors[i];
-        sw.style.boxShadow='inset 0 -2px rgba(0,0,0,0.05)';
+        sw.style.boxShadow='inset 0 -1px rgba(0,0,0,0.1)';
         
         const text = document.createElement('div');
-        text.style.fontSize='13px';
+        text.style.fontSize='12px';
         text.style.color='var(--muted)';
         text.textContent = labels[i];
         
@@ -388,17 +395,20 @@
         entries.sort((a,b)=>b[1]-a[1]); // Higher is better for positive/neutral indicators
       }
       
-      const top = entries.slice(0,3);
+      const top = entries.slice(0,1)[0];
+      const bottom = entries.slice(-1)[0];
       const total = entries.length;
       const avg = (entries.reduce((s,[_d,v])=>s+v,0)/Math.max(1,entries.length)).toFixed(2);
 
-      // KPI cards
+      // KPI cards in 3x2 grid
       const kpiRow = document.getElementById('kpiRow'); kpiRow.innerHTML='';
-      const makeCard = (title, value) => { const c = document.createElement('div'); c.className='card'; c.style.padding='10px'; c.innerHTML = `<div style="font-size:12px;color:var(--muted)">${title}</div><div class="value">${value}</div>`; return c; };
-      kpiRow.appendChild(makeCard('Districts with data', total));
-      kpiRow.appendChild(makeCard('Avg value', avg));
-      kpiRow.appendChild(makeCard('Top district', top[0]? capitalizeWords(top[0][0]) : 'N/A'));
-      kpiRow.appendChild(makeCard('Top value', top[0]? top[0][1] : 'N/A'));
+      const makeCard = (title, value) => { const c = document.createElement('div'); c.className='card'; c.style.padding='8px'; c.innerHTML = `<div style="font-size:11px;color:var(--muted)">${title}</div><div class="value" style="font-size:16px">${value}</div>`; return c; };
+      kpiRow.appendChild(makeCard('Districts', total));
+      kpiRow.appendChild(makeCard('Average', avg));
+      kpiRow.appendChild(makeCard('Best District', top? capitalizeWords(top[0]) : 'N/A'));
+      kpiRow.appendChild(makeCard('Best Value', top? top[1] : 'N/A'));
+      kpiRow.appendChild(makeCard('Low District', bottom? capitalizeWords(bottom[0]) : 'N/A'));
+      kpiRow.appendChild(makeCard('Low Value', bottom? bottom[1] : 'N/A'));
 
       // District rankings
       renderDistrictRankings(entries, indicatorType);
