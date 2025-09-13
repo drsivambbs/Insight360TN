@@ -1,12 +1,29 @@
 // UI functionality
 function renderCategoryTree() {
     const treeContainer = document.getElementById('categoryTree');
+    
+    if (!categoriesData || !categoriesData.categories) {
+        console.error('Categories data not loaded');
+        treeContainer.innerHTML = '<div style="padding: 20px; color: #666;">Loading categories...</div>';
+        return;
+    }
+    
+    if (!nfhsData || !nfhsData.districts) {
+        console.error('NFHS data not loaded');
+        treeContainer.innerHTML = '<div style="padding: 20px; color: #666;">Loading data...</div>';
+        return;
+    }
+    
     const surveyKey = activeSurvey === 'nfhs4' ? 'nfhs_4' : 'nfhs_5';
     treeContainer.innerHTML = '';
+    
+    console.log('Rendering categories for survey:', surveyKey);
 
     Object.entries(categoriesData.categories).forEach(([categoryKey, categoryData]) => {
         const indicatorNames = categoryData.indicators.map(ind => ind.name || ind);
         const availableIndicators = getAvailableIndicators(indicatorNames, surveyKey);
+        
+        console.log(`${categoryKey}: ${availableIndicators.length}/${indicatorNames.length} available`);
         
         if (availableIndicators.length > 0) {
             const categoryDiv = document.createElement('div');
@@ -28,6 +45,8 @@ function renderCategoryTree() {
             treeContainer.appendChild(categoryDiv);
         }
     });
+    
+    console.log('Category tree rendered with', treeContainer.children.length, 'categories');
 }
 
 function toggleCategory(categoryKey) {
