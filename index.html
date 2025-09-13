@@ -28,19 +28,19 @@
     html,body{height:100%;margin:0;background:radial-gradient(1200px 600px at 10% 10%, rgba(21,101,192,0.12), transparent), linear-gradient(180deg,#071029 0%, #071827 60%), #081226;font-family:Inter, sans-serif;color:#e6eef8}
 
     /* LAYOUT */
-    header.topbar{display:flex;justify-content:space-between;align-items:center;padding:20px 36px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0));backdrop-filter: blur(6px)}
+    header.topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 36px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0));backdrop-filter: blur(6px)}
     .brand{display:flex;align-items:center;gap:14px}
     .badge{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#0b62a8);display:flex;align-items:center;justify-content:center;font-weight:700}
     .brand h1{font-size:20px;margin:0}
     .brand p{margin:0;font-size:12px;color:var(--muted)}
 
     nav.controls{display:flex;gap:12px;align-items:center}
-    .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px 14px;border-radius:10px;color:var(--muted);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;transition:all 0.2s ease}
-    .btn:hover{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1)}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px 14px;border-radius:10px;color:var(--muted);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;transition:all 0.2s ease;transform:translateY(0)}
+    .btn:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.15);color:#e6eef8;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.15)}
     .btn.primary{background:linear-gradient(90deg,var(--accent),#0b62a8);border:none;color:white}
-    .btn.primary:hover{background:linear-gradient(90deg,#1976d2,#1565c0)}
+    .btn.primary:hover{background:linear-gradient(90deg,#1976d2,#1565c0);transform:translateY(-1px);box-shadow:0 6px 16px rgba(37,99,235,0.3)}
 
-    main.hero{display:grid;grid-template-columns:1fr 400px;gap:40px;padding:60px 40px;min-height:80vh;align-items:center}
+    main.hero{display:grid;grid-template-columns:1fr 400px;gap:40px;padding:20px 40px;min-height:90vh;align-items:center}
     .hero-left{padding:18px}
     .kicker{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.03);padding:6px 10px;border-radius:999px;font-size:13px;color:var(--muted)}
     h2.title{font-size:48px;margin:20px 0 12px;line-height:1.1;font-weight:700}
@@ -94,7 +94,10 @@
     </div>
 
     <nav class="controls">
-      <a href="#documentation" class="btn">Documentation</a>
+      <a href="https://data.opencity.in/dataset/530ee93a-d24c-43df-b90b-272a067d5a4e/resource/994c9ee4-803c-4891-8897-ab4db4a445ff/download/tamil_nadu-nhfs.pdf" target="_blank" class="btn" style="display:flex;align-items:center;gap:6px">
+        <span class="material-icons" style="font-size:16px">description</span>
+        Official Report
+      </a>
       <a href="https://github.com/drsivambbs/Insight360TN" target="_blank" class="btn">GitHub</a>
       <a href="dashboard.html" class="btn primary">Open Dashboard</a>
     </nav>
@@ -133,6 +136,8 @@
           <p class="muted">Professional charts and exportable district performance data.</p>
         </div>
       </div>
+      
+
 
     </div>
 
@@ -158,6 +163,14 @@
             <div class="muted" style="font-size:12px;margin-top:4px">Sponsored by Government of Tamil Nadu</div>
           </div>
         </div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1)">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Data Partner</div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <img src="Icons/Niti_Ayog.webp" alt="NITI Aayog" style="height:32px;object-fit:contain;opacity:0.9">
+            <div style="font-size:13px;color:#e6eef8;font-weight:600">NITI Aayog</div>
+          </div>
+
+        </div>
       </div>
     </aside>
 
@@ -166,18 +179,7 @@
 
   </main>
 
-  <section style="padding:60px 40px">
-    <div style="max-width:1200px;margin:0 auto">
-      <div class="card-panel" style="padding:32px;text-align:center">
-        <h3 class="section-title" style="font-size:24px;margin-bottom:16px">About Insight360TN</h3>
-        <p class="muted" style="font-size:16px;line-height:1.6;max-width:800px;margin:0 auto">Professional dashboard for Tamil Nadu's National Family Health Survey data with interactive district-level mapping, comprehensive analytics, and exportable insights for public health decision-making.</p>
-        
-        <div style="margin-top:32px">
-          <a href="https://github.com/drsivambbs/Insight360TN" target="_blank" class="btn" style="padding:12px 24px;font-size:15px">View on GitHub</a>
-        </div>
-      </div>
-    </div>
-  </section>
+
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
