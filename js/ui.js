@@ -124,11 +124,79 @@ function toggleSurvey(survey) {
         geoJsonLayer = null;
     }
     document.getElementById('kpiContainer').innerHTML = `
-        <h5 style="margin: 0 0 12px 0; color: #666; font-weight: 500;">Quick Stats</h5>
-        <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; font-size: 14px;">
-            <div style="margin-bottom: 8px;">📊 Total Categories: <strong>10</strong></div>
-            <div style="margin-bottom: 8px;">📈 Total Indicators: <strong>127</strong></div>
-            <div>🏥 Districts Covered: <strong>32</strong></div>
+        <div class="analytics-header">
+            <div class="header-content">
+                <span class="material-icons">dashboard</span>
+                <div class="header-text">
+                    <div class="title">Dashboard Overview</div>
+                    <div class="subtitle">Tamil Nadu Health Indicators</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><span class="material-icons">category</span></div>
+                <div class="stat-content">
+                    <div class="stat-number">10</div>
+                    <div class="stat-label">Health Categories</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon"><span class="material-icons">location_on</span></div>
+                <div class="stat-content">
+                    <div class="stat-number">32</div>
+                    <div class="stat-label">Districts Covered</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="survey-breakdown">
+            <div class="breakdown-header">
+                <span class="material-icons">poll</span>
+                <span>Survey Data Coverage</span>
+            </div>
+            <div class="survey-stats">
+                <div class="survey-item">
+                    <div class="survey-name">NFHS-4 (2015-16)</div>
+                    <div class="survey-count">93 Indicators</div>
+                </div>
+                <div class="survey-item">
+                    <div class="survey-name">NFHS-5 (2019-21)</div>
+                    <div class="survey-count">104 Indicators</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="indicator-breakdown">
+            <div class="breakdown-header">
+                <span class="material-icons">analytics</span>
+                <span>Indicator Classification</span>
+            </div>
+            <div class="indicator-stats">
+                <div class="indicator-item positive">
+                    <div class="indicator-dot"></div>
+                    <div class="indicator-info">
+                        <div class="indicator-type">Positive Indicators</div>
+                        <div class="indicator-desc">74 indicators (Higher is better)</div>
+                    </div>
+                </div>
+                <div class="indicator-item negative">
+                    <div class="indicator-dot"></div>
+                    <div class="indicator-info">
+                        <div class="indicator-type">Negative Indicators</div>
+                        <div class="indicator-desc">47 indicators (Lower is better)</div>
+                    </div>
+                </div>
+                <div class="indicator-item neutral">
+                    <div class="indicator-dot"></div>
+                    <div class="indicator-info">
+                        <div class="indicator-type">Neutral Indicators</div>
+                        <div class="indicator-desc">7 indicators (Demographic data)</div>
+                    </div>
+                </div>
+            </div>
         </div>
     `;
 }
