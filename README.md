@@ -131,6 +131,9 @@ Insight360TN/
 
 ## 🚀 Deployment & Usage
 
+### Live Access
+**🌐 [https://insight360tn.web.app](https://insight360tn.web.app)**
+
 ### System Requirements
 - **Web Server**: Any HTTP server (Apache, Nginx, or local server)
 - **Browser Compatibility**: Chrome 80+, Firefox 75+, Safari 13+, Edge 80+
@@ -329,7 +332,7 @@ Visualization and Analysis Using NFHS Surveys. Directorate of Public Health, Gov
 
 ## 🔗 Links & Resources
 
-- **Live Demo**: [GitHub Pages Deployment]
+- **Live Application**: [https://insight360tn.web.app](https://insight360tn.web.app)
 - **Source Code**: [GitHub Repository](https://github.com/drsivambbs/Insight360TN)
 - **NFHS Official**: [http://rchiips.org/nfhs/](http://rchiips.org/nfhs/)
 - **Tamil Nadu Health**: [https://www.tn.gov.in/health](https://www.tn.gov.in/health)

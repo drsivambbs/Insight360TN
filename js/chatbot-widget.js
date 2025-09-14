@@ -98,13 +98,21 @@ async function loadChatData() {
   }
   
   try {
-    const [dataResponse, categoriesResponse] = await Promise.all([
-      fetch('./dashboard_files/master_nfhs_data.json'),
-      fetch('./dashboard_files/nfhs_indicator_categories.json')
-    ]);
-    const data = await dataResponse.json();
-    const categories = await categoriesResponse.json();
-    chatbotNfhsData = { districts: data.districts, categories: categories.categories };
+    // Use preloaded data if available
+    if (window.preloadedData) {
+      const data = window.preloadedData['./dashboard_files/master_nfhs_data.json'];
+      const categories = window.preloadedData['./dashboard_files/nfhs_indicator_categories.json'];
+      chatbotNfhsData = { districts: data.districts, categories: categories.categories };
+    } else {
+      // Fallback to fetch if preloaded data not available
+      const [dataResponse, categoriesResponse] = await Promise.all([
+        fetch('./dashboard_files/master_nfhs_data.json'),
+        fetch('./dashboard_files/nfhs_indicator_categories.json')
+      ]);
+      const data = await dataResponse.json();
+      const categories = await categoriesResponse.json();
+      chatbotNfhsData = { districts: data.districts, categories: categories.categories };
+    }
   } catch (error) {
     console.error('Error loading chat data:', error);
   }
