@@ -1,0 +1,10 @@
+{
+  "name": "insight360tn",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {},
+  "scripts": {
+    "install": "npm install",
+    "setup": "node setup-firebase.js"
+  }
+}

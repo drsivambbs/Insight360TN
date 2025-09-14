@@ -171,7 +171,7 @@
       <span class="material-icons" style="font-size:20px">menu</span>
     </div>
     <div id="menuItems" style="position:absolute;bottom:60px;right:0;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.3);padding:8px;display:none;flex-direction:column;gap:6px;min-width:140px">
-      <div style="background:linear-gradient(135deg,#2563eb,#1e40af);color:white;padding:10px 12px;border-radius:8px;cursor:pointer;transition:all 0.2s ease;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500" onclick="window.location.href='index.html'">
+      <div style="background:linear-gradient(135deg,#2563eb,#1e40af);color:white;padding:10px 12px;border-radius:8px;cursor:pointer;transition:all 0.2s ease;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500" onclick="window.location.href='../index.html'">
         <span class="material-icons" style="font-size:16px">home</span>
         <span>Home</span>
       </div>
@@ -199,9 +199,9 @@
 
     // Load all data (user's local files assumed) and initialize
     Promise.all([
-      fetch('./dashboard_files/nfhs_indicator_categories.json').then(r=>r.json()),
-      fetch('./dashboard_files/master_nfhs_data.json').then(r=>r.json()),
-      fetch('./dashboard_files/tn_district.geojson').then(r=>r.json())
+      fetch('../dashboard_files/nfhs_indicator_categories.json').then(r=>r.json()),
+      fetch('../dashboard_files/master_nfhs_data.json').then(r=>r.json()),
+      fetch('../dashboard_files/tn_district.geojson').then(r=>r.json())
     ]).then(([categories, nfhs, geojson]) => {
       console.log('Data loaded successfully:', { categories, nfhs, geojson });
       categoriesData = categories;
