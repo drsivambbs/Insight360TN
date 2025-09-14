@@ -25,7 +25,7 @@
     }
 
     html,body,#app{height:100vh;margin:0;background:var(--bg);overflow:hidden}
-    .app{display:grid;grid-template-columns:320px 1fr 360px;gap:12px;padding:12px;height:100vh;align-items:start;box-sizing:border-box}
+    .app{display:grid;grid-template-columns:320px 1fr;gap:12px;padding:12px;height:100vh;align-items:start;box-sizing:border-box}
 
     /* Header */
     .header{grid-column:1/-1;background:var(--card);padding:8px 20px;border-radius:8px;box-shadow:0 2px 8px rgba(2,6,23,0.04);border-bottom:1px solid #e6eefb;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
@@ -79,6 +79,7 @@
 
     /* Right Panel */
     .right{display:flex;flex-direction:column;gap:16px;height:calc(90vh - 80px);overflow-y:auto}
+    .sidebar, .right .card{height:100vh}
 
     /* Tables */
     table{width:100%;border-collapse:collapse;font-size:13px}
@@ -138,7 +139,7 @@
         <h4 style="margin:0 0 12px;text-align:center">NFHS-4 vs NFHS-5 Progress</h4>
         <div style="position:relative;height:150px;display:flex;align-items:center;justify-content:center">
           <canvas id="progressChart" width="150" height="150"></canvas>
-          <div id="chartPlaceholder" style="color:var(--muted);text-align:center;font-size:12px">Select a district to view progress</div>
+          <div id="chartPlaceholder" style="color:var(--muted);text-align:center;font-size:12px"></div>
         </div>
         <div id="progressLegend" style="margin-top:12px;display:none">
           <div style="display:flex;justify-content:space-around;font-size:12px">
@@ -159,38 +160,23 @@
       </div>
     </aside>
 
-    <!-- Main Content -->
-    <main class="main">
-      <!-- Overall Performance -->
-      <div class="card">
-        <h3>Overall Performance</h3>
-        <div id="overallPerformance">
-          <p style="color:var(--muted);text-align:center;padding:20px">Select a district to view performance</p>
-        </div>
-      </div>
 
-      <!-- Category Performance -->
-      <div class="card">
-        <h3>Category-wise Performance</h3>
-        <div id="categoryPerformance">
-          <p style="color:var(--muted);text-align:center;padding:20px">Select a district to view categories</p>
-        </div>
-      </div>
-
-
-    </main>
 
     <!-- Right Panel -->
     <aside class="right">
       <!-- Category Rankings -->
-      <div class="card">
-        <h3>Category-wise Median Ranks</h3>
+      <div class="card" style="padding:16px;height:100vh;overflow-y:auto;box-sizing:border-box">
+        <div style="text-align:center;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #f1f5f9">
+          <h3 style="margin:0 0 4px;color:#1f2937;font-size:16px;font-weight:700;letter-spacing:0.5px">HEALTH CATEGORY PERFORMANCE</h3>
+          <div style="font-size:11px;color:#6b7280;font-weight:500;display:flex;align-items:center;justify-content:center;gap:4px">
+            <span class="material-icons" style="font-size:14px">touch_app</span>
+            Click on any category for detailed indicators
+          </div>
+        </div>
         <div id="categoryRankings">
           <p style="color:var(--muted);text-align:center;padding:20px">Select a district to view category rankings</p>
         </div>
       </div>
-
-
     </aside>
   </div>
 
@@ -220,6 +206,8 @@
     let nfhsData, categoriesData, currentDistrict = '';
     let menuOpen = false;
     let progressChart = null;
+    let rankingChart = null;
+    let currentSurvey = 'nfhs_5';
 
     // Load data and initialize
     Promise.all([
@@ -229,6 +217,7 @@
       nfhsData = nfhs;
       categoriesData = categories;
       populateDistrictSelector();
+      populateFilters();
     }).catch(err => {
       console.error('Failed to load data', err);
       alert('Failed to load data files.');
@@ -259,6 +248,7 @@
       
       // Load Ariyalur data by default
       loadDistrictData();
+      console.log('District selector populated, default district loaded');
     }
 
     function loadDistrictData() {
@@ -292,9 +282,8 @@
       // Update all sections
       updateDistrictInfo(currentDistrict, rankings);
       updateProgressChart(rankings);
-      updateOverallPerformance(rankings);
-      updateCategoryPerformance(rankings);
       updateCategoryRankings(rankings);
+      updateChart();
 
     }
 
@@ -423,71 +412,30 @@
               <span class="material-icons" style="font-size:18px;color:${iconColor}">${iconName}</span>
             </div>
             <div>
-              <div style="font-size:11px;color:#374151;font-weight:700;margin-bottom:2px">Overall Performance</div>
-              <div style="font-size:9px;color:#6b7280;text-transform:uppercase;letter-spacing:0.3px">District Health Ranking</div>
+              <div style="font-size:14px;color:#374151;font-weight:700;margin-bottom:2px">Overall Performance</div>
+              <div style="font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:0.3px">District Health Ranking</div>
             </div>
           </div>
           
           <div style="text-align:center;margin:12px 0">
-            <div style="font-size:32px;font-weight:800;color:${iconColor};line-height:1">
-              ${overallRank}<span style="font-size:16px;color:#6b7280;font-weight:500">/32</span>
+            <div style="font-size:36px;font-weight:800;color:${iconColor};line-height:1">
+              ${overallRank}<span style="font-size:18px;color:#6b7280;font-weight:500">/32</span>
             </div>
-            <div style="font-size:10px;color:#6b7280;margin-top:2px;font-weight:600">MEDIAN RANK</div>
+            <div style="font-size:12px;color:#6b7280;margin-top:2px;font-weight:600">MEDIAN RANK</div>
           </div>
           
           <div style="display:flex;align-items:center;gap:6px;padding:4px 8px;border-radius:6px;background:${bgColor};border:1px solid ${borderColor}">
             <span class="material-icons" style="font-size:12px;color:${iconColor}">${level === 'good' ? 'check_circle' : level === 'average' ? 'info' : 'warning'}</span>
-            <span style="color:${iconColor};font-size:10px;font-weight:700;flex:1">${getPerformanceLabel(overallRank)}</span>
-            <div style="font-size:8px;color:${iconColor};opacity:0.7;font-weight:600">${level === 'good' ? 'EXCELLENT' : level === 'average' ? 'MODERATE' : 'PRIORITY'}</div>
+            <span style="color:${iconColor};font-size:12px;font-weight:700;flex:1">${getPerformanceLabel(overallRank)}</span>
+            <div style="font-size:10px;color:${iconColor};opacity:0.7;font-weight:600">${level === 'good' ? 'EXCELLENT' : level === 'average' ? 'MODERATE' : 'PRIORITY'}</div>
           </div>
         </div>
       `;
     }
 
-    function updateOverallPerformance(rankings) {
-      const container = document.getElementById('overallPerformance');
-      const rank4 = Math.round(rankings.overall.nfhs4 || 0);
-      const rank5 = Math.round(rankings.overall.nfhs5 || 0);
-      const currentRank = rank5 || rank4;
-      const level = getPerformanceLevel(currentRank);
-      const trend = getTrendIcon(rank4, rank5);
-      
-      container.innerHTML = `
-        <div class="performance-grid">
-          <div class="performance-card ${level}">
-            <div class="rank-label">Overall Median Rank</div>
-            <div class="rank-number" style="color:${level === 'good' ? 'var(--success)' : level === 'average' ? 'var(--warning)' : 'var(--danger)'}">${currentRank}</div>
-            <div class="performance-label">${getPerformanceLabel(currentRank)}</div>
-            <div class="trend-indicator">
-              <span style="font-size:18px">${trend}</span>
-              <span>NFHS-4 to NFHS-5</span>
-            </div>
-          </div>
-        </div>
-      `;
-    }
 
-    function updateCategoryPerformance(rankings) {
-      const container = document.getElementById('categoryPerformance');
-      let html = '<div class="category-grid">';
-      
-      Object.entries(rankings.categories).forEach(([catKey, catData]) => {
-        const rank5 = Math.round(catData.nfhs5Median || catData.nfhs4Median || 0);
-        const level = getPerformanceLevel(rank5);
-        
-        html += `
-          <div class="category-item">
-            <div style="font-size:14px;font-weight:500">${catKey.replace(/_/g, ' ')}</div>
-            <div class="category-rank">
-              <span class="rank-badge ${level}">${rank5}/32</span>
-            </div>
-          </div>
-        `;
-      });
-      
-      html += '</div>';
-      container.innerHTML = html;
-    }
+
+
 
     function updateProgressChart(rankings) {
       const canvas = document.getElementById('progressChart');
@@ -565,37 +513,61 @@
       const average = categoriesArray.filter(cat => cat.level === 'average').sort((a, b) => a.currentRank - b.currentRank);
       const poor = categoriesArray.filter(cat => cat.level === 'poor').sort((a, b) => a.currentRank - b.currentRank);
       
-      let html = '<div style="display:flex;flex-direction:column;gap:8px">';
+      let html = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;height:100%">';
       
-      // Good performers
+      // Strengths Column (Green)
+      html += '<div style="background:linear-gradient(135deg,#dcfce7,#bbf7d0);border-radius:12px;padding:12px;border:2px solid #10b981">';
+      html += '<div style="text-align:center;margin-bottom:16px">';
+      html += '<div style="background:#10b981;color:white;padding:12px;border-radius:10px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 2px 8px rgba(16,185,129,0.3)">';
+      html += '<span class="material-icons" style="font-size:15px">trending_up</span>STRENGTHS';
+      html += '</div></div>';
       if (good.length > 0) {
-        html += '<div style="margin-bottom:8px">';
-        html += '<div style="font-size:10px;color:#059669;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;display:flex;align-items:center;gap:4px"><span class="material-icons" style="font-size:12px">trending_up</span>Strengths</div>';
         good.forEach(cat => {
-          html += `<div class="category-item" data-category="${cat.catKey}" data-nfhs4="${cat.nfhs4Rank}" data-nfhs5="${cat.nfhs5Rank}" data-trend="${cat.trend}" style="padding:8px 10px;margin-bottom:4px;border-radius:6px;background:#dcfce7;border-left:3px solid #059669;cursor:pointer;transition:all 0.2s ease;font-size:13px;font-weight:600;color:#059669" onmouseover="this.style.background='#bbf7d0'" onmouseout="this.style.background='#dcfce7'" onclick="toggleCategoryDetails(this)">${cat.catKey.replace(/_/g, ' ')}</div>`;
+          html += `<div style="background:rgba(255,255,255,0.8);padding:12px;margin-bottom:8px;border-radius:8px;font-size:11px;font-weight:600;color:#065f46;border-left:4px solid #10b981;cursor:pointer;transition:all 0.2s ease;box-shadow:0 2px 4px rgba(0,0,0,0.05)" onclick="toggleCategoryDetails(this)" data-category="${cat.catKey}" data-nfhs4="${cat.nfhs4Rank}" data-nfhs5="${cat.nfhs5Rank}" data-trend="${cat.trend}" onmouseover="this.style.background='rgba(255,255,255,1)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='rgba(255,255,255,0.8)';this.style.transform='translateY(0)'">`;
+          html += `<div style="font-weight:700;margin-bottom:4px;font-size:12px">${cat.catKey.replace(/_/g, ' ')}</div>`;
+          html += `<div style="font-size:10px;opacity:0.8;font-weight:500">Rank: ${cat.currentRank}/32</div>`;
+          html += '</div>';
         });
-        html += '</div>';
+      } else {
+        html += '<div style="text-align:center;color:#6b7280;font-size:11px;padding:20px">No categories in this range</div>';
       }
+      html += '</div>';
       
-      // Average performers
+      // Moderate Column (Yellow)
+      html += '<div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:12px;padding:12px;border:2px solid #f59e0b">';
+      html += '<div style="text-align:center;margin-bottom:12px">';
+      html += '<div style="background:#f59e0b;color:white;padding:12px;border-radius:10px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 2px 8px rgba(245,158,11,0.3)">';
+      html += '<span class="material-icons" style="font-size:15px">trending_flat</span>MODERATE';
+      html += '</div></div>';
       if (average.length > 0) {
-        html += '<div style="margin-bottom:8px">';
-        html += '<div style="font-size:10px;color:#b45309;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;display:flex;align-items:center;gap:4px"><span class="material-icons" style="font-size:12px">trending_flat</span>Moderate</div>';
         average.forEach(cat => {
-          html += `<div class="category-item" data-category="${cat.catKey}" data-nfhs4="${cat.nfhs4Rank}" data-nfhs5="${cat.nfhs5Rank}" data-trend="${cat.trend}" style="padding:8px 10px;margin-bottom:4px;border-radius:6px;background:#fbbf24;border-left:3px solid #b45309;cursor:pointer;transition:all 0.2s ease;font-size:13px;font-weight:600;color:#b45309" onmouseover="this.style.background='#fcd34d'" onmouseout="this.style.background='#fbbf24'" onclick="toggleCategoryDetails(this)">${cat.catKey.replace(/_/g, ' ')}</div>`;
+          html += `<div style="background:rgba(255,255,255,0.8);padding:12px;margin-bottom:8px;border-radius:8px;font-size:11px;font-weight:600;color:#92400e;border-left:4px solid #f59e0b;cursor:pointer;transition:all 0.2s ease;box-shadow:0 2px 4px rgba(0,0,0,0.05)" onclick="toggleCategoryDetails(this)" data-category="${cat.catKey}" data-nfhs4="${cat.nfhs4Rank}" data-nfhs5="${cat.nfhs5Rank}" data-trend="${cat.trend}" onmouseover="this.style.background='rgba(255,255,255,1)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='rgba(255,255,255,0.8)';this.style.transform='translateY(0)'">`;
+          html += `<div style="font-weight:700;margin-bottom:4px;font-size:12px">${cat.catKey.replace(/_/g, ' ')}</div>`;
+          html += `<div style="font-size:10px;opacity:0.8;font-weight:500">Rank: ${cat.currentRank}/32</div>`;
+          html += '</div>';
         });
-        html += '</div>';
+      } else {
+        html += '<div style="text-align:center;color:#6b7280;font-size:11px;padding:20px">No categories in this range</div>';
       }
+      html += '</div>';
       
-      // Poor performers
+      // Priority Column (Red)
+      html += '<div style="background:linear-gradient(135deg,#fee2e2,#fecaca);border-radius:12px;padding:12px;border:2px solid #ef4444">';
+      html += '<div style="text-align:center;margin-bottom:12px">';
+      html += '<div style="background:#ef4444;color:white;padding:12px;border-radius:10px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 2px 8px rgba(239,68,68,0.3)">';
+      html += '<span class="material-icons" style="font-size:15px">trending_down</span>PRIORITY';
+      html += '</div></div>';
       if (poor.length > 0) {
-        html += '<div style="margin-bottom:8px">';
-        html += '<div style="font-size:10px;color:#dc2626;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;display:flex;align-items:center;gap:4px"><span class="material-icons" style="font-size:12px">trending_down</span>Priority</div>';
         poor.forEach(cat => {
-          html += `<div class="category-item" data-category="${cat.catKey}" data-nfhs4="${cat.nfhs4Rank}" data-nfhs5="${cat.nfhs5Rank}" data-trend="${cat.trend}" style="padding:8px 10px;margin-bottom:4px;border-radius:6px;background:#fee2e2;border-left:3px solid #dc2626;cursor:pointer;transition:all 0.2s ease;font-size:13px;font-weight:600;color:#dc2626" onmouseover="this.style.background='#fecaca'" onmouseout="this.style.background='#fee2e2'" onclick="toggleCategoryDetails(this)">${cat.catKey.replace(/_/g, ' ')}</div>`;
+          html += `<div style="background:rgba(255,255,255,0.8);padding:12px;margin-bottom:8px;border-radius:8px;font-size:11px;font-weight:600;color:#991b1b;border-left:4px solid #ef4444;cursor:pointer;transition:all 0.2s ease;box-shadow:0 2px 4px rgba(0,0,0,0.05)" onclick="toggleCategoryDetails(this)" data-category="${cat.catKey}" data-nfhs4="${cat.nfhs4Rank}" data-nfhs5="${cat.nfhs5Rank}" data-trend="${cat.trend}" onmouseover="this.style.background='rgba(255,255,255,1)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='rgba(255,255,255,0.8)';this.style.transform='translateY(0)'">`;
+          html += `<div style="font-weight:700;margin-bottom:4px;font-size:12px">${cat.catKey.replace(/_/g, ' ')}</div>`;
+          html += `<div style="font-size:10px;opacity:0.8;font-weight:500">Rank: ${cat.currentRank}/32</div>`;
+          html += '</div>';
         });
-        html += '</div>';
+      } else {
+        html += '<div style="text-align:center;color:#6b7280;font-size:11px;padding:20px">No categories in this range</div>';
       }
+      html += '</div>';
       
       html += '</div>';
       container.innerHTML = html;
@@ -640,124 +612,7 @@
     }
     
     function showCategoryTable(categoryKey) {
-      if (!nfhsData || !categoriesData) return;
-      
-      const categoryData = categoriesData.categories[categoryKey];
-      if (!categoryData) return;
-      
-      const indicators = categoryData.indicators.map(i => typeof i === 'string' ? i : i.name).filter(Boolean);
-      
-      // Get indicator data for current district
-      const districtData = nfhsData.districts[currentDistrict];
-      if (!districtData) return;
-      
-      const tableData = [];
-      indicators.forEach(indicator => {
-        const nfhs4Value = districtData.nfhs_4 && districtData.nfhs_4[indicator];
-        const nfhs5Value = districtData.nfhs_5 && districtData.nfhs_5[indicator];
-        
-        if (nfhs4Value !== undefined || nfhs5Value !== undefined) {
-          // Calculate ranks for this indicator
-          const indicatorType = getIndicatorTypeFromCategories(indicator);
-          const nfhs4Ranks = calculateIndicatorRanks(indicator, 'nfhs_4', indicatorType);
-          const nfhs5Ranks = calculateIndicatorRanks(indicator, 'nfhs_5', indicatorType);
-          
-          const nfhs4Rank = nfhs4Ranks[currentDistrict] || 'N/A';
-          const nfhs5Rank = nfhs5Ranks[currentDistrict] || 'N/A';
-          const latestRank = nfhs5Rank !== 'N/A' ? nfhs5Rank : nfhs4Rank;
-          
-          tableData.push({
-            indicator,
-            nfhs4Value: nfhs4Value || 'N/A',
-            nfhs5Value: nfhs5Value || 'N/A',
-            nfhs4Rank,
-            nfhs5Rank,
-            latestRank,
-            sortOrder: getSortOrder(latestRank)
-          });
-        }
-      });
-      
-      // Create popup
-      const popup = document.createElement('div');
-      popup.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
-      
-      const modal = document.createElement('div');
-      modal.style.cssText = 'background:white;border-radius:16px;padding:24px;width:85%;max-width:900px;height:80vh;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.25);display:flex;flex-direction:column';
-      
-      const header = document.createElement('div');
-      header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:2px solid #f1f5f9;padding-bottom:16px;flex-shrink:0';
-      header.innerHTML = `
-        <div>
-          <h3 style="margin:0;color:#1e293b;font-weight:700;font-size:18px">${categoryKey.replace(/_/g, ' ')} - Detailed Indicators</h3>
-          <div style="margin:8px 0 0;color:#64748b;font-size:12px">${capitalizeWords(currentDistrict)} District • NFHS Data</div>
-        </div>
-        <div style="background:linear-gradient(135deg,#ef4444,#dc2626);color:white;padding:8px;border-radius:8px;cursor:pointer;box-shadow:0 2px 8px rgba(239,68,68,0.3)" onclick="this.parentElement.parentElement.parentElement.remove()">
-          <span class="material-icons" style="font-size:18px">close</span>
-        </div>
-      `;
-      
-      const content = document.createElement('div');
-      content.style.cssText = 'flex:1;overflow-y:auto;margin-top:8px';
-      
-      if (tableData.length === 0) {
-        content.innerHTML = `
-          <div style="text-align:center;padding:40px;color:var(--muted)">
-            <span class="material-icons" style="font-size:48px;color:#e2e8f0;margin-bottom:16px">table_view</span>
-            <div style="font-size:16px;font-weight:600;margin-bottom:8px">No Data Available</div>
-            <div style="font-size:14px">No matching indicators found for this category in the selected district.</div>
-          </div>
-        `;
-      } else {
-        content.innerHTML = `
-          <table style="width:100%;border-collapse:collapse;font-size:13px">
-            <thead>
-              <tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0">
-                <th style="text-align:left;padding:12px 8px;font-weight:700;color:#374151">Indicator</th>
-                <th style="text-align:center;padding:12px 8px;font-weight:700;color:#374151">NFHS-4 Value</th>
-                <th style="text-align:center;padding:12px 8px;font-weight:700;color:#374151">NFHS-4 Rank</th>
-                <th style="text-align:center;padding:12px 8px;font-weight:700;color:#374151">NFHS-5 Value</th>
-                <th style="text-align:center;padding:12px 8px;font-weight:700;color:#374151">NFHS-5 Rank</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${tableData.map((row, index) => {
-                const latestRank = row.nfhs5Rank !== 'N/A' ? row.nfhs5Rank : row.nfhs4Rank;
-                const rankColor = getRankColor(latestRank);
-                const bgColor = getRowBackgroundColor(latestRank);
-                const borderColor = getRowBorderColor(latestRank);
-                
-                return `
-                <tr style="border-bottom:1px solid #f1f5f9;background:${bgColor};border-left:4px solid ${borderColor};transition:all 0.2s ease" onmouseover="this.style.transform='translateX(2px)'" onmouseout="this.style.transform='translateX(0)'">
-                  <td style="padding:10px 12px;font-weight:600;color:#1e293b">
-                    <div style="display:flex;align-items:center;gap:8px">
-                      <div style="width:8px;height:8px;border-radius:50%;background:${rankColor}"></div>
-                      <span>${row.indicator}</span>
-                    </div>
-                  </td>
-                  <td style="padding:10px 8px;text-align:center;color:#374151;font-weight:500">${row.nfhs4Value}</td>
-                  <td style="padding:10px 8px;text-align:center">
-                    <span style="background:${getRankBadgeColor(row.nfhs4Rank)};color:white;padding:2px 6px;border-radius:10px;font-size:11px;font-weight:700">${row.nfhs4Rank}</span>
-                  </td>
-                  <td style="padding:10px 8px;text-align:center;color:#374151;font-weight:500">${row.nfhs5Value}</td>
-                  <td style="padding:10px 8px;text-align:center">
-                    <span style="background:${getRankBadgeColor(row.nfhs5Rank)};color:white;padding:2px 6px;border-radius:10px;font-size:11px;font-weight:700">${row.nfhs5Rank}</span>
-                  </td>
-                </tr>
-              `;
-              }).join('')}
-            </tbody>
-          </table>
-        `;
-      }
-      
-      modal.appendChild(header);
-      modal.appendChild(content);
-      popup.appendChild(modal);
-      document.body.appendChild(popup);
-      
-      // Close on background click
-      popup.onclick = (e) => { if(e.target === popup) popup.remove(); };
+      window.location.href = `category-details.html?category=${encodeURIComponent(categoryKey)}&district=${encodeURIComponent(currentDistrict)}`;
     }
     
     function getIndicatorTypeFromCategories(indicator) {
@@ -855,7 +710,7 @@
     }
 
     function resetViews() {
-      const containers = ['districtInfo', 'overallPerformance', 'categoryPerformance', 'categoryRankings'];
+      const containers = ['districtInfo', 'categoryRankings'];
       containers.forEach(id => {
         document.getElementById(id).innerHTML = '<p style="color:var(--muted);text-align:center;padding:20px">Select a district to view data</p>';
       });
@@ -896,6 +751,686 @@
         toggleMenu();
       }
     });
+
+    // Chart Functions
+    function populateFilters() {
+      const categorySelect = document.getElementById('categoryFilter');
+      if (!categorySelect) return;
+      Object.keys(categoriesData.categories).forEach(catKey => {
+        const option = document.createElement('option');
+        option.value = catKey;
+        option.textContent = catKey.replace(/_/g, ' ');
+        categorySelect.appendChild(option);
+      });
+    }
+
+    function toggleSurvey(survey) {
+      currentSurvey = survey;
+      
+      const nfhs4Btn = document.getElementById('nfhs4Btn');
+      const nfhs5Btn = document.getElementById('nfhs5Btn');
+      
+      if (survey === 'nfhs_4') {
+        nfhs4Btn.style.background = 'var(--accent)';
+        nfhs4Btn.style.color = 'white';
+        nfhs5Btn.style.background = '#f8fafc';
+        nfhs5Btn.style.color = 'var(--muted)';
+      } else {
+        nfhs5Btn.style.background = 'var(--accent)';
+        nfhs5Btn.style.color = 'white';
+        nfhs4Btn.style.background = '#f8fafc';
+        nfhs4Btn.style.color = 'var(--muted)';
+      }
+      
+      updateChart();
+    }
+
+    function updateChart() {
+      console.log('updateChart called - currentDistrict:', currentDistrict, 'currentSurvey:', currentSurvey);
+      
+      if (!currentDistrict) {
+        console.log('No current district, showing placeholder');
+        showChartPlaceholder();
+        return;
+      }
+      
+      const categoryFilter = document.getElementById('categoryFilter');
+      if (!categoryFilter) {
+        console.log('No category filter found');
+        return;
+      }
+      
+      const category = categoryFilter.value;
+      console.log('Selected category:', category);
+      
+      if (!category) {
+        console.log('No category selected, showing placeholder');
+        showChartPlaceholder();
+        return;
+      }
+      
+      document.getElementById('chartTitle').textContent = `${capitalizeWords(currentDistrict)} - ${category.replace(/_/g, ' ')} Indicators`;
+      
+      const chartData = generateIndicatorChartData(category, currentSurvey);
+      renderChart(chartData, category.replace(/_/g, ' '), currentSurvey);
+    }
+
+
+    
+    function generateIndicatorChartData(category, survey) {
+      const categoryData = categoriesData.categories[category];
+      if (!categoryData) {
+        console.log('No category data found for:', category);
+        return [];
+      }
+      
+      const districtData = nfhsData.districts[currentDistrict];
+      if (!districtData || !districtData[survey]) {
+        console.log('No district data found for:', currentDistrict, survey);
+        return [];
+      }
+      
+      const data = [];
+      categoryData.indicators.forEach(indicator => {
+        const indName = typeof indicator === 'string' ? indicator : indicator.name;
+        const indType = typeof indicator === 'object' ? indicator.indicator_type : 'Positive';
+        
+        // Check if indicator exists in district data
+        const value = districtData[survey][indName];
+        if (value !== undefined && value !== null && value !== '') {
+          const ranks = calculateIndicatorRanks(indName, survey, indType);
+          const rank = ranks[currentDistrict];
+          
+          if (rank) {
+            data.push({
+              label: indName,
+              value: rank,
+              level: getPerformanceLevel(rank)
+            });
+          }
+        }
+      });
+      
+      console.log('Generated chart data:', data);
+      return data.sort((a, b) => a.value - b.value);
+    }
+
+    function renderChart(data, title, survey) {
+      console.log('Rendering chart with data:', data);
+      
+      const canvas = document.getElementById('rankingChart');
+      const placeholder = document.getElementById('chartPlaceholder');
+      const chartWrapper = document.getElementById('chartWrapper');
+      
+      if (!data || !data.length) {
+        console.log('No data to render chart');
+        showChartPlaceholder();
+        return;
+      }
+      
+      chartWrapper.style.display = 'block';
+      placeholder.style.display = 'none';
+      
+      if (rankingChart) {
+        rankingChart.destroy();
+      }
+      
+      const ctx = canvas.getContext('2d');
+      
+      const labels = data.map(d => d.label);
+      const values = data.map(d => d.value);
+      
+      const backgroundColors = data.map(d => {
+        return d.level === 'good' ? '#10b981' : d.level === 'average' ? '#f59e0b' : '#ef4444';
+      });
+      
+      try {
+        rankingChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Rank',
+              data: values,
+              backgroundColor: backgroundColors,
+              borderColor: backgroundColors,
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            layout: {
+              padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+              }
+            },
+            plugins: {
+              legend: {
+                display: false
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return `Rank: ${context.parsed.x}/32`;
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                beginAtZero: true,
+                max: 32,
+                title: {
+                  display: true,
+                  text: 'District Rank (1 = Best Performance, 32 = Needs Improvement)',
+                  font: { 
+                    size: 12,
+                    weight: '600',
+                    family: 'Inter'
+                  },
+                  color: '#1f2937'
+                },
+                ticks: {
+                  font: { 
+                    size: 11,
+                    weight: '500'
+                  },
+                  color: '#6b7280'
+                },
+                grid: {
+                  color: '#f3f4f6',
+                  lineWidth: 1
+                }
+              },
+              y: {
+                title: {
+                  display: false
+                },
+                ticks: {
+                  font: { 
+                    size: 11,
+                    weight: '500',
+                    family: 'Inter'
+                  },
+                  color: '#374151',
+                  maxTicksLimit: 15,
+                  padding: 8,
+                  callback: function(value, index, values) {
+                    const label = this.getLabelForValue(value);
+                    if (label.length > 50) {
+                      return label.substring(0, 47) + '...';
+                    }
+                    return label;
+                  }
+                },
+                grid: {
+                  display: false
+                }
+              }
+            }
+          }
+        });
+        console.log('Chart rendered successfully');
+      } catch (error) {
+        console.error('Error rendering chart:', error);
+        showChartPlaceholder();
+      }
+    }
+
+    function showChartPlaceholder() {
+      const chartWrapper = document.getElementById('chartWrapper');
+      const placeholder = document.getElementById('chartPlaceholder');
+      
+      chartWrapper.style.display = 'none';
+      placeholder.style.display = 'flex';
+      
+      if (rankingChart) {
+        rankingChart.destroy();
+        rankingChart = null;
+      }
+    }
+
+    function resetFilters() {
+      currentSurvey = 'nfhs_5';
+      toggleSurvey('nfhs_5');
+      document.getElementById('categoryFilter').value = '';
+      showChartPlaceholder();
+    }
+
+    function showCategoryChart(categoryKey) {
+      if (!nfhsData || !categoriesData) return;
+      
+      const categoryData = categoriesData.categories[categoryKey];
+      if (!categoryData) return;
+
+      const indicators = categoryData.indicators.map(i => typeof i === 'string' ? i : i.name).filter(Boolean);
+      const districtData = nfhsData.districts[currentDistrict];
+      if (!districtData) return;
+      
+      // Calculate trend categories
+      const trendData = { improved: 0, decreased: 0, noChange: 0, insufficientData: 0 };
+      indicators.forEach(indicator => {
+        const nfhs4Value = districtData.nfhs_4 && districtData.nfhs_4[indicator];
+        const nfhs5Value = districtData.nfhs_5 && districtData.nfhs_5[indicator];
+        
+        if (nfhs4Value !== undefined && nfhs5Value !== undefined && nfhs4Value !== null && nfhs5Value !== null && nfhs4Value !== '' && nfhs5Value !== '') {
+          const indicatorType = getIndicatorTypeFromCategories(indicator);
+          const nfhs4Ranks = calculateIndicatorRanks(indicator, 'nfhs_4', indicatorType);
+          const nfhs5Ranks = calculateIndicatorRanks(indicator, 'nfhs_5', indicatorType);
+          
+          const nfhs4Rank = nfhs4Ranks[currentDistrict];
+          const nfhs5Rank = nfhs5Ranks[currentDistrict];
+          
+          if (nfhs4Rank && nfhs5Rank) {
+            if (nfhs5Rank < nfhs4Rank) trendData.improved++;
+            else if (nfhs5Rank > nfhs4Rank) trendData.decreased++;
+            else trendData.noChange++;
+          } else {
+            trendData.insufficientData++;
+          }
+        } else {
+          trendData.insufficientData++;
+        }
+      });
+      
+      // Create popup
+      const popup = document.createElement('div');
+      popup.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
+      
+      const modal = document.createElement('div');
+      modal.style.cssText = 'background:white;border-radius:16px;padding:24px;width:85%;max-width:900px;height:80vh;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.25);display:flex;flex-direction:column';
+      
+      const header = document.createElement('div');
+      header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:2px solid #f1f5f9;padding-bottom:16px;flex-shrink:0';
+      header.innerHTML = `
+        <div>
+          <h3 style="margin:0;color:#1e293b;font-weight:700;font-size:18px">${categoryKey.replace(/_/g, ' ')} - Trend Analysis</h3>
+          <div style="margin:8px 0 0;color:#64748b;font-size:12px">${capitalizeWords(currentDistrict)} District • NFHS-4 vs NFHS-5 Ranking Changes</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#ef4444,#dc2626);color:white;padding:8px;border-radius:8px;cursor:pointer;box-shadow:0 2px 8px rgba(239,68,68,0.3)" onclick="this.parentElement.parentElement.parentElement.remove()">
+          <span class="material-icons" style="font-size:18px">close</span>
+        </div>
+      `;
+      
+      const content = document.createElement('div');
+      content.style.cssText = 'flex:1;overflow-y:auto;margin-top:8px';
+      
+      // Create toggle buttons and chart area
+      content.innerHTML = `
+        <div style="height:100%;display:flex;flex-direction:column">
+          <div style="display:flex;gap:8px;margin-bottom:16px;justify-content:center">
+            <button onclick="showTrendCategory('improved')" style="background:#10b981;color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600">IMPROVED (${trendData.improved})</button>
+            <button onclick="showTrendCategory('decreased')" style="background:#ef4444;color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600">DECREASED (${trendData.decreased})</button>
+            <button onclick="showTrendCategory('noChange')" style="background:#f59e0b;color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600">NO CHANGE (${trendData.noChange})</button>
+            <button onclick="showTrendCategory('insufficientData')" style="background:#6b7280;color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600">INSUFFICIENT DATA (${trendData.insufficientData})</button>
+          </div>
+          <div style="flex:1;background:#f8fafc;border-radius:12px;padding:20px;position:relative">
+            <canvas id="categoryTrendChart" style="width:100%;height:100%"></canvas>
+          </div>
+        </div>
+      `;
+      
+      modal.appendChild(header);
+      modal.appendChild(content);
+      popup.appendChild(modal);
+      document.body.appendChild(popup);
+      
+      // Close on background click
+      popup.onclick = (e) => { if(e.target === popup) popup.remove(); };
+      
+      // Store data globally for toggle functionality
+      window.currentCategoryData = { categoryKey, indicators, districtData, trendData };
+      
+      // Show improved indicators by default
+      setTimeout(() => {
+        showTrendCategory('improved');
+      }, 100);
+    }
+
+    function renderTrendChart(trendData) {
+      const canvas = document.getElementById('trendChart');
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Improved', 'Decreased', 'No Change', 'Insufficient Data'],
+          datasets: [{
+            label: 'Number of Indicators',
+            data: [trendData.improved, trendData.decreased, trendData.noChange, trendData.insufficientData],
+            backgroundColor: ['#10b981', '#ef4444', '#f59e0b', '#6b7280'],
+            borderColor: ['#059669', '#dc2626', '#d97706', '#4b5563'],
+            borderWidth: 2,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `${context.parsed.x} indicators`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Number of Indicators',
+                font: { size: 14, weight: '600' },
+                color: '#374151'
+              },
+              ticks: {
+                font: { size: 12, weight: '500' },
+                color: '#6b7280'
+              },
+              grid: {
+                color: '#f3f4f6'
+              }
+            },
+            y: {
+              ticks: {
+                font: { size: 13, weight: '600' },
+                color: '#374151'
+              },
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+    }
+    
+    function showTrendCategory(category) {
+      if (!window.currentCategoryData) return;
+      
+      const { categoryKey, indicators, districtData } = window.currentCategoryData;
+      const filteredData = [];
+      
+      indicators.forEach(indicator => {
+        const nfhs4Value = districtData.nfhs_4 && districtData.nfhs_4[indicator];
+        const nfhs5Value = districtData.nfhs_5 && districtData.nfhs_5[indicator];
+        
+        if (nfhs4Value !== undefined && nfhs5Value !== undefined && nfhs4Value !== null && nfhs5Value !== null && nfhs4Value !== '' && nfhs5Value !== '') {
+          const indicatorType = getIndicatorTypeFromCategories(indicator);
+          const nfhs4Ranks = calculateIndicatorRanks(indicator, 'nfhs_4', indicatorType);
+          const nfhs5Ranks = calculateIndicatorRanks(indicator, 'nfhs_5', indicatorType);
+          
+          const nfhs4Rank = nfhs4Ranks[currentDistrict];
+          const nfhs5Rank = nfhs5Ranks[currentDistrict];
+          
+          if (nfhs4Rank && nfhs5Rank) {
+            let includeIndicator = false;
+            if (category === 'improved' && nfhs5Rank < nfhs4Rank) includeIndicator = true;
+            else if (category === 'decreased' && nfhs5Rank > nfhs4Rank) includeIndicator = true;
+            else if (category === 'noChange' && nfhs5Rank === nfhs4Rank) includeIndicator = true;
+            
+            if (includeIndicator) {
+              filteredData.push({
+                indicator: indicator.length > 18 ? indicator.substring(0, 15) + '...' : indicator,
+                fullIndicator: indicator,
+                nfhs4Rank,
+                nfhs5Rank
+              });
+            }
+          }
+        } else if (category === 'insufficientData') {
+          filteredData.push({
+            indicator: indicator.length > 18 ? indicator.substring(0, 15) + '...' : indicator,
+            fullIndicator: indicator,
+            nfhs4Rank: 0,
+            nfhs5Rank: 0
+          });
+        }
+      });
+      
+      renderCategoryTrendChart(filteredData, category);
+    }
+    
+    function renderCategoryTrendChart(data, category) {
+      const canvas = document.getElementById('categoryTrendChart');
+      if (!canvas) return;
+      
+      if (window.categoryChart) {
+        window.categoryChart.destroy();
+      }
+      
+      const ctx = canvas.getContext('2d');
+      
+      if (!data.length) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#6b7280';
+        ctx.font = '16px Inter';
+        ctx.textAlign = 'center';
+        ctx.fillText('No indicators in this category', canvas.width/2, canvas.height/2);
+        return;
+      }
+      
+      const labels = data.map(d => d.indicator);
+      const nfhs4Data = data.map(d => d.nfhs4Rank);
+      const nfhs5Data = data.map(d => d.nfhs5Rank);
+      
+      const maxBars = Math.min(data.length, 10);
+      
+      window.categoryChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels.slice(0, maxBars),
+          datasets: [{
+            label: 'NFHS-4',
+            data: nfhs4Data.slice(0, maxBars),
+            backgroundColor: '#3b82f6',
+            borderWidth: 0,
+            borderRadius: 2,
+            categoryPercentage: 0.85,
+            barPercentage: 0.75
+          }, {
+            label: 'NFHS-5',
+            data: nfhs5Data.slice(0, maxBars),
+            backgroundColor: '#10b981',
+            borderWidth: 0,
+            borderRadius: 2,
+            categoryPercentage: 0.85,
+            barPercentage: 0.75
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          layout: {
+            padding: { left: 0, right: 8, top: 20, bottom: 0 }
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              align: 'center',
+              labels: {
+                usePointStyle: true,
+                pointStyle: 'rect',
+                font: { size: 9, weight: '600' },
+                color: '#1f2937',
+                padding: 8,
+                boxWidth: 10,
+                boxHeight: 6
+              }
+            },
+            tooltip: {
+              backgroundColor: '#1f2937',
+              titleColor: '#f9fafb',
+              bodyColor: '#f9fafb',
+              cornerRadius: 4,
+              displayColors: false,
+              titleFont: { size: 10, weight: '600' },
+              bodyFont: { size: 9 },
+              padding: 6,
+              callbacks: {
+                title: function(context) {
+                  const dataIndex = context[0].dataIndex;
+                  return data[dataIndex].fullIndicator;
+                },
+                label: function(context) {
+                  return `${context.dataset.label}: ${context.parsed.x}/32`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              max: 32,
+              ticks: {
+                font: { size: 11, weight: '600' },
+                color: '#374151',
+                maxTicksLimit: 4,
+                padding: 4,
+                stepSize: 8
+              },
+              grid: {
+                color: '#e5e7eb',
+                lineWidth: 1
+              },
+              border: { display: false }
+            },
+            y: {
+              ticks: {
+                font: { size: 16, weight: '600' },
+                color: '#1f2937',
+                padding: 8,
+                maxRotation: 0
+              },
+              grid: { display: false },
+              border: { display: false },
+              afterFit: function(scale) {
+                scale.width = scale.chart.width * 0.4;
+              }
+            }
+          }
+        }
+      });
+    }
+    
+    window.showTrendTable = function(trendType) {
+      console.log('showTrendTable called with:', trendType);
+      console.log('currentCategoryKey:', window.currentCategoryKey);
+      console.log('currentIndicators:', window.currentIndicators);
+      console.log('currentDistrictData:', window.currentDistrictData);
+      
+      if (!window.currentCategoryKey || !window.currentIndicators || !window.currentDistrictData) {
+        console.log('Missing data, returning');
+        return;
+      }
+      
+      const filteredData = [];
+      const indicators = window.currentIndicators;
+      const districtData = window.currentDistrictData;
+      
+      indicators.forEach(indicator => {
+        const nfhs4Value = districtData.nfhs_4 && districtData.nfhs_4[indicator];
+        const nfhs5Value = districtData.nfhs_5 && districtData.nfhs_5[indicator];
+        
+        if (nfhs4Value !== undefined && nfhs5Value !== undefined && nfhs4Value !== null && nfhs5Value !== null && nfhs4Value !== '' && nfhs5Value !== '') {
+          const indicatorType = getIndicatorTypeFromCategories(indicator);
+          const nfhs4Ranks = calculateIndicatorRanks(indicator, 'nfhs_4', indicatorType);
+          const nfhs5Ranks = calculateIndicatorRanks(indicator, 'nfhs_5', indicatorType);
+          
+          const nfhs4Rank = nfhs4Ranks[currentDistrict];
+          const nfhs5Rank = nfhs5Ranks[currentDistrict];
+          
+          if (nfhs4Rank && nfhs5Rank) {
+            let includeIndicator = false;
+            if (trendType === 'improved' && nfhs5Rank < nfhs4Rank) includeIndicator = true;
+            else if (trendType === 'decreased' && nfhs5Rank > nfhs4Rank) includeIndicator = true;
+            else if (trendType === 'noChange' && nfhs5Rank === nfhs4Rank) includeIndicator = true;
+            
+            if (includeIndicator) {
+              filteredData.push({
+                indicator,
+                nfhs4Value: nfhs4Value || 'N/A',
+                nfhs5Value: nfhs5Value || 'N/A',
+                nfhs4Rank,
+                nfhs5Rank
+              });
+            }
+          }
+        } else if (trendType === 'insufficientData') {
+          filteredData.push({
+            indicator,
+            nfhs4Value: nfhs4Value || 'N/A',
+            nfhs5Value: nfhs5Value || 'N/A',
+            nfhs4Rank: 'N/A',
+            nfhs5Rank: 'N/A'
+          });
+        }
+      });
+      
+      const container = document.getElementById('trendTableContainer');
+      if (!container) return;
+      
+      if (filteredData.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center;padding:30px;color:#6b7280">
+            <span class="material-icons" style="font-size:36px;color:#e2e8f0;margin-bottom:12px">table_view</span>
+            <div style="font-size:14px;font-weight:600;margin-bottom:4px">No Indicators Found</div>
+            <div style="font-size:12px">No indicators match this trend category.</div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <table style="width:100%;border-collapse:collapse;font-size:12px">
+            <thead>
+              <tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0">
+                <th style="text-align:left;padding:8px;font-weight:700;color:#374151">Indicator</th>
+                <th style="text-align:center;padding:8px;font-weight:700;color:#374151">NFHS-4</th>
+                <th style="text-align:center;padding:8px;font-weight:700;color:#374151">NFHS-5</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filteredData.map((row, index) => {
+                const latestRank = row.nfhs5Rank !== 'N/A' ? row.nfhs5Rank : row.nfhs4Rank;
+                const rankColor = getRankColor(latestRank);
+                const bgColor = getRowBackgroundColor(latestRank);
+                const borderColor = getRowBorderColor(latestRank);
+                
+                return `
+                <tr style="border-bottom:1px solid #f1f5f9;background:${bgColor};border-left:3px solid ${borderColor}">
+                  <td style="padding:8px;font-weight:600;color:#1e293b;font-size:11px">${row.indicator}</td>
+                  <td style="padding:8px;text-align:center;color:#374151;font-weight:500">
+                    <div>${row.nfhs4Value}</div>
+                    <div style="font-size:10px;color:#6b7280">Rank: ${row.nfhs4Rank}</div>
+                  </td>
+                  <td style="padding:8px;text-align:center;color:#374151;font-weight:500">
+                    <div>${row.nfhs5Value}</div>
+                    <div style="font-size:10px;color:#6b7280">Rank: ${row.nfhs5Rank}</div>
+                  </td>
+                </tr>
+              `;
+              }).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+    };
+
+
   </script>
 </body>
 </html>

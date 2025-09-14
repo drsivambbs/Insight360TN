@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Category Details — Insight360TN</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --accent:#2563eb;
+      --success:#10b981;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    html,body{height:100vh;margin:0;background:var(--bg);overflow:hidden}
+    .app{display:grid;grid-template-columns:320px 1fr;gap:12px;padding:12px;height:100vh;align-items:start;box-sizing:border-box}
+    .header{grid-column:1/-1;background:var(--card);padding:8px 20px;border-radius:8px;box-shadow:0 2px 8px rgba(2,6,23,0.04);border-bottom:1px solid #e6eefb;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+    .brand{display:flex;align-items:center;gap:14px}
+    .badge{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#0b62a8);display:flex;align-items:center;justify-content:center;font-weight:700}
+    .brand h1{margin:0;font-size:20px}
+    .brand p{margin:0;font-size:12px;color:var(--muted)}
+    .back-button{background:var(--accent);color:white;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:500;display:flex;align-items:center;gap:6px;font-size:14px}
+    .sidebar{background:var(--card);border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(22,38,99,0.06);height:calc(90vh - 80px);overflow-y:auto}
+    .sidebar h3{margin:0 0 12px;font-size:15px;color:#0f172a}
+    .main{display:flex;flex-direction:column;gap:16px;height:calc(90vh - 80px);overflow-y:auto}
+    .card{background:var(--card);padding:20px;border-radius:12px;box-shadow:0 4px 14px rgba(2,6,23,0.03);border:1px solid #e6eefb}
+    .trend-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;margin-bottom:6px;border-radius:6px;cursor:pointer;transition:all 0.3s ease;border-left:3px solid transparent;font-size:14px}
+    .trend-item:hover{background:#f8f9fa}
+    .trend-item.active{background:#e8f5e8;border-left-color:var(--success)}
+    .trend-improved{border-left-color:var(--success)}
+    .trend-decreased{border-left-color:var(--danger)}
+    .trend-no-change{border-left-color:var(--warning)}
+    .trend-insufficient{border-left-color:var(--muted)}
+    .trend-label{font-weight:500}
+    .trend-count{background:#e9ecef;color:#495057;padding:4px 8px;border-radius:12px;font-size:12px;font-weight:600}
+    .content-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:15px;border-bottom:2px solid #e9ecef}
+    .content-title{font-size:18px;font-weight:600;color:#0f172a}
+    .indicators-table{width:100%;border-collapse:collapse;font-size:13px}
+    .indicators-table th{background:#f8fafc;padding:10px;text-align:left;font-weight:600;color:var(--muted);border-bottom:2px solid #dee2e6}
+    .indicators-table td{padding:10px;border-bottom:1px solid #f1f5f9}
+    .indicators-table tr:hover{background:#f8f9fa}
+    .export-btn{background:#1976d2;color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;transition:all 0.3s ease;margin-left:auto;box-shadow:0 2px 8px rgba(25,118,210,0.2);font-weight:500}
+    .export-btn:hover{background:#1565c0;transform:translateY(-1px);box-shadow:0 4px 12px rgba(25,118,210,0.3)}
+    .export-btn .material-icons{font-size:18px}
+    .rank-badge{padding:4px 8px;border-radius:12px;font-size:12px;font-weight:600}
+    .rank-good{background:#d4edda;color:#155724}
+    .rank-average{background:#fff3cd;color:#856404}
+    .rank-poor{background:#f8d7da;color:#721c24}
+    @media (max-width:1100px){.app{grid-template-columns:1fr;grid-template-rows:auto auto 1fr;padding:10px}.header{margin-bottom:8px}.sidebar{order:2;height:auto}.main{order:3;height:auto}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="brand">
+        <div class="badge"><span class="material-icons" style="font-size:26px;color:white">map</span></div>
+        <div>
+          <div style="display:flex;align-items:center;gap:14px">
+            <h1 style="margin:0">Insight360TN</h1>
+            <div id="selectedDistrictBadge" style="background:linear-gradient(135deg,var(--accent),#1e40af);color:white;padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600;display:flex;align-items:center">
+              <span class="material-icons" style="font-size:14px;margin-right:4px">location_on</span>
+              <span id="selectedDistrictText">Loading...</span>
+            </div>
+          </div>
+          <p id="headerSubtitle" style="margin:4px 0 0">Category Analysis — Tamil Nadu Health Dashboard</p>
+        </div>
+      </div>
+      <div>
+        <a href="district-analysis.html" style="background:linear-gradient(135deg,var(--accent),#1e40af);color:white;border:none;padding:12px 20px;border-radius:10px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;transition:all 0.2s ease;transform:translateY(0);gap:8px;font-weight:600;box-shadow:0 4px 12px rgba(37,99,235,0.2)" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(37,99,235,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 12px rgba(37,99,235,0.2)'">
+          <span class="material-icons" style="font-size:18px">arrow_back</span>
+          Back to District Analysis
+        </a>
+      </div>
+    </div>
+    <aside class="sidebar">
+      <h3>Trend Analysis</h3>
+      <div class="trend-item" style="border-left-color:#2563eb" onclick="showTrendData('all')">
+        <span class="trend-label">All Indicators</span>
+        <span class="trend-count" id="all-count">0</span>
+      </div>
+      <div class="trend-item trend-improved" onclick="showTrendData('improved')">
+        <span class="trend-label">Improved</span>
+        <span class="trend-count" id="improved-count">0</span>
+      </div>
+      <div class="trend-item trend-decreased" onclick="showTrendData('decreased')">
+        <span class="trend-label">Decreased</span>
+        <span class="trend-count" id="decreased-count">0</span>
+      </div>
+      <div class="trend-item trend-no-change" onclick="showTrendData('no-change')">
+        <span class="trend-label">No Change</span>
+        <span class="trend-count" id="no-change-count">0</span>
+      </div>
+      <div class="trend-item trend-insufficient" onclick="showTrendData('insufficient')">
+        <span class="trend-label">Insufficient Data</span>
+        <span class="trend-count" id="insufficient-count">0</span>
+      </div>
+      
+      <div class="card" style="margin-top:12px;padding:12px">
+        <h4 style="margin:0 0 10px;text-align:center;font-size:14px">NFHS-4 vs NFHS-5 Progress</h4>
+        <div style="position:relative;height:130px;display:flex;align-items:center;justify-content:center">
+          <canvas id="progressChart" width="150" height="150"></canvas>
+          <div id="chartPlaceholder" style="color:var(--muted);text-align:center;font-size:12px">Loading...</div>
+        </div>
+        <div id="progressLegend" style="margin-top:8px;display:none">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px">
+            <div style="display:flex;align-items:center;gap:4px">
+              <div style="width:10px;height:10px;background:var(--success);border-radius:50%"></div>
+              <span>Improved</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px">
+              <div style="width:10px;height:10px;background:var(--danger);border-radius:50%"></div>
+              <span>Declined</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px">
+              <div style="width:10px;height:10px;background:var(--warning);border-radius:50%"></div>
+              <span>Same</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px">
+              <div style="width:10px;height:10px;background:var(--muted);border-radius:50%"></div>
+              <span>Insufficient</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <div class="main">
+      <div class="card">
+        <div class="content-header">
+          <span class="material-icons">table_view</span>
+          <h2 class="content-title" id="content-title">Select a trend category</h2>
+          <button id="exportBtn" class="export-btn" style="display:none">
+            <span class="material-icons">get_app</span>
+            Export CSV
+          </button>
+        </div>
+        <div id="indicators-container">
+          <p style="text-align:center;color:var(--muted);margin-top:50px">
+            Click on a trend category from the sidebar to view indicators
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Menu -->
+  <div id="hamburgerMenu" style="position:fixed;bottom:20px;right:20px;z-index:10000">
+    <div id="menuButton" style="background:linear-gradient(135deg,#2563eb,#1e40af);color:white;padding:12px;border-radius:12px;cursor:pointer;box-shadow:0 8px 24px rgba(37,99,235,0.4);transition:all 0.3s ease" onclick="toggleMenu()">
+      <span class="material-icons" style="font-size:20px">menu</span>
+    </div>
+    <div id="menuItems" style="position:absolute;bottom:60px;right:0;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.3);padding:8px;display:none;flex-direction:column;gap:6px;min-width:140px">
+      <div style="background:linear-gradient(135deg,#2563eb,#1e40af);color:white;padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500" onclick="window.location.href='index.html'">
+        <span class="material-icons" style="font-size:16px">home</span>
+        <span>Home</span>
+      </div>
+      <div style="background:linear-gradient(135deg,#10b981,#059669);color:white;padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500" onclick="window.location.href='dashboard.html'">
+        <span class="material-icons" style="font-size:16px">dashboard</span>
+        <span>Dashboard</span>
+      </div>
+      <div style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500" onclick="window.location.href='district-analysis.html'">
+        <span class="material-icons" style="font-size:16px">analytics</span>
+        <span>Analysis</span>
+      </div>
+    </div>
+  </div>
+
+    <script>
+        let menuOpen = false;
+        
+        function toggleMenu() {
+            const menuItems = document.getElementById('menuItems');
+            const menuButton = document.getElementById('menuButton');
+            
+            if (menuOpen) {
+                menuItems.style.display = 'none';
+                menuButton.style.transform = 'rotate(0deg)';
+                menuOpen = false;
+            } else {
+                menuItems.style.display = 'flex';
+                menuButton.style.transform = 'rotate(90deg)';
+                menuOpen = true;
+            }
+        }
+        
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('hamburgerMenu');
+            if (!menu.contains(e.target) && menuOpen) {
+                toggleMenu();
+            }
+        });
+        let categoryData = {};
+        let districtName = '';
+
+        function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category');
+            districtName = urlParams.get('district') || 'Ariyalur';
+            
+            // Update district badge
+            document.getElementById('selectedDistrictText').textContent = districtName;
+            
+            if (category) {
+                loadCategoryData(category);
+            }
+        }
+
+        async function loadCategoryData(categoryKey) {
+            try {
+                const [indicatorsResponse, dataResponse] = await Promise.all([
+                    fetch('dashboard_files/nfhs_indicator_categories.json'),
+                    fetch('dashboard_files/master_nfhs_data.json')
+                ]);
+
+                const indicators = await indicatorsResponse.json();
+                const data = await dataResponse.json();
+
+                // Store data globally for rank calculations
+                window.allDistrictsData = data.districts;
+                window.indicatorsData = indicators;
+
+                const categoryIndicators = indicators.categories[categoryKey]?.indicators || [];
+                const districtData = data.districts[districtName];
+
+                if (!districtData) return;
+
+                const trendData = {
+                    improved: [],
+                    decreased: [],
+                    'no-change': [],
+                    insufficient: []
+                };
+
+                categoryIndicators.forEach(indicatorObj => {
+                    const indicator = typeof indicatorObj === 'string' ? indicatorObj : indicatorObj.name;
+                    const indicatorType = typeof indicatorObj === 'object' ? indicatorObj.indicator_type : 'Positive';
+                    
+                    const nfhs4 = districtData.nfhs_4?.[indicator];
+                    const nfhs5 = districtData.nfhs_5?.[indicator];
+
+                    let trend = 'insufficient';
+                    
+                    // Check if indicator exists in both surveys
+                    const hasNfhs4 = nfhs4 !== null && nfhs4 !== undefined;
+                    const hasNfhs5 = nfhs5 !== null && nfhs5 !== undefined;
+                    
+                    if (hasNfhs4 && hasNfhs5) {
+                        const nfhs4Ranks = calculateIndicatorRanks(indicator, 'nfhs_4', indicatorType, data);
+                        const nfhs5Ranks = calculateIndicatorRanks(indicator, 'nfhs_5', indicatorType, data);
+                        
+                        const nfhs4Rank = nfhs4Ranks[districtName];
+                        const nfhs5Rank = nfhs5Ranks[districtName];
+                        
+                        if (nfhs4Rank && nfhs5Rank) {
+                            if (nfhs5Rank < nfhs4Rank) trend = 'improved';
+                            else if (nfhs5Rank > nfhs4Rank) trend = 'decreased';
+                            else trend = 'no-change';
+                        }
+                    } else if (hasNfhs4 || hasNfhs5) {
+                        // Indicator exists in only one survey - still include it
+                        trend = 'insufficient';
+                    }
+
+                    // Only include indicators that have data in at least one survey
+                    if (hasNfhs4 || hasNfhs5) {
+                        trendData[trend].push({
+                            indicator,
+                            indicatorType,
+                            nfhs4: hasNfhs4 ? nfhs4 : null,
+                            nfhs5: hasNfhs5 ? nfhs5 : null,
+                            trend
+                        });
+                    }
+                });
+
+                categoryData = trendData;
+                updateTrendCounts();
+                updateProgressChart();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+        
+        function updateProgressChart() {
+            const canvas = document.getElementById('progressChart');
+            const placeholder = document.getElementById('chartPlaceholder');
+            const legend = document.getElementById('progressLegend');
+            
+            const improved = categoryData.improved?.length || 0;
+            const decreased = categoryData.decreased?.length || 0;
+            const same = categoryData['no-change']?.length || 0;
+            const insufficient = categoryData.insufficient?.length || 0;
+            
+            const total = improved + decreased + same + insufficient;
+            
+            if (total === 0) {
+                canvas.style.display = 'none';
+                placeholder.style.display = 'block';
+                legend.style.display = 'none';
+                placeholder.textContent = 'No data available';
+                return;
+            }
+            
+            canvas.style.display = 'block';
+            placeholder.style.display = 'none';
+            legend.style.display = 'block';
+            
+            if (window.progressChart && typeof window.progressChart.destroy === 'function') {
+                window.progressChart.destroy();
+            }
+            
+            const ctx = canvas.getContext('2d');
+            window.progressChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Improved', 'Declined', 'Same', 'Insufficient'],
+                    datasets: [{
+                        data: [improved, decreased, same, insufficient],
+                        backgroundColor: ['#10b981', '#ef4444', '#f59e0b', '#6b7280'],
+                        borderColor: '#000000',
+                        borderWidth: 0.75,
+                        cutout: '60%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + ' indicators';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function calculateIndicatorRanks(indicator, survey, indicatorType, data) {
+            const values = [];
+            const districts = Object.keys(data.districts);
+            
+            districts.forEach(district => {
+                const value = data.districts[district][survey]?.[indicator];
+                if (value !== undefined && value !== null && value !== '') {
+                    values.push({ district, value: parseFloat(value) });
+                }
+            });
+
+            if (indicatorType === 'Negative') {
+                values.sort((a, b) => a.value - b.value);
+            } else {
+                values.sort((a, b) => b.value - a.value);
+            }
+
+            const ranks = {};
+            values.forEach((item, index) => {
+                ranks[item.district] = index + 1;
+            });
+
+            return ranks;
+        }
+
+        function updateTrendCounts() {
+            const total = categoryData.improved.length + categoryData.decreased.length + categoryData['no-change'].length + categoryData.insufficient.length;
+            document.getElementById('all-count').textContent = total;
+            document.getElementById('improved-count').textContent = categoryData.improved.length;
+            document.getElementById('decreased-count').textContent = categoryData.decreased.length;
+            document.getElementById('no-change-count').textContent = categoryData['no-change'].length;
+            document.getElementById('insufficient-count').textContent = categoryData.insufficient.length;
+        }
+
+        function showTrendData(trendType) {
+            document.querySelectorAll('.trend-item').forEach(item => item.classList.remove('active'));
+            if (trendType === 'all') {
+                document.querySelector('.trend-item').classList.add('active');
+            } else {
+                document.querySelector(`.trend-${trendType}`).classList.add('active');
+            }
+
+            const trendLabels = {
+                'all': 'All Indicators',
+                'improved': 'Improved Indicators',
+                'decreased': 'Decreased Indicators',
+                'no-change': 'No Change Indicators',
+                'insufficient': 'Insufficient Data Indicators'
+            };
+
+            document.getElementById('content-title').textContent = trendLabels[trendType];
+
+            let indicators;
+            if (trendType === 'all') {
+                indicators = [...categoryData.improved, ...categoryData.decreased, ...categoryData['no-change'], ...categoryData.insufficient];
+            } else {
+                indicators = categoryData[trendType] || [];
+            }
+            const container = document.getElementById('indicators-container');
+
+            if (indicators.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6c757d; margin-top: 50px;">No indicators found for this category</p>';
+                document.getElementById('exportBtn').style.display = 'none';
+                return;
+            }
+
+            // Calculate ranks and differences for each indicator
+            const enrichedData = indicators.map(item => {
+                const nfhs4Ranks = calculateIndicatorRanks(item.indicator, 'nfhs_4', item.indicatorType || 'Positive', { districts: window.allDistrictsData || {} });
+                const nfhs5Ranks = calculateIndicatorRanks(item.indicator, 'nfhs_5', item.indicatorType || 'Positive', { districts: window.allDistrictsData || {} });
+                
+                const nfhs4Rank = nfhs4Ranks[districtName] || null;
+                const nfhs5Rank = nfhs5Ranks[districtName] || null;
+                
+                const valueDiff = (item.nfhs5 !== null && item.nfhs5 !== undefined && item.nfhs4 !== null && item.nfhs4 !== undefined) ? (item.nfhs5 - item.nfhs4).toFixed(1) : null;
+                const rankDiff = (nfhs4Rank && nfhs5Rank && nfhs4Rank !== null && nfhs5Rank !== null) ? (nfhs5Rank - nfhs4Rank) : null;
+                
+                return {
+                    ...item,
+                    nfhs4Rank,
+                    nfhs5Rank,
+                    valueDiff,
+                    rankDiff
+                };
+            });
+
+            const tableHTML = `
+                <table class="indicators-table">
+                    <thead>
+                        <tr>
+                            <th style="width:35%">Indicator</th>
+                            <th style="text-align:center">NFHS-4</th>
+                            <th style="text-align:center">NFHS-5</th>
+                            <th style="text-align:center">Value Change</th>
+                            <th style="text-align:center">Rank Change</th>
+                            <th style="text-align:center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${enrichedData.map(item => `
+                            <tr>
+                                <td style="font-weight:500;padding:12px 8px">${item.indicator}</td>
+                                <td style="text-align:center;padding:8px">
+                                    <div style="font-weight:600">${(item.nfhs4 !== null && item.nfhs4 !== undefined) ? item.nfhs4 : 'N/A'}</div>
+                                    <div style="font-size:11px;color:#6b7280">Rank: ${(item.nfhs4Rank !== null && item.nfhs4Rank !== undefined) ? item.nfhs4Rank : 'N/A'}</div>
+                                </td>
+                                <td style="text-align:center;padding:8px">
+                                    <div style="font-weight:600">${(item.nfhs5 !== null && item.nfhs5 !== undefined) ? item.nfhs5 : 'N/A'}</div>
+                                    <div style="font-size:11px;color:#6b7280">Rank: ${(item.nfhs5Rank !== null && item.nfhs5Rank !== undefined) ? item.nfhs5Rank : 'N/A'}</div>
+                                </td>
+                                <td style="text-align:center;padding:8px">
+                                    <span style="font-weight:600;color:${getValueChangeColor(item.valueDiff)}">
+                                        ${(item.valueDiff !== null && item.valueDiff !== undefined) ? (item.valueDiff > 0 ? '+' + item.valueDiff : item.valueDiff) : 'N/A'}
+                                    </span>
+                                </td>
+                                <td style="text-align:center;padding:8px">
+                                    <span style="font-weight:600;color:${getRankChangeColor(item.rankDiff)}">
+                                        ${(item.rankDiff !== null && item.rankDiff !== undefined) ? (item.rankDiff > 0 ? '+' + item.rankDiff : item.rankDiff) : 'N/A'}
+                                    </span>
+                                </td>
+                                <td style="text-align:center;padding:8px">
+                                    <span class="rank-badge ${getTrendClass(item.trend)}">
+                                        ${getTrendLabel(item.trend)}
+                                    </span>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = tableHTML;
+            document.getElementById('exportBtn').style.display = 'flex';
+        }
+
+        function getTrendClass(trend) {
+            switch(trend) {
+                case 'improved': return 'rank-good';
+                case 'decreased': return 'rank-poor';
+                case 'no-change': return 'rank-average';
+                default: return 'rank-average';
+            }
+        }
+
+        function getTrendLabel(trend) {
+            switch(trend) {
+                case 'improved': return 'Improved';
+                case 'decreased': return 'Decreased';
+                case 'no-change': return 'No Change';
+                default: return 'Insufficient Data';
+            }
+        }
+        
+        function getValueChangeColor(diff) {
+            if (diff === null) return '#6b7280';
+            if (diff > 0) return '#059669';
+            if (diff < 0) return '#dc2626';
+            return '#6b7280';
+        }
+        
+        function getRankChangeColor(diff) {
+            if (diff === null) return '#6b7280';
+            if (diff < 0) return '#059669'; // Better rank (lower number)
+            if (diff > 0) return '#dc2626'; // Worse rank (higher number)
+            return '#6b7280';
+        }
+
+        function exportToCSV() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category') || 'Category';
+            const trend = document.querySelector('.trend-item.active')?.querySelector('.trend-label')?.textContent || 'All';
+            
+            const table = document.querySelector('.indicators-table');
+            if (!table) return;
+            
+            const rows = table.querySelectorAll('tr');
+            let csv = [];
+            
+            rows.forEach(row => {
+                const cols = row.querySelectorAll('th, td');
+                const rowData = [];
+                cols.forEach(col => {
+                    rowData.push(`"${col.textContent.trim().replace(/"/g, '""')}"`);  
+                });
+                csv.push(rowData.join(','));
+            });
+            
+            const csvContent = csv.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${districtName}_${category.replace(/\s+/g, '_')}_${trend.replace(/\s+/g, '_')}_indicators.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+        
+        document.getElementById('exportBtn').addEventListener('click', exportToCSV);
+        
+        init();
+    </script>
+</body>
+</html>
