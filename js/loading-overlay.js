@@ -82,7 +82,9 @@ function hideLoadingOverlay() {
   }
 }
 
-// Auto-show loading on page load
-document.addEventListener('DOMContentLoaded', () => {
-  showLoadingOverlay('Initializing Health Dashboard...');
-});
+// Auto-show loading on page load (only for production)
+if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+  document.addEventListener('DOMContentLoaded', () => {
+    showLoadingOverlay('Initializing Health Dashboard...');
+  });
+}

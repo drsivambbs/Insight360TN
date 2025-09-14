@@ -6,8 +6,8 @@ let chatbotNfhsData = {};
 function createChatbotWidget() {
   const widget = document.createElement('div');
   widget.innerHTML = `
-    <div id="chatbotWidget" style="position:fixed;bottom:20px;left:20px;z-index:9999">
-      <div id="chatbotBox" style="position:absolute;bottom:70px;left:0;width:400px;height:550px;background:white;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.15),0 8px 25px rgba(0,0,0,0.1);display:none;flex-direction:column;overflow:hidden;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(10px)">
+    <div id="chatbotWidget" style="position:fixed;bottom:20px;right:10%;z-index:9999">
+      <div id="chatbotBox" style="position:absolute;bottom:70px;right:0;width:400px;height:550px;background:white;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.15),0 8px 25px rgba(0,0,0,0.1);display:none;flex-direction:column;overflow:hidden;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(10px)">
         <div style="background:linear-gradient(135deg,#1976d2,#1565c0);color:white;padding:18px 24px;display:flex;justify-content:space-between;align-items:center;border-radius:20px 20px 0 0">
           <div style="display:flex;align-items:center;gap:14px">
             <div style="width:44px;height:44px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px)">
@@ -73,17 +73,17 @@ function createChatbotWidget() {
           </div>
         </div>
       </div>
-      <div id="aiTooltip" style="position:absolute;bottom:70px;left:10px;background:linear-gradient(135deg,#ffffff,#f8fafc);color:#1e293b;padding:10px 16px;border-radius:14px;font-size:13px;font-weight:600;white-space:nowrap;opacity:1;transform:translateY(0);transition:all 0.3s ease;pointer-events:none;box-shadow:0 8px 25px rgba(0,0,0,0.1);border:1px solid rgba(255,255,255,0.8);backdrop-filter:blur(10px)">
-        <span style="margin-right:6px">🤖</span>AI Health Assistant
-        <div style="position:absolute;top:100%;left:30px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #ffffff"></div>
+      <div id="aiTooltip" style="position:absolute;bottom:70px;right:-50px;background:linear-gradient(135deg,#ffffff,#f8fafc);color:#1e293b;padding:12px 18px;border-radius:14px;font-size:13px;font-weight:600;white-space:nowrap;opacity:1;transform:translateY(0);transition:all 0.3s ease;pointer-events:none;box-shadow:0 8px 25px rgba(0,0,0,0.15);border:1px solid rgba(255,255,255,0.8);backdrop-filter:blur(10px);z-index:10001">
+        <span style="margin-right:6px">🐕</span>AI Health Assistant
+        <div style="position:absolute;top:100%;right:60px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #ffffff"></div>
       </div>
-      <div id="minimizedChatbot" style="position:absolute;bottom:70px;left:0;background:linear-gradient(135deg,#1976d2,#1565c0);color:white;padding:12px 20px;border-radius:16px;cursor:pointer;box-shadow:0 8px 25px rgba(25,118,210,0.3);transition:all 0.3s ease;display:none;align-items:center;gap:10px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1)" onclick="maximizeChatbot()" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 35px rgba(25,118,210,0.4)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 25px rgba(25,118,210,0.3)'">
-        <span class="material-icons" style="font-size:20px">psychology</span>
+      <div id="minimizedChatbot" style="position:absolute;bottom:70px;right:0;background:linear-gradient(135deg,#1976d2,#1565c0);color:white;padding:12px 20px;border-radius:16px;cursor:pointer;box-shadow:0 8px 25px rgba(25,118,210,0.3);transition:all 0.3s ease;display:none;align-items:center;gap:10px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1)" onclick="maximizeChatbot()" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 35px rgba(25,118,210,0.4)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 25px rgba(25,118,210,0.3)'">
+        <span style="font-size:20px">🐕</span>
         <span style="font-size:13px;font-weight:600">Scooby AI</span>
         <span class="material-icons" style="font-size:16px;opacity:0.8">expand_more</span>
       </div>
       <div id="chatbotButton" style="background:linear-gradient(135deg,#1976d2,#1565c0);color:white;padding:18px;border-radius:18px;cursor:pointer;box-shadow:0 8px 25px rgba(25,118,210,0.3);transition:all 0.3s ease;width:64px;height:64px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1)" onclick="toggleChatbot()" onmouseover="this.style.transform='scale(1.05) translateY(-2px)';this.style.boxShadow='0 12px 35px rgba(25,118,210,0.4)'" onmouseout="this.style.transform='scale(1) translateY(0)';this.style.boxShadow='0 8px 25px rgba(25,118,210,0.3)'">
-        <span class="material-icons" style="font-size:30px">psychology</span>
+        <span style="font-size:32px">🐕</span>
       </div>
     </div>
   `;
@@ -290,20 +290,20 @@ function getChatbotResponse(question) {
   }
   
   // Check if question is relevant to health data
-  const q = question.toLowerCase();
+  const questionLower = question.toLowerCase();
   const healthKeywords = ['health', 'district', 'nfhs', 'vaccination', 'maternal', 'child', 'nutrition', 'tamil nadu', 'indicator', 'survey', 'data', 'analysis', 'performance', 'ranking', 'compare', 'trend'];
-  const isHealthRelated = healthKeywords.some(keyword => q.includes(keyword));
+  const isHealthRelated = healthKeywords.some(keyword => questionLower.includes(keyword));
   
-  if (!isHealthRelated && !q.includes('categories') && !q.includes('how many')) {
+  if (!isHealthRelated && !questionLower.includes('categories') && !questionLower.includes('how many')) {
     return `I appreciate your question, but my expertise is specifically focused on Tamil Nadu's health data from the National Family Health Survey (NFHS). I can help you with:\n\n• District health performance comparisons\n• Health indicator analysis and trends\n• Vaccination and maternal health statistics\n• Nutrition and child health data\n• NFHS-4 vs NFHS-5 comparisons\n\nPlease feel free to ask me anything related to Tamil Nadu's health indicators and district performance!`;
   }
   
-  const q = question.toLowerCase();
+  const questionText = question.toLowerCase();
   const districts = Object.keys(chatbotNfhsData.districts);
   const categories = Object.keys(chatbotNfhsData.categories);
   
   // Categories question
-  if ((q.includes('categories') && q.includes('divided')) || (q.includes('how many') && q.includes('categories'))) {
+  if ((questionText.includes('categories') && questionText.includes('divided')) || (questionText.includes('how many') && questionText.includes('categories'))) {
     return `The 128 health indicators are divided into ${categories.length} categories:\n\n${categories.map((cat, i) => `${i+1}. ${cat.replace(/_/g, ' ')}`).join('\n')}\n\nEach category contains multiple specific indicators measured across all 32 districts in Tamil Nadu.`;
   }
   
@@ -311,17 +311,17 @@ function getChatbotResponse(question) {
   let relevantData = [];
   let searchTerms = [];
   
-  if (q.includes('vaccination') || q.includes('immunization')) {
+  if (questionText.includes('vaccination') || questionText.includes('immunization')) {
     searchTerms = ['vaccinated', 'immunization', 'vaccine'];
-  } else if (q.includes('maternal') || q.includes('mother')) {
+  } else if (questionText.includes('maternal') || questionText.includes('mother')) {
     searchTerms = ['maternal', 'mother', 'antenatal', 'delivery', 'birth'];
-  } else if (q.includes('child') || q.includes('infant')) {
+  } else if (questionText.includes('child') || questionText.includes('infant')) {
     searchTerms = ['child', 'infant', 'under', 'nutrition'];
-  } else if (q.includes('malnutrition') || q.includes('nutrition')) {
+  } else if (questionText.includes('malnutrition') || questionText.includes('nutrition')) {
     searchTerms = ['nutrition', 'stunted', 'wasted', 'underweight'];
   } else {
     // Extract district names from question
-    const mentionedDistricts = districts.filter(d => q.includes(d.toLowerCase()));
+    const mentionedDistricts = districts.filter(d => questionText.includes(d.toLowerCase()));
     if (mentionedDistricts.length > 0) {
       return analyzeSpecificDistricts(mentionedDistricts, question);
     }
@@ -399,33 +399,33 @@ function analyzeSpecificDistricts(districts, question) {
 }
 
 function getFallbackResponse(question) {
-  const q = question.toLowerCase();
+  const query = question.toLowerCase();
   
   // Check relevance first
   const healthKeywords = ['health', 'district', 'nfhs', 'vaccination', 'maternal', 'child', 'nutrition', 'tamil nadu', 'indicator', 'survey', 'data', 'analysis', 'performance', 'ranking', 'compare', 'trend'];
-  const isHealthRelated = healthKeywords.some(keyword => q.includes(keyword));
+  const isHealthRelated = healthKeywords.some(keyword => query.includes(keyword));
   
   if (!isHealthRelated) {
     return `I appreciate your interest, but I'm specifically designed to assist with Tamil Nadu health data from the NFHS surveys. My knowledge is focused on:\n\n• District health performance and rankings\n• Health indicators and trends analysis\n• Vaccination and maternal health statistics\n• Child nutrition and health outcomes\n\nI'd be delighted to help you explore any of these health-related topics for Tamil Nadu!`;
   }
   
-  if (q.includes('vaccination') || q.includes('immunization')) {
+  if (query.includes('vaccination') || query.includes('immunization')) {
     return 'Based on NFHS data, districts like Dharmapuri (67%), Salem (72%), and Villupuram (74%) have lower child vaccination rates. Chennai and Coimbatore perform better with rates above 85%.';
   }
   
-  if (q.includes('maternal') || q.includes('mother')) {
+  if (query.includes('maternal') || query.includes('mother')) {
     return 'For maternal health, districts like Ariyalur, Dharmapuri, and Krishnagiri need attention. Chennai, Coimbatore, and Kanniyakumari show better maternal health indicators.';
   }
   
-  if (q.includes('malnutrition') || q.includes('nutrition')) {
+  if (query.includes('malnutrition') || query.includes('nutrition')) {
     return 'Child malnutrition is higher in districts like Dharmapuri, Krishnagiri, and Salem. Stunting rates exceed 35% in these areas. Coastal districts generally perform better.';
   }
   
-  if (q.includes('best') || q.includes('top')) {
+  if (query.includes('best') || query.includes('top')) {
     return 'Top performing districts overall: Chennai, Coimbatore, Kanniyakumari, Erode, and Tirupur. These districts consistently rank in top 10 across health categories.';
   }
   
-  if (q.includes('worst') || q.includes('poor')) {
+  if (query.includes('worst') || query.includes('poor')) {
     return 'Districts needing attention: Dharmapuri, Krishnagiri, Salem, Villupuram, and Ariyalur. These districts rank lower in multiple health indicators.';
   }
   
@@ -470,11 +470,9 @@ function clearChat() {
   `;
 }
 
-// Only add chatbot to index.html
-if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', createChatbotWidget);
-  } else {
-    createChatbotWidget();
-  }
+// Always add chatbot for development
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', createChatbotWidget);
+} else {
+  createChatbotWidget();
 }
