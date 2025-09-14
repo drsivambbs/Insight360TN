@@ -6,27 +6,30 @@ let chatbotNfhsData = {};
 function createChatbotWidget() {
   const widget = document.createElement('div');
   widget.innerHTML = `
-    <div id="chatbotWidget" style="position:fixed;bottom:15vh;right:80px;z-index:9999">
-      <div id="chatbotBox" style="position:absolute;bottom:70px;right:0;width:380px;height:500px;background:white;border-radius:16px;box-shadow:0 24px 38px rgba(0,0,0,0.14),0 9px 46px rgba(0,0,0,0.12),0 11px 15px rgba(0,0,0,0.2);display:none;flex-direction:column;overflow:hidden">
-        <div style="background:#1976d2;color:white;padding:16px 20px;display:flex;justify-content:space-between;align-items:center">
-          <div style="display:flex;align-items:center;gap:12px">
-            <div style="width:40px;height:40px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center">
-              <span class="material-icons" style="font-size:24px">psychology</span>
+    <div id="chatbotWidget" style="position:fixed;bottom:20px;left:20px;z-index:9999">
+      <div id="chatbotBox" style="position:absolute;bottom:70px;left:0;width:400px;height:550px;background:white;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.15),0 8px 25px rgba(0,0,0,0.1);display:none;flex-direction:column;overflow:hidden;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(10px)">
+        <div style="background:linear-gradient(135deg,#1976d2,#1565c0);color:white;padding:18px 24px;display:flex;justify-content:space-between;align-items:center;border-radius:20px 20px 0 0">
+          <div style="display:flex;align-items:center;gap:14px">
+            <div style="width:44px;height:44px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px)">
+              <span class="material-icons" style="font-size:26px">psychology</span>
             </div>
             <div>
-              <div style="font-weight:600;font-size:16px">Scooby AI</div>
-              <div style="font-size:11px;opacity:0.8;display:flex;align-items:center;gap:4px">
-                <span class="material-icons" style="font-size:12px">psychology</span>
+              <div style="font-weight:700;font-size:17px;letter-spacing:0.3px">Scooby AI</div>
+              <div style="font-size:12px;opacity:0.85;display:flex;align-items:center;gap:6px;margin-top:2px">
+                <span class="material-icons" style="font-size:14px">auto_awesome</span>
                 Powered by Gemini 1.5 Pro
               </div>
             </div>
           </div>
-          <div style="display:flex;gap:4px">
-            <button onclick="clearChat()" style="background:none;border:none;color:white;cursor:pointer;padding:8px;border-radius:50%;transition:background 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'" title="Clear chat">
+          <div style="display:flex;gap:6px">
+            <button onclick="minimizeChatbot()" style="background:rgba(255,255,255,0.1);border:none;color:white;cursor:pointer;padding:10px;border-radius:10px;transition:all 0.2s;backdrop-filter:blur(10px)" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'" title="Minimize">
+              <span class="material-icons" style="font-size:18px">minimize</span>
+            </button>
+            <button onclick="clearChat()" style="background:rgba(255,255,255,0.1);border:none;color:white;cursor:pointer;padding:10px;border-radius:10px;transition:all 0.2s;backdrop-filter:blur(10px)" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'" title="Clear chat">
               <span class="material-icons" style="font-size:18px">refresh</span>
             </button>
-            <button onclick="toggleChatbot()" style="background:none;border:none;color:white;cursor:pointer;padding:8px;border-radius:50%;transition:background 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">
-              <span class="material-icons" style="font-size:20px">close</span>
+            <button onclick="toggleChatbot()" style="background:rgba(255,255,255,0.1);border:none;color:white;cursor:pointer;padding:10px;border-radius:10px;transition:all 0.2s;backdrop-filter:blur(10px)" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'" title="Close">
+              <span class="material-icons" style="font-size:18px">close</span>
             </button>
           </div>
         </div>
@@ -70,12 +73,17 @@ function createChatbotWidget() {
           </div>
         </div>
       </div>
-      <div id="aiTooltip" style="position:absolute;bottom:70px;right:-10px;background:#ffffff;color:#0f172a;padding:8px 12px;border-radius:12px;font-size:12px;font-weight:600;white-space:nowrap;opacity:1;transform:translateY(0);transition:all 0.3s ease;pointer-events:none;box-shadow:0 4px 14px rgba(2,6,23,0.12);border:1px solid #e6eefb">
-        🤖 AI Health Assistant
-        <div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid #ffffff"></div>
+      <div id="aiTooltip" style="position:absolute;bottom:70px;left:10px;background:linear-gradient(135deg,#ffffff,#f8fafc);color:#1e293b;padding:10px 16px;border-radius:14px;font-size:13px;font-weight:600;white-space:nowrap;opacity:1;transform:translateY(0);transition:all 0.3s ease;pointer-events:none;box-shadow:0 8px 25px rgba(0,0,0,0.1);border:1px solid rgba(255,255,255,0.8);backdrop-filter:blur(10px)">
+        <span style="margin-right:6px">🤖</span>AI Health Assistant
+        <div style="position:absolute;top:100%;left:30px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #ffffff"></div>
       </div>
-      <div id="chatbotButton" style="background:#1976d2;color:white;padding:16px;border-radius:50%;cursor:pointer;box-shadow:0 6px 16px rgba(25,118,210,0.4);transition:all 0.3s ease;width:56px;height:56px;display:flex;align-items:center;justify-content:center" onclick="toggleChatbot()" onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 8px 20px rgba(25,118,210,0.5)'" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 6px 16px rgba(25,118,210,0.4)'">
-        <span class="material-icons" style="font-size:28px">psychology</span>
+      <div id="minimizedChatbot" style="position:absolute;bottom:70px;left:0;background:linear-gradient(135deg,#1976d2,#1565c0);color:white;padding:12px 20px;border-radius:16px;cursor:pointer;box-shadow:0 8px 25px rgba(25,118,210,0.3);transition:all 0.3s ease;display:none;align-items:center;gap:10px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1)" onclick="maximizeChatbot()" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 35px rgba(25,118,210,0.4)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 25px rgba(25,118,210,0.3)'">
+        <span class="material-icons" style="font-size:20px">psychology</span>
+        <span style="font-size:13px;font-weight:600">Scooby AI</span>
+        <span class="material-icons" style="font-size:16px;opacity:0.8">expand_more</span>
+      </div>
+      <div id="chatbotButton" style="background:linear-gradient(135deg,#1976d2,#1565c0);color:white;padding:18px;border-radius:18px;cursor:pointer;box-shadow:0 8px 25px rgba(25,118,210,0.3);transition:all 0.3s ease;width:64px;height:64px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1)" onclick="toggleChatbot()" onmouseover="this.style.transform='scale(1.05) translateY(-2px)';this.style.boxShadow='0 12px 35px rgba(25,118,210,0.4)'" onmouseout="this.style.transform='scale(1) translateY(0)';this.style.boxShadow='0 8px 25px rgba(25,118,210,0.3)'">
+        <span class="material-icons" style="font-size:30px">psychology</span>
       </div>
     </div>
   `;
@@ -105,9 +113,31 @@ async function loadChatData() {
 function toggleChatbot() {
   const box = document.getElementById('chatbotBox');
   const tooltip = document.getElementById('aiTooltip');
+  const minimized = document.getElementById('minimizedChatbot');
   chatOpen = !chatOpen;
   box.style.display = chatOpen ? 'flex' : 'none';
   tooltip.style.display = chatOpen ? 'none' : 'block';
+  minimized.style.display = 'none';
+}
+
+function minimizeChatbot() {
+  const box = document.getElementById('chatbotBox');
+  const minimized = document.getElementById('minimizedChatbot');
+  const tooltip = document.getElementById('aiTooltip');
+  box.style.display = 'none';
+  minimized.style.display = 'flex';
+  tooltip.style.display = 'none';
+  chatOpen = false;
+}
+
+function maximizeChatbot() {
+  const box = document.getElementById('chatbotBox');
+  const minimized = document.getElementById('minimizedChatbot');
+  const tooltip = document.getElementById('aiTooltip');
+  box.style.display = 'flex';
+  minimized.style.display = 'none';
+  tooltip.style.display = 'none';
+  chatOpen = true;
 }
 
 async function sendChatMessage() {
@@ -259,6 +289,15 @@ function getChatbotResponse(question) {
     return 'Loading health data... Please try again in a moment.';
   }
   
+  // Check if question is relevant to health data
+  const q = question.toLowerCase();
+  const healthKeywords = ['health', 'district', 'nfhs', 'vaccination', 'maternal', 'child', 'nutrition', 'tamil nadu', 'indicator', 'survey', 'data', 'analysis', 'performance', 'ranking', 'compare', 'trend'];
+  const isHealthRelated = healthKeywords.some(keyword => q.includes(keyword));
+  
+  if (!isHealthRelated && !q.includes('categories') && !q.includes('how many')) {
+    return `I appreciate your question, but my expertise is specifically focused on Tamil Nadu's health data from the National Family Health Survey (NFHS). I can help you with:\n\n• District health performance comparisons\n• Health indicator analysis and trends\n• Vaccination and maternal health statistics\n• Nutrition and child health data\n• NFHS-4 vs NFHS-5 comparisons\n\nPlease feel free to ask me anything related to Tamil Nadu's health indicators and district performance!`;
+  }
+  
   const q = question.toLowerCase();
   const districts = Object.keys(chatbotNfhsData.districts);
   const categories = Object.keys(chatbotNfhsData.categories);
@@ -300,7 +339,7 @@ function getChatbotResponse(question) {
   const sampleData = chatbotNfhsData.districts[sampleDistrict];
   const nfhs5Indicators = sampleData.nfhs_5 ? Object.keys(sampleData.nfhs_5).length : 0;
   
-  return `I can analyze Tamil Nadu health data with:\n\n• ${totalDistricts} districts\n• ${totalCategories} health categories\n• ${nfhs5Indicators} indicators per district\n• NFHS-4 and NFHS-5 data\n\nAsk me specific questions about districts, health indicators, or comparisons!`;
+  return `I'm here to help with Tamil Nadu health data analysis:\n\n• ${totalDistricts} districts covered\n• ${totalCategories} health categories\n• ${nfhs5Indicators} indicators per district\n• NFHS-4 and NFHS-5 comparative data\n\nI'd be happy to help you explore district performance, health trends, or specific indicators. What would you like to know?`;
 }
 
 function analyzeIndicators(searchTerms, question) {
@@ -362,6 +401,14 @@ function analyzeSpecificDistricts(districts, question) {
 function getFallbackResponse(question) {
   const q = question.toLowerCase();
   
+  // Check relevance first
+  const healthKeywords = ['health', 'district', 'nfhs', 'vaccination', 'maternal', 'child', 'nutrition', 'tamil nadu', 'indicator', 'survey', 'data', 'analysis', 'performance', 'ranking', 'compare', 'trend'];
+  const isHealthRelated = healthKeywords.some(keyword => q.includes(keyword));
+  
+  if (!isHealthRelated) {
+    return `I appreciate your interest, but I'm specifically designed to assist with Tamil Nadu health data from the NFHS surveys. My knowledge is focused on:\n\n• District health performance and rankings\n• Health indicators and trends analysis\n• Vaccination and maternal health statistics\n• Child nutrition and health outcomes\n\nI'd be delighted to help you explore any of these health-related topics for Tamil Nadu!`;
+  }
+  
   if (q.includes('vaccination') || q.includes('immunization')) {
     return 'Based on NFHS data, districts like Dharmapuri (67%), Salem (72%), and Villupuram (74%) have lower child vaccination rates. Chennai and Coimbatore perform better with rates above 85%.';
   }
@@ -382,7 +429,7 @@ function getFallbackResponse(question) {
     return 'Districts needing attention: Dharmapuri, Krishnagiri, Salem, Villupuram, and Ariyalur. These districts rank lower in multiple health indicators.';
   }
   
-  return 'I can help analyze Tamil Nadu health data. Try asking about vaccination rates, maternal health, malnutrition, or district comparisons. (Note: AI service temporarily unavailable - showing cached responses)';
+  return 'I\'m here to help with Tamil Nadu health data analysis. Feel free to ask about vaccination rates, maternal health, nutrition indicators, or district comparisons. (Note: Advanced AI features temporarily unavailable)';
 }
 
 function sendQuickQuestion(question) {
