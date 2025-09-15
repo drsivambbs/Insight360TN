@@ -60,11 +60,11 @@
     #map{height:100%;width:100%}
 
     /* Right sidebar */
-    .right{display:flex;flex-direction:column;gap:12px}
-    .kpi-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-    .card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 4px 14px rgba(2,6,23,0.03)}
-    .card h4{margin:0;font-size:13px}
-    .card .value{font-size:20px;font-weight:700;margin-top:6px}
+    .right{display:flex;flex-direction:column;gap:10px}
+    .kpi-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    .card{background:var(--card);padding:10px;border-radius:12px;box-shadow:0 4px 14px rgba(2,6,23,0.03)}
+    .card h4{margin:0;font-size:12px}
+    .card .value{font-size:18px;font-weight:700;margin-top:4px}
 
     .legend{padding:10px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,0.9), rgba(255,255,255,0.75));box-shadow:0 6px 24px rgba(15,23,42,0.04)}
 
@@ -111,7 +111,7 @@
             </div>
             <div>
               <h1 style="margin:0;font-size:20px">Insight360TN</h1>
-              <p style="margin:0;font-size:12px;color:var(--muted)">NFHS + GIS — Tamil Nadu Health Dashboard</p>
+              <p style="margin:0;font-size:12px;color:var(--muted)">NFHS + GIS — Tamil Nadu Health Dashboard • Powered by Gemini AI</p>
             </div>
           </div>
         </div>
@@ -158,7 +158,31 @@
         <div id="districtRankings"></div>
       </div>
 
+      <div class="card" id="interpretationCard" style="display: none;">
+        <div style="margin-bottom: 16px;">
+          <button id="generateInterpretationBtn" style="background: #4285f4; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(66, 133, 244, 0.3); width: 100%; justify-content: center;" onclick="generateDashboardInterpretation()">
+            <span class="material-icons" style="font-size: 16px;">psychology</span>
+            AI Interpretation
+          </button>
+        </div>
+        <div id="interpretationContent" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; color: #4285f4; background: rgba(66, 133, 244, 0.08); padding: 4px 10px; border-radius: 12px;">
+              <span class="material-icons" style="font-size: 12px;">auto_awesome</span>
+              AI Analysis
+            </div>
+            <button onclick="generateDashboardInterpretation()" style="background: #f8f9fa; color: #4285f4; border: 1px solid #e8eaed; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s ease;">
+              <span class="material-icons" style="font-size: 12px;">auto_awesome</span>
+              Generate - Click to Read
+            </button>
+          </div>
 
+        </div>
+        <div id="loadingInterpretation" style="display: none; padding: 16px; background: #f8fafc; border-radius: 8px; font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 12px;">
+          <div style="width: 16px; height: 16px; border: 2px solid #e2e8f0; border-top: 2px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          <span>Generating interpretation...</span>
+        </div>
+      </div>
 
     </aside>
   </div>
@@ -166,11 +190,11 @@
   <div id="info" class="info-box" style="display:none"></div>
 
   <!-- Floating Hamburger Menu -->
-  <div id="hamburgerMenu" style="position:fixed;bottom:20px;right:20px;z-index:10000">
+  <div id="hamburgerMenu" style="position:fixed;top:20px;right:20px;z-index:10000">
     <div id="menuButton" style="background:linear-gradient(135deg,#2563eb,#1e40af);color:white;padding:12px;border-radius:12px;cursor:pointer;box-shadow:0 8px 24px rgba(37,99,235,0.4);transition:all 0.3s ease" onclick="toggleMenu()" title="Menu">
       <span class="material-icons" style="font-size:20px">menu</span>
     </div>
-    <div id="menuItems" style="position:absolute;bottom:60px;right:0;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.3);padding:8px;display:none;flex-direction:column;gap:6px;min-width:140px">
+    <div id="menuItems" style="position:absolute;top:60px;right:0;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.3);padding:8px;display:none;flex-direction:column;gap:6px;min-width:180px">
       <div style="background:linear-gradient(135deg,#2563eb,#1e40af);color:white;padding:10px 12px;border-radius:8px;cursor:pointer;transition:all 0.2s ease;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500" onclick="window.location.href='../index.html'">
         <span class="material-icons" style="font-size:16px">home</span>
         <span>Home</span>
@@ -178,6 +202,10 @@
       <div style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:white;padding:10px 12px;border-radius:8px;cursor:pointer;transition:all 0.2s ease;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500" onclick="window.location.href='district-analysis.html'">
         <span class="material-icons" style="font-size:16px">analytics</span>
         <span>District Analysis</span>
+      </div>
+      <div style="background:linear-gradient(135deg,#f97316,#ea580c);color:white;padding:10px 12px;border-radius:8px;cursor:pointer;transition:all 0.2s ease;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500" onclick="window.location.href='advanced-analytics.html'">
+        <span class="material-icons" style="font-size:16px">scatter_plot</span>
+        <span>Advanced Analytics</span>
       </div>
       <div style="background:linear-gradient(135deg,#10b981,#059669);color:white;padding:10px 12px;border-radius:8px;cursor:pointer;transition:all 0.2s ease;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500" onclick="window.open('https://github.com/drsivambbs/Insight360TN','_blank')">
         <span class="material-icons" style="font-size:16px">code</span>
@@ -190,20 +218,50 @@
     </div>
   </div>
 
+  <!-- Dashboard Interpretation Modal -->
+  <div id="dashboardModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; backdrop-filter: blur(4px);" onclick="closeDashboardModal(event)">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 12px; padding: 24px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.2);" onclick="event.stopPropagation()">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #e8eaed;">
+        <h3 style="font-size: 18px; font-weight: 600; color: #1f2937; display: flex; align-items: center; gap: 8px; margin: 0;">
+          <span class="material-icons" style="font-size: 20px; color: #4285f4;">psychology</span>
+          AI Interpretation
+        </h3>
+        <button onclick="closeDashboardModal()" style="background: none; border: none; font-size: 24px; color: #5f6368; cursor: pointer; padding: 4px; border-radius: 50%; transition: all 0.2s ease;">&times;</button>
+      </div>
+      <div>
+        <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: #4285f4; background: rgba(66, 133, 244, 0.08); padding: 6px 12px; border-radius: 16px; width: fit-content; margin-bottom: 16px;">
+          <span class="material-icons" style="font-size: 14px;">auto_awesome</span>
+          Generated by Scooby AI
+        </div>
+        <div id="analysisContext" style="background: #f8f9fa; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; border-left: 4px solid #4285f4;">
+          <div style="font-size: 13px; font-weight: 600; color: #1f2937; margin-bottom: 4px;">Analysis Context</div>
+          <div id="contextDetails" style="font-size: 12px; color: #5f6368;"></div>
+        </div>
+        <div id="modalInterpretationText" style="font-size: 14px; line-height: 1.6;"></div>
+        <div style="margin-top: 20px; padding: 12px 16px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6c757d;">
+            <span class="material-icons" style="font-size: 16px; color: #6c757d;">info</span>
+            <span><strong>Disclaimer:</strong> AI-generated interpretation for reference only. Verify findings with official health data sources.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Leaflet -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="../js/chatbot-widget.js"></script>
   <script>
     // --- state ---
     let categoriesData, nfhsData, geoJsonData, map, activeSurvey = 'nfhs4', currentLayer, currentIndicator, districtValues = {};
     const colorScale = [ '#f7fbff','#deebf7','#c6dbef','#9ecae1','#6baed6','#3182bd','#08519c' ];
 
-    // Load all data (user's local files assumed) and initialize
+    // Load data directly
     Promise.all([
       fetch('../dashboard_files/nfhs_indicator_categories.json').then(r=>r.json()),
       fetch('../dashboard_files/master_nfhs_data.json').then(r=>r.json()),
       fetch('../dashboard_files/tn_district.geojson').then(r=>r.json())
     ]).then(([categories, nfhs, geojson]) => {
-      console.log('Data loaded successfully:', { categories, nfhs, geojson });
       categoriesData = categories;
       nfhsData = nfhs;
       geoJsonData = geojson;
@@ -211,7 +269,6 @@
       renderCategories();
     }).catch(err=>{
       console.error('Failed to load data', err);
-      alert('Failed to load dashboard files. Check paths in console.');
     });
 
     function initMap(){
@@ -521,6 +578,11 @@
 
       // District rankings
       renderDistrictRankings(entries, indicatorType);
+      
+      // Show interpretation card but reset content
+      document.getElementById('interpretationCard').style.display = 'block';
+      document.getElementById('interpretationContent').style.display = 'none';
+      document.getElementById('loadingInterpretation').style.display = 'none';
     }
 
     function renderDistrictRankings(entries, indicatorType){
@@ -950,7 +1012,101 @@
       });
     }
 
+    // Dashboard AI Interpretation Functions
+    async function generateDashboardInterpretation() {
+      if (!currentIndicator) {
+        showNotification('Please select an indicator first');
+        return;
+      }
+      
+      // Show loading
+      document.getElementById('loadingInterpretation').style.display = 'flex';
+      document.getElementById('interpretationContent').style.display = 'none';
+      
+      const surveyLabel = activeSurvey === 'nfhs4' ? 'NFHS-4' : 'NFHS-5';
+      const indicatorName = currentIndicator.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      
+      // Get top and bottom districts
+      const entries = Object.entries(districtValues).filter(([d,v]) => !isNaN(v));
+      const indicatorType = getIndicatorType(currentIndicator);
+      
+      if(indicatorType === 'Negative') {
+        entries.sort((a,b) => a[1] - b[1]);
+      } else {
+        entries.sort((a,b) => b[1] - a[1]);
+      }
+      
+      const top3 = entries.slice(0, 3).map(([d,v]) => `${capitalizeWords(d)} (${v}%)`).join(', ');
+      const bottom3 = entries.slice(-3).map(([d,v]) => `${capitalizeWords(d)} (${v}%)`).join(', ');
+      const stateAvg = (entries.reduce((s,[_,v]) => s + v, 0) / entries.length).toFixed(1);
+      
+      const prompt = `Analyze this Tamil Nadu health indicator data (${surveyLabel}):\n\nIndicator: ${indicatorName}\nState Average: ${stateAvg}%\nTop Performers: ${top3}\nNeeds Attention: ${bottom3}\nTotal Districts: ${entries.length}\n\nProvide a brief professional analysis in 2-3 bullet points focusing on:\n- Key performance patterns\n- Geographic or demographic insights\n- Policy implications for Tamil Nadu\n\nKeep it concise and actionable for health administrators.`;
+      
+      try {
+        const response = await queryFirebaseAI(prompt, {});
+        
+        // Format response with bullet points
+        const bulletResponse = response
+          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+          .replace(/•\s*/g, '')
+          .split('\n')
+          .filter(line => line.trim())
+          .map(line => `<div style="display: flex; align-items: flex-start; margin-bottom: 6px;"><span style="color: #4285f4; margin-right: 6px; margin-top: 2px;">•</span><span>${line.trim()}</span></div>`)
+          .join('');
+        
+        // Hide loading, show content and open modal
+        document.getElementById('loadingInterpretation').style.display = 'none';
+        document.getElementById('interpretationContent').style.display = 'block';
+        document.getElementById('modalInterpretationText').innerHTML = bulletResponse;
+        
+        // Update context in modal
+        const contextText = `${surveyLabel} • ${indicatorName} • State Average: ${stateAvg}%`;
+        document.getElementById('contextDetails').textContent = contextText;
+        
+        // Auto-open modal after generation
+        openDashboardModal();
+        
+      } catch (error) {
+        console.error('Error generating interpretation:', error);
+        document.getElementById('loadingInterpretation').style.display = 'none';
+        document.getElementById('interpretationContent').style.display = 'block';
+        const errorMsg = 'Unable to generate interpretation at this time. Please try again later.';
+        document.getElementById('modalInterpretationText').innerHTML = errorMsg;
+        
+        // Auto-open modal even for errors
+        openDashboardModal();
+      }
+    }
 
+    function openDashboardModal() {
+      document.getElementById('dashboardModal').style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDashboardModal(event) {
+      if (!event || event.target === document.getElementById('dashboardModal')) {
+        document.getElementById('dashboardModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    }
+
+    // Hide chatbot widget on dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+      const hideWidget = () => {
+        const chatWidget = document.getElementById('chatbotWidget');
+        if (chatWidget) {
+          chatWidget.style.display = 'none';
+        } else {
+          setTimeout(hideWidget, 50);
+        }
+      };
+      hideWidget();
+    });
+    
+    // Also hide with CSS
+    const style = document.createElement('style');
+    style.textContent = '#chatbotWidget { display: none !important; } @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
+    document.head.appendChild(style);
 
   </script>
 </body>

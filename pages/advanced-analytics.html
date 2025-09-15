@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Analytics - Insight360TN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: #0f172a;
+            line-height: 1.6;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .logo-text h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .logo-text p {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            padding: 7px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-btn:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .nav-btn.primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .nav-btn.primary:hover {
+            background: #2563eb;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 17px 21px;
+            width: 100%;
+        }
+
+
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 340px 1fr 280px;
+            gap: 15px;
+            align-items: start;
+            width: 100%;
+        }
+
+        /* Sidebar Controls */
+        .controls-sidebar {
+            background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(248,250,252,0.9));
+            border-radius: 20px;
+            padding: 24px 22px 24px 24px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid rgba(226,232,240,0.8);
+            position: sticky;
+            top: 90px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            height: calc(100vh - 110px);
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+        
+        .controls-sidebar:hover {
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .controls-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e2e8f0;
+            position: relative;
+        }
+        
+        .controls-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            border-radius: 1px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .control-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nfhs-selector {
+            display: flex;
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 3px;
+            border: 1px solid #e2e8f0;
+            position: relative;
+        }
+
+        .nfhs-option {
+            flex: 1;
+            padding: 8px 12px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nfhs-option.active {
+            color: #ffffff;
+            background: #3b82f6;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+        }
+
+        .nfhs-option:hover:not(.active) {
+            color: #475569;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .toggle-switch {
+            display: none;
+        }
+
+        .toggle-labels {
+            display: none;
+        }
+
+        .chart-options {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .swap-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .swap-btn:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            background: linear-gradient(145deg, #f8fafc, #ffffff);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.15);
+        }
+
+        .swap-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .trend-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 0;
+            font-size: 12px;
+            font-weight: 500;
+            color: #475569;
+            cursor: pointer;
+            justify-content: flex-start;
+            margin-top: 8px;
+        }
+
+        .trend-checkbox input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            cursor: pointer;
+            accent-color: #3b82f6;
+        }
+
+        .trend-checkbox label {
+            cursor: pointer;
+            margin: 0;
+            font-weight: 500;
+            color: #475569;
+        }
+
+
+
+        /* KPI Container */
+        .kpi-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid rgba(226,232,240,0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            height: calc(100vh - 110px);
+            position: sticky;
+            top: 90px;
+            overflow-y: auto;
+        }
+
+        .kpi-container:hover {
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .kpi-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e2e8f0;
+            position: relative;
+        }
+
+        .kpi-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            border-radius: 1px;
+        }
+
+        .kpi-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .kpi-table th {
+            background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+            padding: 8px 12px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .kpi-table td {
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #0f172a;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .kpi-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .kpi-table .metric-label {
+            font-weight: 500;
+            color: #475569;
+            font-size: 12px;
+        }
+
+        .kpi-table .metric-value {
+            font-weight: 600;
+            color: #3b82f6;
+            text-align: right;
+            font-size: 13px;
+        }
+
+        .data-note {
+            margin-top: 16px;
+            padding: 12px;
+            background: #f8fafc;
+            border-left: 3px solid #3b82f6;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        .interpretation-section {
+            margin-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+        }
+
+        .interpretation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .generate-btn {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(66, 133, 244, 0.3);
+            font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .generate-btn:hover {
+            background: #3367d6;
+            box-shadow: 0 2px 8px rgba(66, 133, 244, 0.4);
+        }
+
+        .generate-btn:active {
+            background: #2a56c6;
+            transform: translateY(1px);
+        }
+
+        .interpretation-content {
+            background: #ffffff;
+            border: 1px solid #e8eaed;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .ai-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #4285f4;
+            background: rgba(66, 133, 244, 0.08);
+            padding: 4px 10px;
+            border-radius: 12px;
+            width: fit-content;
+            margin-bottom: 12px;
+        }
+
+        .interpretation-text {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #3c4043;
+            white-space: pre-wrap;
+            max-height: 80px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .interpretation-text.expanded {
+            max-height: none;
+        }
+
+        .read-more-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .read-more-btn:hover {
+            background: #3367d6;
+        }
+
+        /* Popup Modal */
+        .interpretation-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e8eaed;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #5f6368;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: #f1f3f4;
+            color: #1f2937;
+        }
+
+        .modal-body {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #3c4043;
+        }
+
+        .modal-ai-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #4285f4;
+            background: rgba(66, 133, 244, 0.08);
+            padding: 6px 12px;
+            border-radius: 16px;
+            width: fit-content;
+            margin-bottom: 16px;
+        }
+
+        .loading-interpretation {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .loading-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e2e8f0;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        select {
+            padding: 11px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            color: #1e293b;
+            width: 100%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12), 0 4px 16px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            background: #ffffff;
+        }
+        
+        select:hover {
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            padding: 13px 22px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            margin-top: 16px;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3), 0 2px 8px rgba(0,0,0,0.1);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .analyze-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .analyze-btn:hover::before {
+            left: 100%;
+        }
+
+        .analyze-btn:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4), 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .analyze-btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 24px 24px 24px 22px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid rgba(226,232,240,0.8);
+            margin: 0;
+            height: calc(100vh - 110px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chart-container:hover {
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            flex-shrink: 0;
+        }
+
+        .chart-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .analysis-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 16px;
+            text-align: left;
+            line-height: 1.4;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            gap: 8px;
+            flex-direction: column;
+        }
+
+        .analysis-main {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .analysis-subtitle {
+            font-size: 12px;
+            font-weight: 500;
+            color: #64748b;
+            display: block;
+            word-wrap: break-word;
+            white-space: normal;
+            max-width: 100%;
+            line-height: 1.3;
+        }
+
+
+
+        .chart-wrapper {
+            position: relative;
+            flex: 1;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #64748b;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            border: 2px dashed #cbd5e1;
+        }
+
+        .empty-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+
+        .empty-subtitle {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.5;
+            max-width: 300px;
+        }
+        
+        /* Custom Scrollbar */
+        .controls-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .controls-sidebar::-webkit-scrollbar-track {
+            background: rgba(241, 245, 249, 0.5);
+            border-radius: 3px;
+        }
+        
+        .controls-sidebar::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+            border-radius: 3px;
+        }
+        
+        .controls-sidebar::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #94a3b8, #64748b);
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .main-layout {
+                grid-template-columns: 300px 1fr 260px;
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 280px 1fr 240px;
+                gap: 12px;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .container {
+                padding: 14px 17px;
+            }
+            
+            .controls-sidebar {
+                position: static;
+                padding: 21px;
+                border-radius: 20px;
+                height: auto;
+                max-height: none;
+            }
+            
+            .chart-container {
+                border-radius: 20px;
+                height: auto;
+                min-height: 500px;
+                padding: 21px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 16px;
+            }
+            
+            .container {
+                padding: 10px 14px;
+            }
+            
+            .main-layout {
+                gap: 16px;
+            }
+            
+            .controls-sidebar {
+                padding: 17px;
+            }
+            
+            .chart-container {
+                padding: 17px;
+                height: auto;
+                min-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <span class="material-icons">analytics</span>
+                </div>
+                <div class="logo-text">
+                    <h1>Insight360TN</h1>
+                    <p>Advanced Analytics • Powered by Gemini AI</p>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="../index.html" class="nav-btn">
+                    <span class="material-icons" style="font-size: 16px;">home</span>
+                    Home
+                </a>
+                <a href="dashboard.html" class="nav-btn">
+                    <span class="material-icons" style="font-size: 16px;">map</span>
+                    Dashboard
+                </a>
+                <a href="district-analysis.html" class="nav-btn">
+                    <span class="material-icons" style="font-size: 16px;">leaderboard</span>
+                    District Analysis
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Sidebar Controls -->
+            <div class="controls-sidebar">
+                <h3 class="controls-title">
+                    <span class="material-icons">tune</span>
+                    Analysis Controls
+                </h3>
+
+                <div class="control-group">
+                    <label class="control-label">Survey Round</label>
+                    <div class="nfhs-selector">
+                        <div class="nfhs-option" data-value="nfhs4">NFHS-4</div>
+                        <div class="nfhs-option active" data-value="nfhs5">NFHS-5</div>
+                    </div>
+                    <input type="checkbox" id="nfhsToggle" checked style="display: none;">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="xAxisSelect">X-Axis Indicator</label>
+                    <select id="xAxisSelect">
+                        <option value="">Select X-Axis Indicator...</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="yAxisSelect">Y-Axis Indicator</label>
+                    <select id="yAxisSelect">
+                        <option value="">Select Y-Axis Indicator...</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <div class="chart-options">
+                        <button class="swap-btn" onclick="swapAxes()" title="Switch X and Y axes">
+                            <span class="material-icons" style="font-size: 16px;">swap_horiz</span>
+                            Swap Axes
+                        </button>
+                    </div>
+                    <button class="analyze-btn" onclick="generateCorrelation()">
+                        <span class="material-icons" style="font-size: 16px;">scatter_plot</span>
+                        Analyze
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chart Container -->
+            <div class="chart-container">
+            <div class="analysis-title" id="analysisTitle" style="display: none;">
+                <div class="analysis-main">
+                    <span class="material-icons" style="font-size: 18px; color: #3b82f6;">scatter_plot</span>
+                    Correlation Analysis
+                </div>
+                <span class="analysis-subtitle" id="analysisSubtitle"></span>
+            </div>
+            <div id="dataWarning" style="display: none; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 12px; margin-bottom: 16px; color: #92400e; font-size: 14px; font-weight: 500;">
+                <span class="material-icons" style="font-size: 16px; vertical-align: middle; margin-right: 8px;">warning</span>
+                <span id="warningText"></span>
+            </div>
+            <div class="chart-wrapper">
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-icon">
+                        <span class="material-icons" style="font-size: 32px; color: #94a3b8;">scatter_plot</span>
+                    </div>
+                    <div class="empty-title">Ready for Analysis</div>
+                    <div class="empty-subtitle">Select X and Y axis indicators from the controls panel to generate correlation analysis and visualize relationships between health metrics.</div>
+                </div>
+                <canvas id="correlationChart" style="display: none;"></canvas>
+            </div>
+            <div class="trend-checkbox" id="trendCheckbox" style="display: none;">
+                <input type="checkbox" id="trendLineToggle" onchange="toggleTrendLine()">
+                <label for="trendLineToggle">Trend Line</label>
+            </div>
+        </div>
+
+            <!-- KPI Container -->
+            <div class="kpi-container">
+                <h3 class="kpi-title">
+                    <span class="material-icons">assessment</span>
+                    Analysis Results
+                </h3>
+                <table class="kpi-table" id="kpiTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="metric-label">Correlation (r)</td>
+                            <td class="metric-value" id="correlationValue">-</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-label">Median (X-axis)</td>
+                            <td class="metric-value" id="medianX">-</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-label">Median (Y-axis)</td>
+                            <td class="metric-value" id="medianY">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="data-note" id="dataNote" style="display: none;"></div>
+                
+                <div class="interpretation-section" id="interpretationSection" style="display: none;">
+                    <div class="interpretation-header">
+                        <button class="generate-btn" id="generateBtn" onclick="generateInterpretation()">
+                            <span class="material-icons" style="font-size: 16px;">psychology</span>
+                            AI Interpretation
+                        </button>
+                    </div>
+                    <div class="interpretation-content" id="interpretationContent" style="display: none;">
+                        <button class="read-more-btn" onclick="openInterpretationModal()">
+                            <span class="material-icons" style="font-size: 12px;">open_in_full</span>
+                            Read More
+                        </button>
+                        <div class="ai-badge">
+                            <span class="material-icons" style="font-size: 12px;">auto_awesome</span>
+                            AI Analysis
+                        </div>
+                        <div class="interpretation-text" id="interpretationText"></div>
+                    </div>
+                    <div class="loading-interpretation" id="loadingInterpretation" style="display: none;">
+                        <div class="loading-spinner"></div>
+                        <span>Generating interpretation...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interpretation Modal -->
+    <div class="interpretation-modal" id="interpretationModal" onclick="closeInterpretationModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <span class="material-icons" style="font-size: 20px; color: #4285f4;">psychology</span>
+                    AI Interpretation
+                </h3>
+                <button class="close-btn" onclick="closeInterpretationModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-ai-badge">
+                    <span class="material-icons" style="font-size: 14px;">auto_awesome</span>
+                    Generated by Scooby AI
+                </div>
+                <div class="analysis-context" id="analysisContext" style="background: #f8f9fa; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; border-left: 4px solid #4285f4;">
+                    <div style="font-size: 13px; font-weight: 600; color: #1f2937; margin-bottom: 4px;">Analysis Context</div>
+                    <div id="contextDetails" style="font-size: 12px; color: #5f6368;"></div>
+                </div>
+                <div id="modalInterpretationText" style="font-size: 14px; line-height: 1.6;"></div>
+                <div class="modal-disclaimer" style="margin-top: 20px; padding: 12px 16px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+                    <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6c757d;">
+                        <span class="material-icons" style="font-size: 16px; color: #6c757d;">info</span>
+                        <span><strong>Disclaimer:</strong> AI-generated interpretation for reference only. Verify findings with official health data sources.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/loading-overlay.js"></script>
+    <script>
+        let nfhsData = {};
+        let indicatorCategories = {};
+        let currentChart = null;
+        let showTrendLine = false;
+
+        // Negative indicators that need to be reversed for normalization
+        const negativeIndicators = [
+            'infant_mortality_rate', 'under_5_mortality_rate', 'neonatal_mortality_rate',
+            'maternal_mortality_ratio', 'children_under_5_years_who_are_stunted',
+            'children_under_5_years_who_are_wasted', 'children_under_5_years_who_are_underweight',
+            'women_whose_bmi_is_below_normal', 'men_whose_bmi_is_below_normal',
+            'children_age_6_23_months_who_are_anaemic', 'non_pregnant_women_age_15_49_years_who_are_anaemic',
+            'pregnant_women_age_15_49_years_who_are_anaemic', 'men_age_15_49_years_who_are_anaemic',
+            'women_who_have_experienced_spousal_violence', 'unmet_need_for_family_planning',
+            'teenage_pregnancy_and_motherhood'
+        ];
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            showLoadingOverlay();
+            try {
+                await loadData();
+                populateIndicatorDropdowns();
+                
+                // Add segmented control event listeners
+                document.querySelectorAll('.nfhs-option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        document.querySelectorAll('.nfhs-option').forEach(opt => opt.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        const isNFHS5 = this.dataset.value === 'nfhs5';
+                        document.getElementById('nfhsToggle').checked = isNFHS5;
+                        
+                        populateIndicatorDropdowns();
+                    });
+                });
+                
+                hideLoadingOverlay();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                hideLoadingOverlay();
+            }
+        });
+
+        async function loadData() {
+            try {
+                const [dataResponse, categoriesResponse] = await Promise.all([
+                    fetch('../dashboard_files/master_nfhs_data.json'),
+                    fetch('../dashboard_files/nfhs_indicator_categories.json')
+                ]);
+
+                nfhsData = await dataResponse.json();
+                indicatorCategories = await categoriesResponse.json();
+            } catch (error) {
+                throw new Error('Failed to load data files');
+            }
+        }
+
+        function populateIndicatorDropdowns() {
+            const xSelect = document.getElementById('xAxisSelect');
+            const ySelect = document.getElementById('yAxisSelect');
+            const useNFHS5 = document.getElementById('nfhsToggle').checked;
+            const surveyRound = useNFHS5 ? 'nfhs_5' : 'nfhs_4';
+            
+            // Clear existing options
+            xSelect.innerHTML = '<option value="">Select X-Axis Indicator...</option>';
+            ySelect.innerHTML = '<option value="">Select Y-Axis Indicator...</option>';
+
+            // Get all districts and calculate indicator completeness
+            const districts = Object.keys(nfhsData.districts);
+            const totalDistricts = districts.length;
+            const indicatorCounts = {};
+            
+            districts.forEach(district => {
+                const districtData = nfhsData.districts[district][surveyRound];
+                if (districtData) {
+                    Object.keys(districtData).forEach(indicator => {
+                        const value = districtData[indicator];
+                        if (value !== undefined && value !== null && value !== '' && !isNaN(parseFloat(value))) {
+                            indicatorCounts[indicator] = (indicatorCounts[indicator] || 0) + 1;
+                        }
+                    });
+                }
+            });
+            
+            // Filter indicators with at least 80% completeness
+            const minDistricts = Math.floor(totalDistricts * 0.8);
+            const availableIndicators = Object.keys(indicatorCounts)
+                .filter(indicator => indicatorCounts[indicator] >= minDistricts)
+                .sort();
+            
+            // Populate dropdowns with completeness percentage
+            availableIndicators.forEach(indicator => {
+                const completeness = Math.round((indicatorCounts[indicator] / totalDistricts) * 100);
+                const displayName = indicator.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                const optionText = `${displayName} (${completeness}% complete)`;
+                
+                const xOption = document.createElement('option');
+                xOption.value = indicator;
+                xOption.textContent = optionText;
+                xSelect.appendChild(xOption);
+                
+                const yOption = document.createElement('option');
+                yOption.value = indicator;
+                yOption.textContent = optionText;
+                ySelect.appendChild(yOption);
+            });
+        }
+
+        function normalizeValue(value, min, max) {
+            if (min === max) return 0.5; // Handle case where all values are the same
+            
+            return (value - min) / (max - min);
+        }
+
+        function calculateCorrelation(xValues, yValues) {
+            const n = xValues.length;
+            if (n === 0) return 0;
+
+            const sumX = xValues.reduce((a, b) => a + b, 0);
+            const sumY = yValues.reduce((a, b) => a + b, 0);
+            const sumXY = xValues.reduce((sum, x, i) => sum + x * yValues[i], 0);
+            const sumXX = xValues.reduce((sum, x) => sum + x * x, 0);
+            const sumYY = yValues.reduce((sum, y) => sum + y * y, 0);
+
+            const numerator = n * sumXY - sumX * sumY;
+            const denominator = Math.sqrt((n * sumXX - sumX * sumX) * (n * sumYY - sumY * sumY));
+
+            return denominator === 0 ? 0 : numerator / denominator;
+        }
+
+        function swapAxes() {
+            const xSelect = document.getElementById('xAxisSelect');
+            const ySelect = document.getElementById('yAxisSelect');
+            
+            const xValue = xSelect.value;
+            const yValue = ySelect.value;
+            
+            xSelect.value = yValue;
+            ySelect.value = xValue;
+            
+            // Regenerate analysis if both axes have values
+            if (xValue && yValue) {
+                generateCorrelation();
+            }
+        }
+
+        function toggleTrendLine() {
+            const checkbox = document.getElementById('trendLineToggle');
+            showTrendLine = checkbox.checked;
+            
+            // Regenerate chart if it exists
+            if (currentChart) {
+                const xIndicator = document.getElementById('xAxisSelect').value;
+                const yIndicator = document.getElementById('yAxisSelect').value;
+                if (xIndicator && yIndicator) {
+                    generateCorrelation();
+                }
+            }
+        }
+
+        function generateCorrelation() {
+            const xIndicator = document.getElementById('xAxisSelect').value;
+            const yIndicator = document.getElementById('yAxisSelect').value;
+            const useNFHS5 = document.getElementById('nfhsToggle').checked;
+
+            if (!xIndicator || !yIndicator) {
+                alert('Please select both X and Y axis indicators');
+                return;
+            }
+
+            if (xIndicator === yIndicator) {
+                alert('Please select different indicators for X and Y axes');
+                return;
+            }
+
+            const surveyRound = useNFHS5 ? 'nfhs_5' : 'nfhs_4';
+            const districts = Object.keys(nfhsData.districts);
+            
+            const dataPoints = [];
+            const xValues = [];
+            const yValues = [];
+            const originalXValues = [];
+            const originalYValues = [];
+
+            // Collect data points
+            districts.forEach(district => {
+                const districtData = nfhsData.districts[district][surveyRound];
+                if (districtData && districtData[xIndicator] !== undefined && districtData[yIndicator] !== undefined) {
+                    const xVal = parseFloat(districtData[xIndicator]);
+                    const yVal = parseFloat(districtData[yIndicator]);
+                    
+                    if (!isNaN(xVal) && !isNaN(yVal)) {
+                        originalXValues.push(xVal);
+                        originalYValues.push(yVal);
+                        dataPoints.push({ district, x: xVal, y: yVal });
+                    }
+                }
+            });
+
+            if (dataPoints.length < 2) {
+                alert('Insufficient data points for correlation analysis');
+                return;
+            }
+
+            // Calculate min/max for normalization
+            const xMin = Math.min(...originalXValues);
+            const xMax = Math.max(...originalXValues);
+            const yMin = Math.min(...originalYValues);
+            const yMax = Math.max(...originalYValues);
+
+            // Normalize values and prepare chart data
+            const chartData = dataPoints.map(point => {
+                const normalizedX = normalizeValue(point.x, xMin, xMax);
+                const normalizedY = normalizeValue(point.y, yMin, yMax);
+                
+                xValues.push(normalizedX);
+                yValues.push(normalizedY);
+                
+                return {
+                    x: normalizedX,
+                    y: normalizedY,
+                    district: point.district.charAt(0).toUpperCase() + point.district.slice(1),
+                    originalX: point.x,
+                    originalY: point.y
+                };
+            });
+
+            // Calculate correlation
+            const correlation = calculateCorrelation(xValues, yValues);
+
+            // Calculate medians
+            const sortedXValues = [...originalXValues].sort((a, b) => a - b);
+            const sortedYValues = [...originalYValues].sort((a, b) => a - b);
+            const medianX = sortedXValues.length % 2 === 0 
+                ? (sortedXValues[sortedXValues.length / 2 - 1] + sortedXValues[sortedXValues.length / 2]) / 2
+                : sortedXValues[Math.floor(sortedXValues.length / 2)];
+            const medianY = sortedYValues.length % 2 === 0 
+                ? (sortedYValues[sortedYValues.length / 2 - 1] + sortedYValues[sortedYValues.length / 2]) / 2
+                : sortedYValues[Math.floor(sortedYValues.length / 2)];
+
+            // Calculate completeness percentage
+            const totalDistricts = Object.keys(nfhsData.districts).length;
+            const completenessPercent = Math.round((dataPoints.length / totalDistricts) * 100);
+            
+            // Update KPI table in right container
+            document.getElementById('correlationValue').textContent = correlation.toFixed(3);
+            document.getElementById('medianX').textContent = medianX.toFixed(2);
+            document.getElementById('medianY').textContent = medianY.toFixed(2);
+            document.getElementById('kpiTable').style.display = 'table';
+            
+            // Show data note in KPI container
+            const dataNote = document.getElementById('dataNote');
+            if (completenessPercent < 100) {
+                dataNote.textContent = `Analysis based on ${dataPoints.length} out of ${totalDistricts} districts (${completenessPercent}% complete)`;
+                dataNote.style.display = 'block';
+            } else {
+                dataNote.textContent = `Analysis includes all ${totalDistricts} districts (100% complete)`;
+                dataNote.style.display = 'block';
+            }
+            
+            // Show interpretation section
+            document.getElementById('interpretationSection').style.display = 'block';
+            document.getElementById('interpretationContent').style.display = 'none';
+            
+            // Hide chart area warning
+            document.getElementById('dataWarning').style.display = 'none';
+
+            // Update analysis title
+            const xLabel = xIndicator.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            const yLabel = yIndicator.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            const surveyLabel = useNFHS5 ? 'NFHS-5' : 'NFHS-4';
+            
+            document.getElementById('analysisSubtitle').textContent = `${xLabel} vs ${yLabel} (${surveyLabel})`;
+            document.getElementById('analysisTitle').style.display = 'block';
+
+            // Create chart
+            createScatterChart(chartData, xIndicator, yIndicator, correlation, useNFHS5);
+        }
+
+        function createScatterChart(data, xIndicator, yIndicator, correlation, useNFHS5) {
+            const ctx = document.getElementById('correlationChart').getContext('2d');
+            
+            // Destroy existing chart
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            // Show chart, hide empty state, show trend checkbox
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('correlationChart').style.display = 'block';
+            document.getElementById('trendCheckbox').style.display = 'flex';
+
+            const xLabel = xIndicator.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            const yLabel = yIndicator.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            const surveyLabel = useNFHS5 ? 'NFHS-5' : 'NFHS-4';
+
+            // Prepare datasets
+            const datasets = [{
+                label: 'Districts',
+                data: data,
+                backgroundColor: 'rgba(2, 61, 157, 0.8)',
+                borderColor: '#023d9d',
+                borderWidth: 2,
+                pointRadius: 6,
+                pointHoverRadius: 8,
+                pointStyle: 'rect'
+            }];
+
+            // Add trend line if enabled
+            if (showTrendLine && data.length > 1) {
+                const xVals = data.map(d => d.x);
+                const yVals = data.map(d => d.y);
+                
+                // Calculate linear regression
+                const n = xVals.length;
+                const sumX = xVals.reduce((a, b) => a + b, 0);
+                const sumY = yVals.reduce((a, b) => a + b, 0);
+                const sumXY = xVals.reduce((sum, x, i) => sum + x * yVals[i], 0);
+                const sumXX = xVals.reduce((sum, x) => sum + x * x, 0);
+                
+                const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+                const intercept = (sumY - slope * sumX) / n;
+                
+                const trendData = [
+                    { x: 0, y: intercept },
+                    { x: 1, y: slope + intercept }
+                ];
+                
+                datasets.push({
+                    label: `Trend Line (r = ${correlation.toFixed(3)})`,
+                    data: trendData,
+                    type: 'line',
+                    borderColor: '#6b7280',
+                    backgroundColor: 'transparent',
+                    borderWidth: 0.75,
+                    borderDash: [8, 4],
+                    pointRadius: 0,
+                    pointHoverRadius: 0,
+                    tension: 0,
+                    showLine: true
+                });
+            }
+
+            currentChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            left: 10,
+                            right: 10,
+                            top: 10,
+                            bottom: 10
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: showTrendLine,
+                            position: 'top',
+                            align: 'start',
+                            labels: {
+                                filter: function(legendItem) {
+                                    return legendItem.text.includes('Trend Line');
+                                },
+                                font: {
+                                    size: 13,
+                                    weight: '600'
+                                },
+                                color: '#1f2937',
+                                padding: 12,
+                                usePointStyle: false,
+                                boxWidth: 24,
+                                boxHeight: 3
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(31, 41, 55, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#e5e7eb',
+                            borderColor: '#6b7280',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            titleFont: { size: 14, weight: '600' },
+                            bodyFont: { size: 12, weight: '500' },
+                            padding: 12,
+                            callbacks: {
+                                title: function(context) {
+                                    return context[0].raw.district;
+                                },
+                                label: function(context) {
+                                    const point = context.raw;
+                                    return [
+                                        `${xLabel}: ${point.originalX}`,
+                                        `${yLabel}: ${point.originalY}`,
+                                        `Normalized: (${point.x.toFixed(3)}, ${point.y.toFixed(3)})`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: xLabel.length > 30 ? [xLabel.substring(0, 30), xLabel.substring(30) + ' (Normalized 0-1)'] : `${xLabel} (Normalized 0-1)`,
+                                font: { weight: '700', size: 13 },
+                                color: '#1f2937',
+                                align: 'start'
+                            },
+                            border: {
+                                color: '#000000',
+                                width: 0.75
+                            },
+                            ticks: {
+                                font: { size: 12, weight: '500' },
+                                color: '#374151',
+                                maxRotation: 0,
+                                minRotation: 0,
+                                major: {
+                                    enabled: true
+                                },
+                                callback: function(value) {
+                                    return value === -0.008 || value === 1.02 ? '' : value;
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(156, 163, 175, 0.3)',
+                                lineWidth: 1,
+                                tickLength: 5
+                            },
+                            min: -0.008,
+                            max: 1.02
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: yLabel.length > 30 ? [yLabel.substring(0, 30), yLabel.substring(30) + ' (Normalized 0-1)'] : `${yLabel} (Normalized 0-1)`,
+                                font: { weight: '700', size: 13 },
+                                color: '#1f2937',
+                                align: 'start'
+                            },
+                            border: {
+                                color: '#000000',
+                                width: 0.75
+                            },
+                            ticks: {
+                                font: { size: 12, weight: '500' },
+                                color: '#374151',
+                                maxRotation: 0,
+                                minRotation: 0,
+                                major: {
+                                    enabled: true
+                                },
+                                callback: function(value) {
+                                    return value === -0.008 || value === 1.02 ? '' : value;
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(156, 163, 175, 0.3)',
+                                lineWidth: 1,
+                                tickLength: 5
+                            },
+                            min: -0.008,
+                            max: 1.02
+                        }
+                    }
+                }
+            });
+        }
+
+        async function generateInterpretation() {
+            const xIndicator = document.getElementById('xAxisSelect').value;
+            const yIndicator = document.getElementById('yAxisSelect').value;
+            const correlationValue = document.getElementById('correlationValue').textContent;
+            const useNFHS5 = document.getElementById('nfhsToggle').checked;
+            const surveyLabel = useNFHS5 ? 'NFHS-5' : 'NFHS-4';
+            
+            if (!xIndicator || !yIndicator) return;
+            
+            // Show loading
+            document.getElementById('loadingInterpretation').style.display = 'flex';
+            document.getElementById('interpretationContent').style.display = 'none';
+            
+            const xLabel = xIndicator.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            const yLabel = yIndicator.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            
+            const prompt = `Analyze this health data correlation for Tamil Nadu (${surveyLabel}):\n\nX-axis: ${xLabel}\nY-axis: ${yLabel}\nCorrelation coefficient (r): ${correlationValue}\n\nProvide a brief, professional interpretation of this correlation in 2-3 sentences. Focus on the strength and direction of the relationship and its potential public health implications for Tamil Nadu.`;
+            
+            try {
+                // Use the existing chatbot function
+                const response = await queryFirebaseAI(prompt, {});
+                
+                // Hide loading, show content
+                document.getElementById('loadingInterpretation').style.display = 'none';
+                document.getElementById('interpretationContent').style.display = 'block';
+                // Format response for display with bullet points
+                const bulletResponse = response
+                    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                    .replace(/•\s*/g, '')
+                    .split('\n')
+                    .filter(line => line.trim())
+                    .map(line => `<div style="display: flex; align-items: flex-start; margin-bottom: 8px;"><span style="color: #4285f4; margin-right: 8px; margin-top: 2px;">•</span><span>${line.trim()}</span></div>`)
+                    .join('');
+                
+                document.getElementById('interpretationText').innerHTML = bulletResponse;
+                document.getElementById('modalInterpretationText').innerHTML = bulletResponse;
+                
+                // Update context in modal
+                const contextText = `${surveyLabel} • ${xLabel} vs ${yLabel} • Correlation: ${correlationValue}`;
+                document.getElementById('contextDetails').textContent = contextText;
+                
+            } catch (error) {
+                // Suppress extension-related errors
+                if (error.message && error.message.includes('message channel closed')) {
+                    return;
+                }
+                console.error('Error generating interpretation:', error);
+                document.getElementById('loadingInterpretation').style.display = 'none';
+                document.getElementById('interpretationContent').style.display = 'block';
+                const errorMsg = 'Unable to generate interpretation at this time. Please try again later.';
+                document.getElementById('interpretationText').innerHTML = errorMsg;
+                document.getElementById('modalInterpretationText').innerHTML = errorMsg;
+            }
+        }
+
+        function openInterpretationModal() {
+            document.getElementById('interpretationModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeInterpretationModal(event) {
+            if (!event || event.target === document.getElementById('interpretationModal')) {
+                document.getElementById('interpretationModal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+    </script>
+    <script src="../js/chatbot-widget.js"></script>
+    <script>
+        // Hide chatbot widget on this page
+        document.addEventListener('DOMContentLoaded', function() {
+            const hideWidget = () => {
+                const chatWidget = document.getElementById('chatbotWidget');
+                if (chatWidget) {
+                    chatWidget.style.display = 'none';
+                } else {
+                    setTimeout(hideWidget, 50);
+                }
+            };
+            hideWidget();
+        });
+        
+        // Also hide with CSS
+        const style = document.createElement('style');
+        style.textContent = '#chatbotWidget { display: none !important; }';
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

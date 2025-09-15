@@ -4,26 +4,49 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Status: Active](https://img.shields.io/badge/Status-Active-green.svg)]()
 [![Data Source: NFHS](https://img.shields.io/badge/Data-NFHS--5-orange.svg)]()
+[![Live Demo](https://img.shields.io/badge/Live-Demo-success.svg)](https://insight360tn.web.app)
 
 ---
 
-## 📋 Executive Summary
+## 📊 Project Statistics
+
+### Data Coverage
+- **Total Health Indicators**: 128 indicators
+- **Health Categories**: 10 comprehensive categories
+- **Districts Covered**: 32 districts across Tamil Nadu
+- **Survey Rounds**: NFHS-4 (2015-16) and NFHS-5 (2019-21)
+- **Project Size**: 4.5 MB (complete application)
+
+### Indicator Classification
+- **Positive Indicators**: 74 indicators (57.8%) - Higher values indicate better health outcomes
+- **Negative Indicators**: 47 indicators (36.7%) - Lower values indicate better health outcomes  
+- **Neutral Indicators**: 7 indicators (5.5%) - Descriptive metrics without directional interpretation
+
+### Health Categories Breakdown
+1. **Population and Household Profile** - 16 indicators
+2. **Fertility** - 5 indicators
+3. **Family Planning** - 13 indicators
+4. **Infant and Child Mortality** - 2 indicators
+5. **Maternal and Child Health** - 20 indicators
+6. **Child Immunization and Health** - 24 indicators
+7. **Nutrition and Anaemia** - 22 indicators
+8. **Morbidity and Health Care** - 5 indicators
+9. **Women Empowerment** - 1 indicator
+10. **Adult Health** - 20 indicators
+
+---
+
+## 🎯 Executive Summary
 
 **Insight360TN** is a comprehensive web-based analytics platform designed for Tamil Nadu's health data visualization and analysis. Built on National Family Health Survey (NFHS) data, it provides interactive mapping, district-level performance analytics, and AI-powered insights for evidence-based health policy decisions.
 
-### Key Metrics
-- **32 Districts** covered across Tamil Nadu
-- **128 Health Indicators** from NFHS-4 & NFHS-5
-- **10 Health Categories** with comprehensive analysis
+### Key Features
 - **Interactive GIS Mapping** with choropleth visualization
-- **AI Assistant** powered by Google Gemini 1.5 Pro
-
-### Research Significance
-- **First comprehensive digital platform** for Tamil Nadu NFHS data visualization
-- **Evidence-based policy support** for state health department decision-making
-- **Real-time comparative analysis** enabling rapid identification of health disparities
-- **AI-powered insights** democratizing complex health data interpretation
-- **Open-source contribution** to public health informatics in India
+- **District Performance Rankings** across all health categories
+- **AI-Powered Analysis** using Google Gemini 1.5 Pro
+- **Advanced Correlation Analytics** with statistical normalization
+- **Professional Export Capabilities** for policy documentation
+- **Mobile-Responsive Design** for field accessibility
 
 ---
 
@@ -46,196 +69,244 @@ Sponsored by Government of Tamil Nadu
 
 ---
 
-## 🎯 Core Features & Innovation
+## 🔬 Technical Architecture
 
-### 1. Interactive Dashboard
-- **Real-time choropleth mapping** with district-level data visualization
-- **Dynamic indicator selection** across 128 health metrics
-- **Comparative analysis** between NFHS-4 and NFHS-5 surveys
-- **Export capabilities** for research and policy documentation
-- **Innovation**: First web-based platform providing instant visual access to Tamil Nadu's complete NFHS dataset
-
-### 2. District Performance Analytics
-- **Comprehensive ranking system** across all health categories
-- **Trend analysis** showing improvement/decline patterns
-- **Performance categorization** (Strengths, Moderate, Priority areas)
-- **Category-wise detailed breakdowns** with indicator-level insights
-- **Innovation**: Automated district ranking algorithms enabling rapid identification of health priorities
-
-### 3. AI-Powered Insights
-- **Scooby AI Assistant** integrated with Google Gemini 1.5 Pro
-- **Dynamic response optimization** based on query complexity
-- **Contextual health data analysis** with actionable recommendations
-- **Natural language processing** for complex health queries
-- **Innovation**: First AI-powered health data assistant for Indian state-level NFHS analysis
-
-### 4. Professional Reporting
-- **CSV export functionality** for all data tables
-- **Comprehensive district profiles** with performance metrics
-- **Category-wise trend analysis** with visual representations
-- **Mobile-responsive design** for field accessibility
-- **Innovation**: Automated report generation reducing manual analysis time from weeks to minutes
-
-### 5. Public Health Impact
-- **Policy Decision Support**: Real-time data access for health administrators
-- **Resource Allocation**: Evidence-based identification of priority districts
-- **Performance Monitoring**: Continuous tracking of health indicator improvements
-- **Research Facilitation**: Standardized data access for academic and policy research
-- **Capacity Building**: Training tool for public health professionals
-
----
-
-## 📊 Technical Architecture
-
-### Frontend Stack
-- **HTML5/CSS3/JavaScript** - Core web technologies
-- **Leaflet.js** - Interactive mapping and GIS visualization
-- **Chart.js** - Statistical data visualization
+### Frontend Technologies
+- **HTML5/CSS3/JavaScript** - Core web technologies with ES6+ features
+- **Leaflet.js v1.9.4** - Interactive mapping and GIS visualization
+- **Chart.js** - Statistical data visualization and correlation plots
 - **Material Design Icons** - Professional UI components
+- **Inter Font Family** - Modern typography system
 
 ### Data Management
-- **JSON-based data structure** for optimal performance
-- **Client-side processing** for real-time analytics
-- **Structured data schemas** for NFHS indicator management
-- **Efficient caching mechanisms** for improved user experience
+- **JSON-based Architecture** - Optimized for client-side processing
+- **Structured Data Schemas** - Standardized NFHS indicator management
+- **GeoJSON Integration** - Tamil Nadu district boundary mapping
+- **Real-time Analytics** - Instant calculations without server dependencies
 
 ### AI Integration
-- **Firebase AI REST API** integration
-- **Google Gemini 1.5 Pro** language model
-- **Contextual prompt engineering** for health-specific responses
-- **Fallback mechanisms** for offline functionality
+- **Google Gemini 1.5 Pro** - Advanced language model for health analytics
+- **Firebase AI REST API** - Secure cloud-based AI processing
+- **Contextual Prompt Engineering** - Health-specific response optimization
+- **Dynamic Response Formatting** - Bullet-point structured insights
 
 ---
 
-## 🗂️ Project Structure
+## 📈 Statistical Methodologies
 
+### Indicator Type Handling
+```javascript
+// Positive Indicators (Higher = Better)
+// Examples: Vaccination coverage, institutional births, literacy rates
+if (indicatorType === 'Positive') {
+    // Higher values ranked better (rank 1 = highest value)
+    values.sort((a, b) => b.value - a.value);
+}
+
+// Negative Indicators (Lower = Better)  
+// Examples: Mortality rates, malnutrition, disease prevalence
+if (indicatorType === 'Negative') {
+    // Lower values ranked better (rank 1 = lowest value)
+    values.sort((a, b) => a.value - b.value);
+}
+
+// Neutral Indicators (Descriptive)
+// Examples: Sex ratio, population demographics
+// No directional ranking applied
 ```
-Insight360TN/
-├── 📁 pages/                    # Application pages
-│   ├── dashboard.html           # Interactive mapping dashboard
-│   ├── district-analysis.html   # District performance analytics
-│   └── category-details.html    # Category-specific analysis
-├── 📁 js/                       # JavaScript modules
-│   └── chatbot-widget.js        # AI assistant implementation
-├── 📁 dashboard_files/          # Health data repository
-│   ├── master_nfhs_data.json    # Complete NFHS dataset
-│   ├── nfhs_indicator_categories.json # Indicator classifications
-│   └── tn_district.geojson      # Tamil Nadu district boundaries
-├── 📁 config/                   # Configuration files
-│   └── .env                     # Environment variables
-├── 📁 Icons/                    # Institutional logos
-└── index.html                   # Landing page
+
+### Normalization Technique
+**Min-Max Normalization (0-1 Scale)**
+```javascript
+function normalizeValue(value, min, max) {
+    if (min === max) return 0.5; // Handle uniform values
+    return (value - min) / (max - min);
+}
+```
+
+### Correlation Analysis
+- **Pearson Correlation Coefficient** calculation
+- **Linear Regression** for trend line generation
+- **Statistical Significance** assessment
+- **Outlier Detection** and handling
+
+### Ranking Methodology
+- **Tertile-based Classification** (Top 33%, Middle 33%, Bottom 33%)
+- **Median Rank Calculation** for category-level performance
+- **Trend Analysis** between NFHS-4 and NFHS-5
+- **Performance Categorization** (Strengths, Moderate, Priority)
+
+---
+
+## 🗂️ Page-wise Features
+
+### 1. Homepage (`index.html`)
+**Purpose**: Landing page with project overview and navigation
+- **Institutional Branding** with sponsor logos
+- **Project Statistics** and key metrics display
+- **Navigation Hub** to all dashboard features
+- **Scooby AI Chatbot** integration
+- **Responsive Design** for all device types
+
+### 2. Interactive Dashboard (`pages/dashboard.html`)
+**Purpose**: Main GIS mapping and indicator visualization
+- **Interactive Leaflet Map** with Tamil Nadu district boundaries
+- **Dynamic Choropleth Mapping** based on selected indicators
+- **NFHS Survey Toggle** (NFHS-4 vs NFHS-5)
+- **Indicator Search** with real-time filtering
+- **Category Tree Navigation** with expandable sections
+- **District Rankings Table** with top/bottom performers
+- **Export Functionality** (CSV download)
+- **Bar Chart Visualization** popup
+- **AI Interpretation** for selected indicators
+- **Performance KPIs** (average, median, best/worst districts)
+
+### 3. District Analysis (`pages/district-analysis.html`)
+**Purpose**: Comprehensive district-level performance analytics
+- **District Selector** with all 32 Tamil Nadu districts
+- **Overall Performance Ranking** with median calculation
+- **Category-wise Performance** breakdown
+- **Progress Tracking** (NFHS-4 to NFHS-5 comparison)
+- **Doughnut Chart** showing improvement trends
+- **Three-column Layout** (Strengths, Moderate, Priority areas)
+- **Detailed Indicator Tables** for each category
+- **AI District Analysis** with comprehensive reporting
+- **Trend Analysis** with statistical validation
+
+### 4. Advanced Analytics (`pages/advanced-analytics.html`)
+**Purpose**: Statistical correlation analysis and advanced insights
+- **Correlation Analysis** between any two health indicators
+- **NFHS Survey Selection** toggle
+- **X/Y Axis Indicator Selection** with completeness percentages
+- **Scatter Plot Visualization** with normalized data (0-1 scale)
+- **Trend Line Toggle** with linear regression
+- **Axis Swapping** functionality
+- **Statistical Metrics** (correlation coefficient, medians)
+- **Data Completeness Warnings** and sample size display
+- **AI Interpretation** of correlation patterns
+- **Professional Export** capabilities
+
+---
+
+## 🤖 AI Implementation Details
+
+### Scooby AI Assistant
+**Model**: Google Gemini 1.5 Pro
+**Integration**: Firebase AI REST API
+
+#### Core Capabilities
+- **Health Data Analysis** with contextual understanding
+- **District Performance Interpretation** 
+- **Correlation Pattern Analysis**
+- **Policy Recommendation Generation**
+- **Natural Language Query Processing**
+
+#### Implementation Architecture
+```javascript
+async function queryFirebaseAI(question, healthData) {
+    const API_KEY = 'AIzaSyDOJmBYjL4R7aTxOKGJJxc8GYLjzxBJGhE';
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${API_KEY}`;
+    
+    const prompt = `You are Scooby, an AI assistant for Tamil Nadu health data analysis. ${question}`;
+    
+    const requestBody = {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+            temperature: 0.7,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 1024
+        }
+    };
+    
+    // Process and return formatted response
+}
+```
+
+#### Response Formatting
+- **Bullet-point Structure** for readability
+- **Bold Text Highlighting** for key insights
+- **Contextual Analysis** based on selected data
+- **Actionable Recommendations** for health administrators
+- **Professional Disclaimers** for data interpretation
+
+---
+
+## 🔧 Data Processing Pipeline
+
+### Data Sources
+- **NFHS-4 (2015-16)** - International Institute for Population Sciences (IIPS)
+- **NFHS-5 (2019-21)** - International Institute for Population Sciences (IIPS)
+- **District Boundaries** - Survey of India, Census 2011
+
+### Data Validation
+1. **Statistical Accuracy** - Cross-verification with official NFHS reports
+2. **Geographic Precision** - District boundary alignment validation
+3. **Temporal Consistency** - Standardized comparison methodologies
+4. **Expert Review** - ICMR-NIE epidemiologist validation
+
+### Data Structure
+```json
+{
+  "districts": {
+    "district_name": {
+      "nfhs_4": {
+        "indicator_name": "value",
+        // ... all NFHS-4 indicators
+      },
+      "nfhs_5": {
+        "indicator_name": "value",
+        // ... all NFHS-5 indicators  
+      }
+    }
+  }
+}
 ```
 
 ---
 
-## 🚀 Deployment & Usage
+## 📊 Performance Optimization
 
-### Live Access
+### Client-Side Processing
+- **Zero Server Dependencies** for core functionality
+- **Real-time Calculations** without database queries
+- **Efficient Caching** mechanisms
+- **Lazy Loading** for large datasets
+
+### Responsive Design
+- **Mobile-First Approach** with progressive enhancement
+- **Flexible Grid Systems** adapting to screen sizes
+- **Touch-Optimized Controls** for mobile devices
+- **Fast Loading** with optimized assets
+
+### Browser Compatibility
+- **Chrome 80+** - Full feature support
+- **Firefox 75+** - Complete compatibility
+- **Safari 13+** - iOS and macOS support
+- **Edge 80+** - Modern Edge browser
+
+---
+
+## 🚀 Deployment & Access
+
+### Live Application
 **🌐 [https://insight360tn.web.app](https://insight360tn.web.app)**
 
-### System Requirements
-- **Web Server**: Any HTTP server (Apache, Nginx, or local server)
-- **Browser Compatibility**: Chrome 80+, Firefox 75+, Safari 13+, Edge 80+
-- **Network**: Internet connection for AI features and map tiles
-- **Storage**: ~50MB for complete dataset
+### Firebase Hosting
+- **Global CDN** for fast worldwide access
+- **HTTPS Encryption** for secure data transmission
+- **Automatic Scaling** based on traffic
+- **99.9% Uptime** guarantee
 
-### Quick Start
-1. **Clone Repository**
-   ```bash
-   git clone https://github.com/drsivambbs/Insight360TN.git
-   cd Insight360TN
-   ```
+### Local Development
+```bash
+# Clone repository
+git clone https://github.com/drsivambbs/Insight360TN.git
+cd Insight360TN
 
-2. **Local Development**
-   ```bash
-   python -m http.server 8000
-   # Navigate to http://localhost:8000
-   ```
-
-3. **Production Deployment**
-   - Upload files to web server
-   - Ensure proper MIME types for JSON files
-   - Configure HTTPS for AI functionality
-
-### Configuration
-- Update Firebase credentials in `config/.env`
-- Modify data paths if deploying to subdirectories
-- Customize branding in `index.html`
-
----
-
-## 🔬 Methodology & Implementation
-
-### Data Processing Pipeline
-1. **Data Acquisition**: Official NFHS-4 and NFHS-5 datasets from IIPS, Mumbai
-2. **Data Validation**: Cross-verification with state health department records
-3. **Standardization**: Uniform indicator naming and district mapping protocols
-4. **Quality Control**: Statistical validation and outlier detection algorithms
-5. **Integration**: Seamless merging of temporal datasets for trend analysis
-
-### Technical Innovation
-- **Client-side Processing**: Eliminates server dependencies, ensuring data privacy
-- **Real-time Analytics**: Instant calculations without database queries
-- **Responsive Design**: Optimized for desktop, tablet, and mobile platforms
-- **Offline Capability**: Core functionality available without internet connectivity
-- **Scalable Architecture**: Easily adaptable for other Indian states
-
-### Validation Framework
-- **Statistical Accuracy**: All calculations verified against official NFHS reports
-- **Geographic Precision**: District boundaries aligned with Census 2011 data
-- **Temporal Consistency**: Standardized comparison methodologies across survey rounds
-- **Expert Review**: Validated by ICMR-NIE epidemiologists and state health officials
-
----
-
-## 📈 Data Specifications
-
-### Health Indicators Coverage
-| Category | Indicators | Key Metrics |
-|----------|------------|-------------|
-| **Child Health** | 15 indicators | Vaccination, nutrition, mortality |
-| **Women's Health** | 18 indicators | Maternal care, reproductive health |
-| **Family Planning** | 12 indicators | Contraceptive usage, unmet need |
-| **Nutrition** | 16 indicators | Stunting, wasting, anemia |
-| **Healthcare Access** | 14 indicators | Institutional delivery, ANC |
-| **Water & Sanitation** | 8 indicators | Safe water, toilet facilities |
-| **Domestic Violence** | 6 indicators | Physical, sexual violence |
-| **HIV/AIDS** | 4 indicators | Awareness, testing |
-| **Tobacco & Alcohol** | 5 indicators | Usage patterns |
-| **Others** | 30 indicators | Various health parameters |
-
-### Data Quality Assurance
-- **Source Validation**: Direct NFHS survey data
-- **Temporal Consistency**: NFHS-4 (2015-16) and NFHS-5 (2019-21)
-- **Geographic Accuracy**: Official district boundaries
-- **Statistical Reliability**: Government-verified datasets
-
----
-
-## 🔧 API Documentation
-
-### AI Assistant Endpoints
-```javascript
-// Query Firebase AI
-queryFirebaseAI(question, healthData)
-// Returns: Formatted analytical response
-
-// Fallback Analysis
-getChatbotResponse(question)
-// Returns: Local data-driven insights
-```
-
-### Data Access Methods
-```javascript
-// Load district data
-fetch('./dashboard_files/master_nfhs_data.json')
-
-// Load indicator categories
-fetch('./dashboard_files/nfhs_indicator_categories.json')
-
-// Load geographic boundaries
-fetch('./dashboard_files/tn_district.geojson')
+# Start local server
+python -m http.server 8000
+# Navigate to http://localhost:8000
 ```
 
 ---
@@ -243,34 +314,34 @@ fetch('./dashboard_files/tn_district.geojson')
 ## 📋 Quality Assurance
 
 ### Testing Protocol
-- **Cross-browser compatibility** testing
-- **Mobile responsiveness** validation
-- **Data accuracy** verification against official NFHS reports
-- **Performance optimization** for large datasets
-- **Accessibility compliance** (WCAG 2.1 guidelines)
+- **Cross-browser Compatibility** testing across major browsers
+- **Mobile Responsiveness** validation on multiple devices
+- **Data Accuracy** verification against official NFHS reports
+- **Performance Optimization** for large dataset handling
+- **Accessibility Compliance** (WCAG 2.1 guidelines)
 
 ### Security Measures
-- **Client-side data processing** (no server-side data storage)
-- **API key management** for AI services
-- **Input sanitization** for user queries
-- **HTTPS enforcement** for production deployments
+- **Client-side Processing** (no server-side data storage)
+- **API Key Management** for AI services
+- **Input Sanitization** for user queries
+- **HTTPS Enforcement** for production deployments
 
 ---
 
-## 🎆 Impact & Applications
+## 🎯 Impact & Applications
 
 ### Policy Applications
-- **State Health Planning**: Direct integration with Tamil Nadu State Health Mission planning cycles
-- **Budget Allocation**: Evidence-based resource distribution across districts
-- **Program Monitoring**: Real-time tracking of health scheme effectiveness
-- **Performance Evaluation**: Objective assessment of district health officer performance
-- **Research Prioritization**: Data-driven identification of research gaps
+- **State Health Planning** - Integration with Tamil Nadu State Health Mission
+- **Budget Allocation** - Evidence-based resource distribution
+- **Program Monitoring** - Real-time tracking of health scheme effectiveness
+- **Performance Evaluation** - Objective district health officer assessment
+- **Research Prioritization** - Data-driven identification of research gaps
 
 ### Academic Contributions
-- **Public Health Education**: Interactive learning tool for MPH and medical students
-- **Research Facilitation**: Standardized data access for epidemiological studies
-- **Methodology Innovation**: Replicable framework for other Indian states
-- **Digital Health Advancement**: Contribution to India's digital health ecosystem
+- **Public Health Education** - Interactive learning tool for students
+- **Research Facilitation** - Standardized data access for studies
+- **Methodology Innovation** - Replicable framework for other states
+- **Digital Health Advancement** - Contribution to India's digital ecosystem
 
 ### Stakeholder Benefits
 | Stakeholder | Primary Benefits | Impact Metrics |
@@ -281,11 +352,22 @@ fetch('./dashboard_files/tn_district.geojson')
 | **Policy Makers** | Visual insights, trend analysis | Enhanced decision-making speed |
 | **Public** | Transparent health information, accountability | Open access to government health data |
 
+---
+
+## 📈 Future Enhancements
+
+### Planned Features
+- **NFHS-6 Integration** (when available)
+- **Predictive Analytics** using machine learning
+- **Multi-state Comparison** capabilities
+- **Advanced Statistical Tests** (t-tests, ANOVA)
+- **Custom Report Generation** with templates
+
 ### Scalability Potential
-- **National Expansion**: Framework adaptable to all 28 Indian states
-- **International Application**: Methodology applicable to similar health survey systems
-- **Indicator Extension**: Platform can accommodate additional health metrics
-- **Temporal Expansion**: Ready for future NFHS rounds integration
+- **National Expansion** - Framework adaptable to all Indian states
+- **International Application** - Methodology for similar health systems
+- **Indicator Extension** - Platform ready for additional metrics
+- **API Development** - Programmatic data access
 
 ---
 
@@ -294,7 +376,7 @@ fetch('./dashboard_files/tn_district.geojson')
 ### Technical Support
 - **Primary Contact**: Dr. Sivachandran Mathiyazagan
 - **Institution**: ICMR-NIE, Chennai
-- **Email**: [Contact through GitHub repository]
+- **Email**: Available through GitHub repository
 - **Response Time**: 48-72 hours for technical queries
 
 ### Update Schedule
@@ -316,12 +398,6 @@ Mathiyazagan, S. (2024). Insight360TN: A Comprehensive Web-Based Platform for Ta
 Visualization and Analysis Using NFHS Surveys. Directorate of Public Health, Government of Tamil Nadu 
 & ICMR-National Institute of Epidemiology, Chennai.
 ```
-
-### Academic Publications
-- **Manuscript Status**: Under preparation for submission to *Journal of Medical Internet Research*
-- **Conference Presentations**: Presented at National Conference on Digital Health, New Delhi 2024
-- **Technical Reports**: Available through ICMR-NIE institutional repository
-- **Policy Briefs**: Distributed to Tamil Nadu State Health Mission stakeholders
 
 ### Data Attribution
 - **NFHS Data**: International Institute for Population Sciences (IIPS), Mumbai
