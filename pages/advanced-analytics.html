@@ -1076,7 +1076,7 @@
         </div>
     </div>
 
-    <script src="../js/loading-overlay.js"></script>
+
     <script>
         let nfhsData = {};
         let indicatorCategories = {};
@@ -1097,7 +1097,6 @@
 
         // Load data on page load
         document.addEventListener('DOMContentLoaded', async function() {
-            showLoadingOverlay();
             try {
                 await loadData();
                 populateIndicatorDropdowns();
@@ -1114,11 +1113,8 @@
                         populateIndicatorDropdowns();
                     });
                 });
-                
-                hideLoadingOverlay();
             } catch (error) {
                 console.error('Error loading data:', error);
-                hideLoadingOverlay();
             }
         });
 
